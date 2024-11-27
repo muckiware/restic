@@ -11,6 +11,8 @@
  */
 namespace MuckiRestic;
 
+use Symfony\Component\Process\Process;
+
 abstract class Client
 {
     protected string $resticBinaryPath = '';
@@ -19,11 +21,18 @@ abstract class Client
         return new static();
     }
 
+    public function getProcess(string $command): Process
+    {
+        return Process::fromShellCommandline($command, null, null, null, 1000);
+    }
+
     public function getResticVersion(): string
     {
-        $process = $this->getProcess(__DIR__.'../../bin/restic_0.17.3_linux_386 version');
+        $process = $this->getProcess($this->resticBinaryPath.' version');
         $process->run();
 
-        return 'version';
+        return $process->getOutput();
     }
+
+    abstract public function setBinaryPath(string $path): void;
 }

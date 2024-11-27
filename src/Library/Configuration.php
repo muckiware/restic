@@ -16,19 +16,9 @@ use MuckiRestic\Client;
 class Configuration extends Client
 {
     protected string $resticBinaryPath = '';
-    public function setResticBinaryPath(string $resticBinaryPath = ''): self
+
+    public function setBinaryPath(string $path): void
     {
-        if ($resticBinaryPath !== '' && ! str_ends_with($resticBinaryPath, '/')) {
-            $resticBinaryPath .= '/';
-        }
-
-        $this->resticBinaryPath = $resticBinaryPath;
-
-        return $this;
-    }
-
-    public function getResticBinaryPath(): string
-    {
-        return $this->resticBinaryPath;
+        $this->resticBinaryPath = $path;
     }
 }

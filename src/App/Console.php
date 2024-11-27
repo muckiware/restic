@@ -38,8 +38,9 @@ class Console extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $backupClient = Backup::create();
-        $resticVersion = $backupClient->getResticVersion();
-        $output->writeln(sprintf('Binary restic version: %s', $resticVersion));
+        $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
+
+        $output->writeln(sprintf('Binary restic version: %s', $backupClient->getResticVersion()));
         return Command::SUCCESS;
     }
 }
