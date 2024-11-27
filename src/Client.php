@@ -11,7 +11,7 @@
  */
 namespace MuckiRestic;
 
-abstract class BackupClient
+abstract class Client
 {
     protected string $resticBinaryPath = '';
     public static function create(): static
@@ -19,16 +19,11 @@ abstract class BackupClient
         return new static();
     }
 
-    public function setResticBinaryPath(string $resticBinaryPath = ''): self
+    public function getResticVersion(): string
     {
-        if ($resticBinaryPath !== '' && ! str_ends_with($resticBinaryPath, '/')) {
-            $resticBinaryPath .= '/';
-        }
+        $process = $this->getProcess(__DIR__.'../../bin/restic_0.17.3_linux_386 version');
+        $process->run();
 
-        $this->resticBinaryPath = $resticBinaryPath;
-
-        return $this;
+        return 'version';
     }
-
-    abstract public function getResticVersion(): string;
 }

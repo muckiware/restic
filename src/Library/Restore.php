@@ -11,14 +11,14 @@
  */
 namespace MuckiRestic\Library;
 
-use MuckiRestic\BackupClient;
+use MuckiRestic\Client;
 use Symfony\Component\Process\Process;
 
-class ResticClient extends BackupClient
+class Restore extends Client
 {
     public function getProcess(string $command): Process
     {
-        return Process::fromShellCommandline($command, null, null, null, -1);
+        return Process::fromShellCommandline($command, null, null, null, 0);
     }
     public function getResticVersion(): string
     {

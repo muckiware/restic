@@ -15,21 +15,31 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+
+use MuckiRestic\Library\Configuration;
+use MuckiRestic\Library\Backup;
+use MuckiRestic\Library\Restore;
 
 class Console extends Command
 
 {
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName('muwa:restic:client')
-            ->setDescription('A restic client for backup and restore.')
-            ->setHelp('Demonstration of custom commands created by Symfony Console component.')
-            ->addArgument('username', InputArgument::REQUIRED, 'Pass the username.');
+        $this->setName('muwa:restic:client');
+        $this->setDescription('A restic client for backup and restore.');
+        $this->setDefinition(
+            [
+                new InputOption('resticVersion', null, InputOption::VALUE_NONE, 'Version of restic')
+            ]
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln(sprintf('Hello World!, %s', $input->getArgument('username')));
+        $backupClient = Backup::create();
+        $resticVersion = $backupClient->getResticVersion();
+        $output->writeln(sprintf('Binary restic version: %s', $resticVersion));
         return Command::SUCCESS;
     }
 }
