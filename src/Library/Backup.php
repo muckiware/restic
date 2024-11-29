@@ -23,7 +23,11 @@ class Backup extends Configuration
         if($this->checkInputParametersByCommand('Init')) {
 
             $process = $this->getProcess(
-                'export RESTIC_PASSWORD="Y73wHU5Dw96WWV"'."\n".$this->resticBinaryPath.' init --repo '.$this->repositoryPath
+                sprintf('export RESTIC_PASSWORD="%s"'."\n".'%s init --repo %s',
+                    $this->repositoryPassword,
+                    $this->resticBinaryPath,
+                    $this->repositoryPath
+                )
             );
             $process->run();
 
