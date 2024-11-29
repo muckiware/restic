@@ -1,11 +1,14 @@
 # muckiware/restic
-php client for restic backup tool
+PHP client for restic backup tool
 
+# Requirements
+- PHP 8.1 or higher
+- Composer
+- Restic as binary or installed on the system, see https://restic.readthedocs.io/en/stable/020_installation.html
 # Installation
 ```bash
 composer require muckiware/restic
 ```
-
 # Usage
 ## Create a new backup repository
 ```php
