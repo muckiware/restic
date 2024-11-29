@@ -35,4 +35,5 @@ abstract class Client
     }
 
     abstract public function setBinaryPath(string $path): void;
+    abstract public function createRepository(): string;
 }

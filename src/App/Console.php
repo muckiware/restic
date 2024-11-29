@@ -11,36 +11,63 @@
  */
 namespace MuckiRestic\App;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\String\Exception\ExceptionInterface;
+use Symfony\Component\String\Exception\InvalidArgumentException;
 
 use MuckiRestic\Library\Configuration;
 use MuckiRestic\Library\Backup;
 use MuckiRestic\Library\Restore;
 
-class Console extends Command
+#[AsCommand(name: 'muwa:restic:client', description: 'A restic client for backup and restore.')]
+class Console extends Commands
 
 {
     protected function configure(): void
     {
-        $this->setName('muwa:restic:client');
-        $this->setDescription('A restic client for backup and restore.');
         $this->setDefinition(
-            [
-                new InputOption('resticVersion', null, InputOption::VALUE_NONE, 'Version of restic')
-            ]
+            new InputDefinition([
+                new InputOption('Version', null, InputOption::VALUE_NONE, 'Version of restic'),
+                new InputOption('Init', null, InputOption::VALUE_NONE, 'Initialize a new repository'),
+                new InputOption('Backup', null, InputOption::VALUE_NONE, 'Create Backup into repository'),
+                new InputOption('Check', null, InputOption::VALUE_NONE, 'Checkup repository'),
+                new InputOption('Restore', null, InputOption::VALUE_NONE, 'Restore data from repository'),
+            ])
         );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $backupClient = Backup::create();
-        $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
+        return $this->selectCommandInput($input, $output);
+    }
 
-        $output->writeln(sprintf('Binary restic version: %s', $backupClient->getResticVersion()));
-        return Command::SUCCESS;
+    protected function selectCommandInput(InputInterface $input, OutputInterface $output): int
+    {
+        $result = Command::INVALID;
+        foreach ($input->getOptions() as $optionKey => $optionValue) {
+
+            if(!$optionValue) {
+                continue;
+            }
+            switch ($optionKey) {
+
+                case 'Version':
+                    $result = $this->getVersion($output);
+                    break;
+                case 'Init':
+                    $result = $this->createRepository($output);
+                    break;
+                default:
+                    throw new InvalidArgumentException(sprintf('Invalid option %s', $optionKey));
+            }
+        }
+
+        return $result;
     }
 }

@@ -1,0 +1,44 @@
+[
+  {
+    "command": "Init",
+    "description": "Initialize a new repository",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPath",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  {
+    "command": "backup",
+    "description": "Create a backup",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPath",
+        "type": "string",
+        "required": true
+      }
+    ]
+  }
+]
