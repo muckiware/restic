@@ -46,7 +46,25 @@ class Commands extends Command
             return Command::FAILURE;
         }
 
-        $output->writeln(sprintf('Create repository: %s', $backupClient->createRepository()));
+        return Command::SUCCESS;
+    }
+
+    public function createBackup(OutputInterface $output): int
+    {
+        try {
+
+            $backupClient = Backup::create();
+            $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
+            $backupClient->setRepositoryPassword('1234');
+            $backupClient->setRepositoryPath('./testRep');
+            $backupClient->setBackupPath('/var/www/html/test');
+            $output->writeln(sprintf('Create backup: %s', $backupClient->createBackup()));
+
+        } catch (\Exception $e) {
+            $output->writeln(sprintf('Error: %s', $e->getMessage()));
+            return Command::FAILURE;
+        }
+
         return Command::SUCCESS;
     }
 }

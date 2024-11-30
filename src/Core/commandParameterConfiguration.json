@@ -21,7 +21,7 @@
     ]
   },
   {
-    "command": "backup",
+    "command": "Backup",
     "description": "Create a backup",
     "parameters": [
       {
@@ -36,6 +36,11 @@
       },
       {
         "name": "repositoryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "backupPath",
         "type": "string",
         "required": true
       }

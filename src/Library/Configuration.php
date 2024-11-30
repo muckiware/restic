@@ -23,6 +23,8 @@ abstract class Configuration extends Client
 
     protected string $repositoryPassword;
 
+    protected string $backupPath;
+
     public function setBinaryPath(string $path): void
     {
         $this->resticBinaryPath = $path;
@@ -48,6 +50,16 @@ abstract class Configuration extends Client
         $this->repositoryPassword = $repositoryPassword;
     }
 
+    public function getBackupPath(): string
+    {
+        return $this->backupPath;
+    }
+
+    public function setBackupPath(string $backupPath): void
+    {
+        $this->backupPath = $backupPath;
+    }
+
     /**
      * @throws \Exception
      */
@@ -57,7 +69,12 @@ abstract class Configuration extends Client
             $inputCommand
         );
 
+        if($commandParameterConfiguration === null) {
+            throw new InvalidConfigurationException('Invalid command '.$inputCommand);
+        }
+
         foreach ($commandParameterConfiguration->getParameters() as $parameter) {
+
             if ($parameter->isRequired() && empty($this->{$parameter->getName()})) {
                 throw new InvalidConfigurationException('Missing required parameter '.$parameter->getName());
             }

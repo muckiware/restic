@@ -63,6 +63,9 @@ class Console extends Commands
                 case 'Init':
                     $result = $this->createRepository($output);
                     break;
+                case 'Backup':
+                    $result = $this->createBackup($output);
+                    break;
                 default:
                     throw new InvalidArgumentException(sprintf('Invalid option %s', $optionKey));
             }
