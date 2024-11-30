@@ -58,7 +58,7 @@ class Commands extends Command
             $backupClient->setRepositoryPassword('1234');
             $backupClient->setRepositoryPath('./testRep');
             $backupClient->setBackupPath('/var/www/html/test');
-            $output->writeln(sprintf('Create backup: %s', $backupClient->createBackup()));
+            $output->writeln(sprintf('Create backup: %s', $backupClient->createBackupStrResults()));
 
         } catch (\Exception $e) {
             $output->writeln(sprintf('Error: %s', $e->getMessage()));

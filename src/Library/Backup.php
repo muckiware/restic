@@ -11,11 +11,16 @@
  */
 namespace MuckiRestic\Library;
 
-use MuckiRestic\Library\Configuration;
+use Symfony\Component\Process\Process;
+
+use MuckiRestic\ResultParser\BackupResultParser;
+use MuckiRestic\Exception\InvalidConfigurationException;
+use MuckiRestic\Entity\Result\BackupResultEntity;
 
 class Backup extends Configuration
 {
     /**
+     * @throws InvalidConfigurationException
      * @throws \Exception
      */
     public function createRepository(): string
@@ -34,26 +39,52 @@ class Backup extends Configuration
             return $process->getOutput();
         }
 
-        throw new \Exception('Invalid configuration');
+        throw new InvalidConfigurationException('Invalid configuration');
     }
 
-    public function createBackup(): string
+    /**
+     * @throws InvalidConfigurationException
+     * @throws \Exception
+     */
+    public function createBackupStrResults(): string
     {
         if($this->checkInputParametersByCommand('Backup')) {
 
-            $process = $this->getProcess(
-                sprintf('export RESTIC_PASSWORD="%s"'."\n".'export RESTIC_REPOSITORY="%s"'."\n".'%s backup %s',
-                    $this->repositoryPassword,
-                    $this->repositoryPath,
-                    $this->resticBinaryPath,
-                    $this->repositoryPath
-                )
-            );
+            $process = $this->createProcess();
+            $process->run();
+            return $process->getOutput();
+
+        } else {
+            throw new InvalidConfigurationException('Invalid configuration');
+        }
+    }
+
+    /**
+     * @throws InvalidConfigurationException
+     * @throws \Exception
+     */
+    public function createBackup(): BackupResultEntity
+    {
+        if($this->checkInputParametersByCommand('Backup')) {
+
+            $process = $this->createProcess();
             $process->run();
 
-            return $process->getOutput();
+            return BackupResultParser::textParserBackupResult($process->getOutput());
+        } else {
+            throw new InvalidConfigurationException('Invalid configuration');
         }
+    }
 
-        throw new \Exception('Invalid configuration');
+    public function createProcess(): Process
+    {
+        return $this->getProcess(
+            sprintf('export RESTIC_PASSWORD="%s"'."\n".'export RESTIC_REPOSITORY="%s"'."\n".'%s backup %s',
+                $this->repositoryPassword,
+                $this->repositoryPath,
+                $this->resticBinaryPath,
+                $this->repositoryPath
+            )
+        );
     }
 }

@@ -13,6 +13,8 @@ namespace MuckiRestic;
 
 use Symfony\Component\Process\Process;
 
+use MuckiRestic\ResultParser\OutputParser;
+
 abstract class Client
 {
     protected string $resticBinaryPath = '';
