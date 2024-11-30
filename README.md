@@ -10,22 +10,60 @@ PHP client for restic backup tool
 composer require muckiware/restic
 ```
 # Usage
+## Example as cli app
+Checkout the App folder for to run as cli command
+```shell
+bin/console muwa:restic:client --help
+```
 ## Create a new backup repository
 ```php
 <?php declare(strict_types=1);
 
 use MuckiRestic\Library\Backup;
-use MuckiRestic\Exception\InvalidConfigurationException;
 
-try {
+class BackupService
+{
+    public function createRepository(): void
+    {
+        try {
+        
+            $backupClient = Backup::create();
+            $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
+            $backupClient->setRepositoryPassword('1234');
+            $backupClient->setRepositoryPath('./Repository');
+            $backupClient->createRepository();
+        
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+}
+```
 
-    $backupClient = Backup::create();
-    $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
-    $backupClient->setRepositoryPassword('1234');
-    $backupClient->setRepositoryPath('./Repository');
-    $backupClient->createRepository();
+## Create a backup
+### Example
+```php
+<?php declare(strict_types=1);
 
-} catch (\Exception $e) {
-    echo $e->getMessage();
+use MuckiRestic\Library\Backup;
+
+class BackupService
+{
+    public function createBackup(): void
+    {
+        try {
+        
+            $backupClient = Backup::create();
+            $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
+            $backupClient->setRepositoryPassword('1234');
+            $backupClient->setRepositoryPath('./testRep');
+            $backupClient->setBackupPath('/var/www/html/test');
+            
+            echo $backupClient->createBackupStrResults();
+        
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
 }
 ```
