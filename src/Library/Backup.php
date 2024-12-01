@@ -39,31 +39,19 @@ class Backup extends Configuration
      * @throws InvalidConfigurationException
      * @throws \Exception
      */
-    public function createBackupStrResults(): string
-    {
-        if($this->checkInputParametersByCommand(Commands::BACKUP)) {
-
-            $process = $this->createProcess(Commands::BACKUP);
-            $process->run();
-            return $process->getOutput();
-
-        } else {
-            throw new InvalidConfigurationException('Invalid configuration');
-        }
-    }
-
-    /**
-     * @throws InvalidConfigurationException
-     * @throws \Exception
-     */
-    public function createBackup(): BackupResultEntity
+    public function createBackup(bool $stringOutput=false): BackupResultEntity|string
     {
         if($this->checkInputParametersByCommand(Commands::BACKUP)) {
 
             $process = $this->createProcess(Commands::BACKUP);
             $process->run();
 
-            return BackupResultParser::textParserBackupResult($process->getOutput());
+            if($stringOutput) {
+                return $process->getOutput();
+            } else {
+                return BackupResultParser::textParserBackupResult($process->getOutput());
+            }
+
         } else {
             throw new InvalidConfigurationException('Invalid configuration');
         }

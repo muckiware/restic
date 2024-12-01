@@ -21,9 +21,7 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\String\Exception\ExceptionInterface;
 use Symfony\Component\String\Exception\InvalidArgumentException;
 
-use MuckiRestic\Library\Configuration;
-use MuckiRestic\Library\Backup;
-use MuckiRestic\Library\Restore;
+use MuckiRestic\Core\Commands as ResticCommands;
 
 #[AsCommand(name: 'muwa:restic:client', description: 'A restic client for backup and restore.')]
 class Console extends Commands
@@ -33,11 +31,11 @@ class Console extends Commands
     {
         $this->setDefinition(
             new InputDefinition([
-                new InputOption('Version', null, InputOption::VALUE_NONE, 'Version of restic'),
-                new InputOption('Init', null, InputOption::VALUE_NONE, 'Initialize a new repository'),
-                new InputOption('Backup', null, InputOption::VALUE_NONE, 'Create Backup into repository'),
-                new InputOption('Check', null, InputOption::VALUE_NONE, 'Checkup repository'),
-                new InputOption('Restore', null, InputOption::VALUE_NONE, 'Restore data from repository'),
+                new InputOption(ResticCommands::VERSION->value, null, InputOption::VALUE_NONE, 'Version of restic'),
+                new InputOption(ResticCommands::INIT->value, null, InputOption::VALUE_NONE, 'Initialize a new repository'),
+                new InputOption(ResticCommands::BACKUP->value, null, InputOption::VALUE_NONE, 'Create Backup into repository'),
+                new InputOption(ResticCommands::CHECK->value, null, InputOption::VALUE_NONE, 'Checkup repository'),
+                new InputOption(ResticCommands::RESTORE->value, null, InputOption::VALUE_NONE, 'Restore data from repository'),
             ])
         );
     }
@@ -57,13 +55,13 @@ class Console extends Commands
             }
             switch ($optionKey) {
 
-                case 'Version':
+                case ResticCommands::VERSION->value:
                     $result = $this->getVersion($output);
                     break;
-                case 'Init':
+                case ResticCommands::INIT->value:
                     $result = $this->createRepository($output);
                     break;
-                case 'Backup':
+                case ResticCommands::BACKUP->value:
                     $result = $this->createBackup($output);
                     break;
                 default:
