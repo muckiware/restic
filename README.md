@@ -73,6 +73,9 @@ Run phpunit tests
 ```shell
 ./vendor/bin/phpunit --configuration=phpunit.xml
 ```
-
+Run phpstan tests
+```shell
+composer run-script phpstan
+```
 # License
 MIT License (MIT). Please see LICENSE File for more information.

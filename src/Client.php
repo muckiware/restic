@@ -18,6 +18,9 @@ use MuckiRestic\ResultParser\OutputParser;
 abstract class Client
 {
     protected string $resticBinaryPath = '';
+
+    final public function __construct()
+    {}
     public static function create(): static
     {
         return new static();
@@ -37,5 +40,4 @@ abstract class Client
     }
 
     abstract public function setBinaryPath(string $path): void;
-    abstract public function createRepository(): string;
 }

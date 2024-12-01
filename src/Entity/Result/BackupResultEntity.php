@@ -18,6 +18,10 @@ class BackupResultEntity extends DataSet
     protected SnapshotsResultEntity $snapshots;
     protected FilesDirsResultEntity $files;
     protected FilesDirsResultEntity $directories;
+
+    /**
+     * @var array <mixed>
+     */
     protected array $processed;
 
     public function getSnapshots(): SnapshotsResultEntity
@@ -50,11 +54,17 @@ class BackupResultEntity extends DataSet
         $this->directories = $directories;
     }
 
+    /**
+     * @return array <mixed>
+     */
     public function getProcessed(): array
     {
         return $this->processed;
     }
 
+    /**
+     * @param array <mixed> $processed
+     */
     public function setProcessed(array $processed): void
     {
         $this->processed = $processed;

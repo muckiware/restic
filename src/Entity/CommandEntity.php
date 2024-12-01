@@ -20,7 +20,7 @@ class CommandEntity extends DataSet
     protected string $description;
 
     /**
-     * @var array<ParameterEntity>
+     * @var array<int, ParameterEntity>
      */
     protected array $parameters;
 
@@ -45,7 +45,7 @@ class CommandEntity extends DataSet
     }
 
     /**
-     * @return array<ParameterEntity>
+     * @return array<int, ParameterEntity>
      */
     public function getParameters(): array
     {
@@ -53,7 +53,8 @@ class CommandEntity extends DataSet
     }
 
     /**
-     * @var array<ParameterEntity>
+     * @param array<mixed> $parameters
+     * @return void
      */
     public function setParameters(array $parameters): void
     {

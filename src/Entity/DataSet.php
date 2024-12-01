@@ -11,6 +11,9 @@ namespace MuckiRestic\Entity;
 
 class DataSet
 {
+    /**
+     * @return array<mixed>
+     */
     public function toArray(): array
     {
         return get_object_vars($this);

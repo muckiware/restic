@@ -1,0 +1,13 @@
+parameters:
+    level: 6
+    treatPhpDocTypesAsCertain: false
+    inferPrivatePropertyTypeFromConstructor: true
+    reportUnmatchedIgnoredErrors: false
+    tmpDir: var/cache/phpstan
+
+    paths:
+        - src
+
+    ignoreErrors:
+        - identifier: missingType.generics
+

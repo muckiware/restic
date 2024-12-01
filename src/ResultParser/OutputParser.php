@@ -8,6 +8,10 @@ abstract class OutputParser
 {
     abstract public static function textParserBackupResult(string $input): BackupResultEntity;
 
+    /**
+     * @param array<mixed> $inputArray
+     * @return array<mixed>
+     */
     public static function transformArray(array $inputArray): array
     {
         $result = [];

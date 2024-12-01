@@ -56,6 +56,10 @@ class BackupResultParser extends OutputParser
         return $backupResultEntity;
     }
 
+    /**
+     * @param string $input
+     * @return array<mixed>
+     */
     protected static function getResultFromTextOutput(string $input): array
     {
         $result = array();

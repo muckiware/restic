@@ -43,20 +43,28 @@ class CommandParameterConfiguration
         return $commandEntity;
     }
 
+    /**
+     * @throws \Exception
+     * @return array<mixed>
+     */
     public function readCommandParameterConfigurationFile(): array
     {
+        $dataArray = array();
         $filePath = __DIR__ . '/'.Defaults::DEFAULT_COMMAND_PARAMETER_CONFIGURATION;
         if (!file_exists($filePath)) {
             throw new \Exception(Defaults::DEFAULT_COMMAND_PARAMETER_CONFIGURATION.' not found: '.$filePath);
         }
 
         $jsonContent = file_get_contents($filePath);
-        $dataArray = json_decode($jsonContent);
+        if($jsonContent) {
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \Exception(
-                'Problem to read '.Defaults::DEFAULT_COMMAND_PARAMETER_CONFIGURATION.': ' . json_last_error_msg()
-            );
+            $dataArray = json_decode($jsonContent);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new \Exception(
+                    'Problem to read '.Defaults::DEFAULT_COMMAND_PARAMETER_CONFIGURATION.': ' . json_last_error_msg()
+                );
+            }
         }
 
         return $dataArray;
