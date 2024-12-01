@@ -18,14 +18,13 @@ use MuckiRestic\Entity\ParameterEntity;
 use MuckiRestic\Exception\InvalidConfigurationException;
 class CommandParameterConfiguration
 {
-
     /**
      * @throws \Exception
      */
-    public static function getCommandParameterConfigurationByCommand(string $inputCommand): ?CommandEntity
+    public function getCommandParameterConfigurationByCommand(string $inputCommand): ?CommandEntity
     {
         $commandEntity = null;
-        foreach (self::readCommandParameterConfigurationFile() as $configCommand) {
+        foreach ($this->readCommandParameterConfigurationFile() as $configCommand) {
 
             if($configCommand->command === $inputCommand) {
 
@@ -44,7 +43,7 @@ class CommandParameterConfiguration
         return $commandEntity;
     }
 
-    public static function readCommandParameterConfigurationFile(): array
+    public function readCommandParameterConfigurationFile(): array
     {
         $filePath = __DIR__ . '/'.Defaults::DEFAULT_COMMAND_PARAMETER_CONFIGURATION;
         if (!file_exists($filePath)) {

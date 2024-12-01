@@ -30,6 +30,11 @@ abstract class Configuration extends Client
         $this->resticBinaryPath = $path;
     }
 
+    public function getBinaryPath(): string
+    {
+        return $this->resticBinaryPath;
+    }
+
     public function setRepositoryPath(string $path): void
     {
         $this->repositoryPath = $path;
@@ -65,7 +70,8 @@ abstract class Configuration extends Client
      */
     public function checkInputParametersByCommand(string $inputCommand): bool
     {
-        $commandParameterConfiguration = CommandParameterConfiguration::getCommandParameterConfigurationByCommand(
+        $commandConfig = new CommandParameterConfiguration();
+        $commandParameterConfiguration = $commandConfig->getCommandParameterConfigurationByCommand(
             $inputCommand
         );
 
