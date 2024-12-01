@@ -1,5 +1,5 @@
 # muckiware/restic
-PHP client for restic backup tool
+PHP client for restic backup tool. This library provides a simple way to create and manage backups with restic. It uses repositories as storage for backups.
 
 # Requirements
 - PHP 8.1 or higher
@@ -59,7 +59,34 @@ class BackupService
             $backupClient->setRepositoryPath('./testRep');
             $backupClient->setBackupPath('/var/www/html/test');
             
-            echo $backupClient->createBackupStrResults();
+            echo $backupClient->createBackup(true);
+        
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+}
+```
+
+## Check a backup
+### Example
+```php
+<?php declare(strict_types=1);
+
+use MuckiRestic\Library\Backup;
+
+class BackupService
+{
+    public function createBackup(): void
+    {
+        try {
+        
+            $backupClient = Backup::create();
+            $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
+            $backupClient->setRepositoryPassword('1234');
+            $backupClient->setRepositoryPath('./testRep');
+            
+            echo $backupClient->checkBackup(true);
         
         } catch (\Exception $e) {
             echo $e->getMessage();
