@@ -2,3 +2,4 @@
 /vendor/
 /.ddev/
 /.phpunit.result.cache
+/var/cache/
