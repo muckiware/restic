@@ -12,8 +12,10 @@
 namespace MuckiRestic\Library;
 
 use MuckiRestic\ResultParser\BackupResultParser;
+use MuckiRestic\ResultParser\CheckResultParser;
 use MuckiRestic\Exception\InvalidConfigurationException;
 use MuckiRestic\Entity\Result\BackupResultEntity;
+use MuckiRestic\Entity\Result\CheckResultEntity;
 use MuckiRestic\Core\Commands;
 
 class Backup extends Configuration
@@ -49,7 +51,29 @@ class Backup extends Configuration
             if($stringOutput) {
                 return $process->getOutput();
             } else {
-                return BackupResultParser::textParserBackupResult($process->getOutput());
+                return BackupResultParser::textParserResult($process->getOutput());
+            }
+
+        } else {
+            throw new InvalidConfigurationException('Invalid configuration');
+        }
+    }
+
+    /**
+     * @throws InvalidConfigurationException
+     * @throws \Exception
+     */
+    public function checkBackup(bool $stringOutput=false): CheckResultEntity|string
+    {
+        if($this->checkInputParametersByCommand(Commands::CHECK)) {
+
+            $process = $this->createProcess(Commands::CHECK);
+            $process->run();
+
+            if($stringOutput) {
+                return $process->getOutput();
+            } else {
+                return CheckResultParser::textParserResult($process->getOutput());
             }
 
         } else {

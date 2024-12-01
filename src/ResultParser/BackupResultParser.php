@@ -17,7 +17,7 @@ use MuckiRestic\Entity\Result\FilesDirsResultEntity;
 
 class BackupResultParser extends OutputParser
 {
-    public static function textParserBackupResult(string $input): BackupResultEntity
+    public static function textParserResult(string $input): BackupResultEntity
     {
         $result = self::getResultFromTextOutput($input);
 

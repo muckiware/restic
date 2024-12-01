@@ -67,4 +67,22 @@ class Commands extends Command
 
         return Command::SUCCESS;
     }
+
+    public function checkBackup(OutputInterface $output): int
+    {
+        try {
+
+            $backupClient = Backup::create();
+            $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
+            $backupClient->setRepositoryPassword('1234');
+            $backupClient->setRepositoryPath('./testRep');
+            $output->writeln(sprintf('Check backup: %s', $backupClient->checkBackup(true)));
+
+        } catch (\Exception $e) {
+            $output->writeln(sprintf('Error: %s', $e->getMessage()));
+            return Command::FAILURE;
+        }
+
+        return Command::SUCCESS;
+    }
 }

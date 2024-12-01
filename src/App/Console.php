@@ -64,6 +64,9 @@ class Console extends Commands
                 case ResticCommands::BACKUP->value:
                     $result = $this->createBackup($output);
                     break;
+                case ResticCommands::CHECK->value:
+                    $result = $this->checkBackup($output);
+                    break;
                 default:
                     throw new InvalidArgumentException(sprintf('Invalid option %s', $optionKey));
             }

@@ -45,5 +45,26 @@
         "required": true
       }
     ]
+  },
+  {
+    "command": "Check",
+    "description": "Check repository",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPath",
+        "type": "string",
+        "required": true
+      }
+    ]
   }
 ]

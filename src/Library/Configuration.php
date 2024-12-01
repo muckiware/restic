@@ -116,8 +116,16 @@ abstract class Configuration extends Client
                     $this->repositoryPath
                 );
                 break;
+            case 'Check':
+                $commandString = sprintf(
+                    'export RESTIC_PASSWORD="%s"'."\n".'export RESTIC_REPOSITORY="%s"'."\n".'%s check',
+                    $this->repositoryPassword,
+                    $this->repositoryPath,
+                    $this->resticBinaryPath
+                );
+                break;
             default:
-                throw new InvalidConfigurationException('Invalid command '.$command->value);
+                throw new InvalidConfigurationException('Invalid command for to create restic command'.$command->value);
         }
 
         return $commandString;
