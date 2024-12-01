@@ -10,9 +10,13 @@ use MuckiRestic\Test\TestData;
 use MuckiRestic\Entity\CommandEntity;
 use MuckiRestic\Entity\ParameterEntity;
 use MuckiRestic\Exception\InvalidConfigurationException;
+use MuckiRestic\Core\Commands;
 
 class ConfigurationBackupTest extends TestCase
 {
+    /**
+     * @throws \Exception
+     */
     public function testCheckInputParametersByCommand(): void
     {
         $commandConfigMock = $this->createMock(CommandParameterConfiguration::class);
@@ -25,10 +29,13 @@ class ConfigurationBackupTest extends TestCase
         $configuration->setRepositoryPath('/var/repository');
         $configuration->setBackupPath('/var/backup');
 
-        $result = $configuration->checkInputParametersByCommand('Backup');
+        $result = $configuration->checkInputParametersByCommand(Commands::BACKUP);
         $this->assertTrue($result, 'Check input parameters by command Backup should return true');
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testCheckInputParametersByCommandMissingPassword(): void
     {
         $this->expectException(InvalidConfigurationException::class);
@@ -45,10 +52,13 @@ class ConfigurationBackupTest extends TestCase
         $configuration->setRepositoryPath('/var/repository');
         $configuration->setBackupPath('/var/backup');
 
-        $result = $configuration->checkInputParametersByCommand('Backup');
+        $result = $configuration->checkInputParametersByCommand(Commands::BACKUP);
         $this->assertTrue(true);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testCheckInputParametersByCommandMissingRepositoryPath(): void
     {
         $this->expectException(InvalidConfigurationException::class);
@@ -58,14 +68,14 @@ class ConfigurationBackupTest extends TestCase
 
         $commandConfigMock = $this->createMock(CommandParameterConfiguration::class);
         $commandConfigMock->method('getCommandParameterConfigurationByCommand')
-            ->with('Backup')
+            ->with(Commands::BACKUP)
             ->willReturn($this->getCommandEntityParameters());
 
         $configuration = $this->getMockForAbstractClass(Configuration::class);
         $configuration->setRepositoryPassword('password');
         $configuration->setBackupPath('/var/backup');
 
-        $result = $configuration->checkInputParametersByCommand('Backup');
+        $result = $configuration->checkInputParametersByCommand(Commands::BACKUP);
         $this->assertTrue(true);
     }
 
@@ -78,14 +88,14 @@ class ConfigurationBackupTest extends TestCase
 
         $commandConfigMock = $this->createMock(CommandParameterConfiguration::class);
         $commandConfigMock->method('getCommandParameterConfigurationByCommand')
-            ->with('Backup')
+            ->with(Commands::BACKUP)
             ->willReturn($this->getCommandEntityParameters());
 
         $configuration = $this->getMockForAbstractClass(Configuration::class);
         $configuration->setRepositoryPassword('password');
         $configuration->setRepositoryPath('/var/repository');
 
-        $result = $configuration->checkInputParametersByCommand('Backup');
+        $result = $configuration->checkInputParametersByCommand(Commands::BACKUP);
         $this->assertTrue(true);
     }
 

@@ -10,6 +10,7 @@ use MuckiRestic\Test\TestData;
 use MuckiRestic\Entity\CommandEntity;
 use MuckiRestic\Entity\ParameterEntity;
 use MuckiRestic\Exception\InvalidConfigurationException;
+use MuckiRestic\Core\Commands;
 
 class ConfigurationTest extends TestCase
 {
@@ -33,14 +34,14 @@ class ConfigurationTest extends TestCase
         $invalidCommand = 'TestCommand';
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage(
-            'Invalid command '.$invalidCommand
+            'Invalid command '.Commands::TEST_COMMAND->value
         );
         $configuration = $this->getMockForAbstractClass(Configuration::class);
         $configuration->setRepositoryPassword('password');
         $configuration->setRepositoryPath('/var/repository');
         $configuration->setBackupPath('/var/backup');
 
-        $result = $configuration->checkInputParametersByCommand($invalidCommand);
+        $result = $configuration->checkInputParametersByCommand(Commands::TEST_COMMAND);
         $this->assertTrue($result, 'Check input parameters by command Backup should return true');
     }
 

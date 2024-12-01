@@ -11,9 +11,12 @@
  */
 namespace MuckiRestic\Library;
 
+use Symfony\Component\Process\Process;
+
 use MuckiRestic\Client;
 use MuckiRestic\Core\CommandParameterConfiguration;
 use MuckiRestic\Exception\InvalidConfigurationException;
+use MuckiRestic\Core\Commands;
 
 abstract class Configuration extends Client
 {
@@ -68,15 +71,15 @@ abstract class Configuration extends Client
     /**
      * @throws \Exception
      */
-    public function checkInputParametersByCommand(string $inputCommand): bool
+    public function checkInputParametersByCommand(Commands $commands): bool
     {
         $commandConfig = new CommandParameterConfiguration();
         $commandParameterConfiguration = $commandConfig->getCommandParameterConfigurationByCommand(
-            $inputCommand
+            $commands
         );
 
         if($commandParameterConfiguration === null) {
-            throw new InvalidConfigurationException('Invalid command '.$inputCommand);
+            throw new InvalidConfigurationException('Invalid command '.$commands->value);
         }
 
         foreach ($commandParameterConfiguration->getParameters() as $parameter) {
@@ -87,5 +90,41 @@ abstract class Configuration extends Client
         }
 
         return true;
+    }
+
+    /**
+     * @throws InvalidConfigurationException
+     */
+    public function getCommandStringByCommand(Commands $command): string
+    {
+        switch ($command->value) {
+
+            case 'Init':
+                $commandString = sprintf(
+                    'export RESTIC_PASSWORD="%s"'."\n".'%s init --repo %s',
+                    $this->repositoryPassword,
+                    $this->resticBinaryPath,
+                    $this->repositoryPath
+                );
+                break;
+            case 'Backup':
+                $commandString = sprintf(
+                    'export RESTIC_PASSWORD="%s"'."\n".'export RESTIC_REPOSITORY="%s"'."\n".'%s backup %s',
+                    $this->repositoryPassword,
+                    $this->repositoryPath,
+                    $this->resticBinaryPath,
+                    $this->repositoryPath
+                );
+                break;
+            default:
+                throw new InvalidConfigurationException('Invalid command '.$command->value);
+        }
+
+        return $commandString;
+    }
+
+    public function createProcess(Commands $commands): Process
+    {
+        return $this->getProcess($this->getCommandStringByCommand($commands));
     }
 }

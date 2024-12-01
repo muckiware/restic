@@ -10,22 +10,22 @@ use MuckiRestic\Test\TestData;
 use MuckiRestic\Entity\CommandEntity;
 use MuckiRestic\Entity\ParameterEntity;
 use MuckiRestic\Exception\InvalidConfigurationException;
+use MuckiRestic\Core\Commands;
 
 class ConfigurationInitTest extends TestCase
 {
-    const COMMAND = 'Init';
     public function testCheckInputParametersByCommand(): void
     {
         $commandConfigMock = $this->createMock(CommandParameterConfiguration::class);
         $commandConfigMock->method('getCommandParameterConfigurationByCommand')
-            ->with($this::COMMAND)
+            ->with(Commands::INIT)
             ->willReturn($this->getCommandEntityParameters());
 
         $configuration = $this->getMockForAbstractClass(Configuration::class);
         $configuration->setRepositoryPassword('password');
         $configuration->setRepositoryPath('/var/repository');
 
-        $result = $configuration->checkInputParametersByCommand($this::COMMAND);
+        $result = $configuration->checkInputParametersByCommand(Commands::INIT);
         $this->assertTrue($result, 'Check input parameters by command Backup should return true');
     }
 
@@ -38,13 +38,13 @@ class ConfigurationInitTest extends TestCase
 
         $commandConfigMock = $this->createMock(CommandParameterConfiguration::class);
         $commandConfigMock->method('getCommandParameterConfigurationByCommand')
-            ->with($this::COMMAND)
+            ->with(Commands::INIT)
             ->willReturn($this->getCommandEntityParameters());
 
         $configuration = $this->getMockForAbstractClass(Configuration::class);
         $configuration->setRepositoryPath('/var/repository');
 
-        $result = $configuration->checkInputParametersByCommand($this::COMMAND);
+        $result = $configuration->checkInputParametersByCommand(Commands::INIT);
         $this->assertTrue(true);
     }
 
@@ -57,13 +57,13 @@ class ConfigurationInitTest extends TestCase
 
         $commandConfigMock = $this->createMock(CommandParameterConfiguration::class);
         $commandConfigMock->method('getCommandParameterConfigurationByCommand')
-            ->with($this::COMMAND)
+            ->with(Commands::INIT)
             ->willReturn($this->getCommandEntityParameters());
 
         $configuration = $this->getMockForAbstractClass(Configuration::class);
         $configuration->setRepositoryPassword('password');
 
-        $result = $configuration->checkInputParametersByCommand($this::COMMAND);
+        $result = $configuration->checkInputParametersByCommand(Commands::INIT);
         $this->assertTrue(true);
     }
 

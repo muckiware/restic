@@ -16,17 +16,19 @@ use MuckiRestic\Core\Defaults;
 use MuckiRestic\Entity\CommandEntity;
 use MuckiRestic\Entity\ParameterEntity;
 use MuckiRestic\Exception\InvalidConfigurationException;
+use MuckiRestic\Core\Commands;
+
 class CommandParameterConfiguration
 {
     /**
      * @throws \Exception
      */
-    public function getCommandParameterConfigurationByCommand(string $inputCommand): ?CommandEntity
+    public function getCommandParameterConfigurationByCommand(Commands $commands): ?CommandEntity
     {
         $commandEntity = null;
         foreach ($this->readCommandParameterConfigurationFile() as $configCommand) {
 
-            if($configCommand->command === $inputCommand) {
+            if($configCommand->command === $commands->value) {
 
                 $commandParameters = $configCommand->parameters;
                 unset($configCommand->parameters);
