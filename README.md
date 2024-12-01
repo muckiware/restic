@@ -67,3 +67,12 @@ class BackupService
     }
 }
 ```
+
+# Testing
+Run phpunit tests
+```shell
+./vendor/bin/phpunit --configuration=phpunit.xml
+```
+
+# License
+MIT License (MIT). Please see LICENSE File for more information.
