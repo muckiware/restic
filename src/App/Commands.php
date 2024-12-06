@@ -39,7 +39,11 @@ class Commands extends Command
             $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
             $backupClient->setRepositoryPassword('1234');
             $backupClient->setRepositoryPath('./testRep');
-            $output->writeln(sprintf('Create repository: %s', $backupClient->createRepository()));
+
+            $result = $backupClient->createRepository(true, true);
+            if(is_string($result)) {
+                $output->writeln(sprintf('Create repository: %s', $result));
+            }
 
         } catch (\Exception $e) {
             $output->writeln(sprintf('Error: %s', $e->getMessage()));
@@ -58,7 +62,10 @@ class Commands extends Command
             $backupClient->setRepositoryPassword('1234');
             $backupClient->setRepositoryPath('./testRep');
             $backupClient->setBackupPath('/var/www/html/test');
-            $output->writeln(sprintf('Create backup: %s', $backupClient->createBackup(true)));
+            $result = $backupClient->createBackup(true);
+            if(is_string($result)) {
+                $output->writeln(sprintf('Create backup: %s', $result));
+            }
 
         } catch (\Exception $e) {
             $output->writeln(sprintf('Error: %s', $e->getMessage()));
@@ -76,7 +83,10 @@ class Commands extends Command
             $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
             $backupClient->setRepositoryPassword('1234');
             $backupClient->setRepositoryPath('./testRep');
-            $output->writeln(sprintf('Check backup: %s', $backupClient->checkBackup(true)));
+            $result = $backupClient->createBackup(true);
+            if(is_string($result)) {
+                $output->writeln(sprintf('Create backup: %s', $result));
+            }
 
         } catch (\Exception $e) {
             $output->writeln(sprintf('Error: %s', $e->getMessage()));

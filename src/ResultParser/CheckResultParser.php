@@ -11,15 +11,15 @@
  */
 namespace MuckiRestic\ResultParser;
 
-use MuckiRestic\Entity\Result\CheckResultEntity;
+use MuckiRestic\Entity\Result\ResultEntity;
 
 class CheckResultParser extends OutputParser
 {
-    public static function textParserResult(string $input): CheckResultEntity
+    public static function textParserResult(string $input): ResultEntity
     {
         $results = self::getResultFromTextOutput($input);
 
-        $checkResultEntity = new CheckResultEntity();
+        $checkResultEntity = new ResultEntity();
         foreach ($results['processed'] as $result) {
             $checkResultEntity->addProcessed($result);
         }

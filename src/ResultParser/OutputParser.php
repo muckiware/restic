@@ -2,12 +2,11 @@
 
 namespace MuckiRestic\ResultParser;
 
-use MuckiRestic\Entity\Result\BackupResultEntity;
-use MuckiRestic\Entity\Result\checkResultEntity;
+use MuckiRestic\Entity\Result\ResultEntity;
 
 abstract class OutputParser
 {
-    abstract public static function textParserResult(string $input): BackupResultEntity|CheckResultEntity;
+    abstract public static function textParserResult(string $input): ResultEntity;
 
     /**
      * @param array<mixed> $inputArray

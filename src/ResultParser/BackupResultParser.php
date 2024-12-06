@@ -11,17 +11,17 @@
  */
 namespace MuckiRestic\ResultParser;
 
-use MuckiRestic\Entity\Result\BackupResultEntity;
+use MuckiRestic\Entity\Result\ResultEntity;
 use MuckiRestic\Entity\Result\SnapshotsResultEntity;
 use MuckiRestic\Entity\Result\FilesDirsResultEntity;
 
 class BackupResultParser extends OutputParser
 {
-    public static function textParserResult(string $input): BackupResultEntity
+    public static function textParserResult(string $input): ResultEntity
     {
         $result = self::getResultFromTextOutput($input);
 
-        $backupResultEntity = new BackupResultEntity();
+        $backupResultEntity = new ResultEntity();
 
         if($result && array_key_exists('snapshots', $result)) {
 
