@@ -3,3 +3,4 @@
 /.ddev/
 /.phpunit.result.cache
 /var/cache/
+/var/testRep/
