@@ -25,7 +25,7 @@ class Backup extends Configuration
      * @throws InvalidConfigurationException
      * @throws \Exception
      */
-    public function createRepository(bool $overwrite=false, bool $stringOutput=false): ResultEntity|string
+    public function createRepository(bool $overwrite=false): ResultEntity
     {
         if($this->checkInputParametersByCommand(Commands::INIT)) {
 
@@ -36,18 +36,16 @@ class Backup extends Configuration
             $process = $this->createProcess(Commands::INIT);
             $process->run();
 
-            if($stringOutput) {
-                return $process->getOutput();
-            } else {
-                $resultEntity = InitResultParser::textParserResult($process->getOutput());
-                $resultEntity->setCommandLine($process->getCommandLine());
-                $resultEntity->setStatus($process->getStatus());
-                $resultEntity->setStartTime($process->getStartTime());
-                $resultEntity->setEndTime($process->getLastOutputTime());
-                $resultEntity->setDuration();
+            $initResult = InitResultParser::textParserResult($process->getOutput());
+            $initResult->setCommandLine($process->getCommandLine());
+            $initResult->setStatus($process->getStatus());
+            $initResult->setStartTime($process->getStartTime());
+            $initResult->setEndTime($process->getLastOutputTime());
+            $initResult->setDuration();
+            $initResult->setOutput($process->getOutput());
 
-                return $resultEntity;
-            }
+            return $initResult;
+
         }
 
         throw new InvalidConfigurationException('Invalid configuration');
@@ -57,18 +55,22 @@ class Backup extends Configuration
      * @throws InvalidConfigurationException
      * @throws \Exception
      */
-    public function createBackup(bool $stringOutput=false): ResultEntity|string
+    public function createBackup(): ResultEntity
     {
         if($this->checkInputParametersByCommand(Commands::BACKUP)) {
 
             $process = $this->createProcess(Commands::BACKUP);
             $process->run();
 
-            if($stringOutput) {
-                return $process->getOutput();
-            } else {
-                return BackupResultParser::textParserResult($process->getOutput());
-            }
+            $backupResult = BackupResultParser::textParserResult($process->getOutput());
+            $backupResult->setCommandLine($process->getCommandLine());
+            $backupResult->setStatus($process->getStatus());
+            $backupResult->setStartTime($process->getStartTime());
+            $backupResult->setEndTime($process->getLastOutputTime());
+            $backupResult->setDuration();
+            $backupResult->setOutput($process->getOutput());
+
+            return $backupResult;
 
         } else {
             throw new InvalidConfigurationException('Invalid configuration');
@@ -79,18 +81,22 @@ class Backup extends Configuration
      * @throws InvalidConfigurationException
      * @throws \Exception
      */
-    public function checkBackup(bool $stringOutput=false): ResultEntity|string
+    public function checkBackup(): ResultEntity
     {
         if($this->checkInputParametersByCommand(Commands::CHECK)) {
 
             $process = $this->createProcess(Commands::CHECK);
             $process->run();
 
-            if($stringOutput) {
-                return $process->getOutput();
-            } else {
-                return CheckResultParser::textParserResult($process->getOutput());
-            }
+            $checkResult = CheckResultParser::textParserResult($process->getOutput());
+            $checkResult->setCommandLine($process->getCommandLine());
+            $checkResult->setStatus($process->getStatus());
+            $checkResult->setStartTime($process->getStartTime());
+            $checkResult->setEndTime($process->getLastOutputTime());
+            $checkResult->setDuration();
+            $checkResult->setOutput($process->getOutput());
+
+            return $checkResult;
 
         } else {
             throw new InvalidConfigurationException('Invalid configuration');

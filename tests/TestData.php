@@ -4,6 +4,15 @@ namespace MuckiRestic\Test;
 
 class TestData
 {
+    public const RESTIC_TEST_PATH = './bin/restic_0.17.3_linux_386';
+    public const REPOSITORY_TEST_PATH = './var/testRep';
+    public const BACKUP_TEST_PATH = './var/testBackup';
+    public const REPOSITORY_TEST_PASSWORD = '12345%ASDEee';
+    public const BACKUP_TEST_FILES = [
+        'TEST file content 1',
+        'TEST file content 2',
+        'TEST file content 3'
+    ];
 
     public const PARAMETER_CONFIG_BACKUP = array(
 

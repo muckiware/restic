@@ -26,7 +26,9 @@ class InitResultParser extends OutputParser
         if($result && array_key_exists('snapshots', $result)) {
 
             $snapshotsResultEntity = new SnapshotsResultEntity();
-            $snapshotsResultEntity->setNew($result['snapshots']['new']);
+            if(array_key_exists('new', $result['snapshots'])) {
+                $snapshotsResultEntity->setNew($result['snapshots']['new']);
+            }
             $initResultEntity->setSnapshots($snapshotsResultEntity);
         }
 

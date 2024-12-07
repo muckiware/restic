@@ -4,3 +4,4 @@
 /.phpunit.result.cache
 /var/cache/
 /var/testRep/
+/var/testBackup/

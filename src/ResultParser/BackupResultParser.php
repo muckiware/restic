@@ -26,8 +26,12 @@ class BackupResultParser extends OutputParser
         if($result && array_key_exists('snapshots', $result)) {
 
             $snapshotsResultEntity = new SnapshotsResultEntity();
-            $snapshotsResultEntity->setOld($result['snapshots']['old']);
-            $snapshotsResultEntity->setNew($result['snapshots']['new']);
+            if(array_key_exists('old', $result['snapshots'])) {
+                $snapshotsResultEntity->setOld($result['snapshots']['old']);
+            }
+            if(array_key_exists('new', $result['snapshots'])) {
+                $snapshotsResultEntity->setNew($result['snapshots']['new']);
+            }
             $backupResultEntity->setSnapshots($snapshotsResultEntity);
         }
 

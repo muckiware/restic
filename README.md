@@ -28,10 +28,10 @@ class BackupService
         try {
         
             $backupClient = Backup::create();
-            $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
+            $backupClient->setBinaryPath('./bin/restic_0.17.3_linux_386');
             $backupClient->setRepositoryPassword('1234');
             $backupClient->setRepositoryPath('./Repository');
-            $backupClient->createRepository();
+            $backupClient->createRepository()->getOutput();
         
         } catch (\Exception $e) {
             echo $e->getMessage();
@@ -54,12 +54,12 @@ class BackupService
         try {
         
             $backupClient = Backup::create();
-            $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386'); //optional
+            $backupClient->setBinaryPath('./bin/restic_0.17.3_linux_386'); //optional
             $backupClient->setRepositoryPassword('1234');
             $backupClient->setRepositoryPath('./testRep');
-            $backupClient->setBackupPath('/var/www/html/test');
+            $backupClient->setBackupPath('./test');
             
-            echo $backupClient->createBackup(true);
+            echo $backupClient->createBackup()->getOutput();
         
         } catch (\Exception $e) {
             echo $e->getMessage();
@@ -82,11 +82,11 @@ class BackupService
         try {
         
             $backupClient = Backup::create();
-            $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
+            $backupClient->setBinaryPath('./bin/restic_0.17.3_linux_386');
             $backupClient->setRepositoryPassword('1234');
             $backupClient->setRepositoryPath('./testRep');
             
-            echo $backupClient->checkBackup(true);
+            echo $backupClient->checkBackup()->getOutput();
         
         } catch (\Exception $e) {
             echo $e->getMessage();

@@ -32,6 +32,8 @@ class ResultEntity extends DataSet
     protected ?float $startTime;
     protected ?float $endTime;
 
+    protected ?string $output;
+
     public function getSnapshots(): ?SnapshotsResultEntity
     {
         return $this->snapshots;
@@ -137,5 +139,15 @@ class ResultEntity extends DataSet
         if($this->startTime && $this->endTime) {
             $this->duration = $this->endTime - $this->startTime;
         }
+    }
+
+    public function getOutput(): ?string
+    {
+        return $this->output;
+    }
+
+    public function setOutput(?string $output): void
+    {
+        $this->output = $output;
     }
 }

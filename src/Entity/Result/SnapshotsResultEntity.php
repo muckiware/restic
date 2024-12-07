@@ -13,10 +13,10 @@ namespace MuckiRestic\Entity\Result;
 
 class SnapshotsResultEntity
 {
-    protected string $old;
-    protected string $new;
+    protected ?string $old;
+    protected ?string $new;
 
-    public function getOld(): string
+    public function getOld(): ?string
     {
         return $this->old;
     }
@@ -26,7 +26,7 @@ class SnapshotsResultEntity
         $this->old = $old;
     }
 
-    public function getNew(): string
+    public function getNew(): ?string
     {
         return $this->new;
     }

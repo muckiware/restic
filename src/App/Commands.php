@@ -40,7 +40,7 @@ class Commands extends Command
             $backupClient->setRepositoryPassword('1234');
             $backupClient->setRepositoryPath('./testRep');
 
-            $result = $backupClient->createRepository(true, true);
+            $result = $backupClient->createRepository(true)->getOutput();
             if(is_string($result)) {
                 $output->writeln(sprintf('Create repository: %s', $result));
             }
@@ -62,7 +62,7 @@ class Commands extends Command
             $backupClient->setRepositoryPassword('1234');
             $backupClient->setRepositoryPath('./testRep');
             $backupClient->setBackupPath('/var/www/html/test');
-            $result = $backupClient->createBackup(true);
+            $result = $backupClient->createBackup()->getOutput();
             if(is_string($result)) {
                 $output->writeln(sprintf('Create backup: %s', $result));
             }
@@ -83,7 +83,7 @@ class Commands extends Command
             $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
             $backupClient->setRepositoryPassword('1234');
             $backupClient->setRepositoryPath('./testRep');
-            $result = $backupClient->createBackup(true);
+            $result = $backupClient->createBackup()->getOutput();
             if(is_string($result)) {
                 $output->writeln(sprintf('Create backup: %s', $result));
             }
