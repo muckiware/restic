@@ -1,8 +1,43 @@
-<?php
-
+<?php declare(strict_types=1);
+/**
+ * MuckiRestic
+ *
+ * @category   Library
+ * @package    MuckiRestic
+ * @copyright  Copyright (c) 2024 by Muckiware
+ * @license    MIT
+ * @author     Muckiware
+ *
+ */
 namespace MuckiRestic\Library;
 
-class Manage
-{
+use MuckiRestic\ResultParser\CheckResultParser;
+use MuckiRestic\Exception\InvalidConfigurationException;
+use MuckiRestic\Entity\Result\ResultEntity;
+use MuckiRestic\Core\Commands;
+use MuckiRestic\Service\Helper;
 
+class Manage extends Configuration
+{
+    public function checkBackup(): ResultEntity
+    {
+        if($this->checkInputParametersByCommand(Commands::LIST)) {
+
+            $process = $this->createProcess(Commands::LIST);
+            $process->run();
+
+            $checkResult = CheckResultParser::textParserResult($process->getOutput());
+            $checkResult->setCommandLine($process->getCommandLine());
+            $checkResult->setStatus($process->getStatus());
+            $checkResult->setStartTime($process->getStartTime());
+            $checkResult->setEndTime($process->getLastOutputTime());
+            $checkResult->setDuration();
+            $checkResult->setOutput($process->getOutput());
+
+            return $checkResult;
+
+        } else {
+            throw new InvalidConfigurationException('Invalid configuration');
+        }
+    }
 }

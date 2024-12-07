@@ -17,6 +17,7 @@ use MuckiRestic\Client;
 use MuckiRestic\Core\CommandParameterConfiguration;
 use MuckiRestic\Exception\InvalidConfigurationException;
 use MuckiRestic\Core\Commands;
+use MuckiRestic\Library\CommandLine\CommandLineFactory;
 
 abstract class Configuration extends Client
 {
@@ -43,7 +44,7 @@ abstract class Configuration extends Client
         $this->repositoryPath = $path;
     }
 
-    protected function getRepositoryPath(): string
+    public function getRepositoryPath(): string
     {
         return $this->repositoryPath;
     }
@@ -101,38 +102,8 @@ abstract class Configuration extends Client
      */
     public function getCommandStringByCommand(Commands $command): string
     {
-        switch ($command->value) {
-
-            case 'Init':
-                $commandString = sprintf(
-                    'export RESTIC_PASSWORD="%s"'."\n".'%s init --repo %s',
-                    $this->repositoryPassword,
-                    $this->resticBinaryPath,
-                    $this->repositoryPath
-                );
-                break;
-            case 'Backup':
-                $commandString = sprintf(
-                    'export RESTIC_PASSWORD="%s"'."\n".'export RESTIC_REPOSITORY="%s"'."\n".'%s backup %s',
-                    $this->repositoryPassword,
-                    $this->repositoryPath,
-                    $this->resticBinaryPath,
-                    $this->backupPath
-                );
-                break;
-            case 'Check':
-                $commandString = sprintf(
-                    'export RESTIC_PASSWORD="%s"'."\n".'export RESTIC_REPOSITORY="%s"'."\n".'%s check',
-                    $this->repositoryPassword,
-                    $this->repositoryPath,
-                    $this->resticBinaryPath
-                );
-                break;
-            default:
-                throw new InvalidConfigurationException('Invalid command for to create restic command'.$command->value);
-        }
-
-        return $commandString;
+        $commandLineFactory = new CommandLineFactory();
+        return $commandLineFactory->createCommandLine($this, $command);
     }
 
     /**
