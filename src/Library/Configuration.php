@@ -117,7 +117,7 @@ abstract class Configuration extends Client
                     $this->repositoryPassword,
                     $this->repositoryPath,
                     $this->resticBinaryPath,
-                    $this->repositoryPath
+                    $this->backupPath
                 );
                 break;
             case 'Check':
