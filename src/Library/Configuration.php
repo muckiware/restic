@@ -135,6 +135,9 @@ abstract class Configuration extends Client
         return $commandString;
     }
 
+    /**
+     * @throws InvalidConfigurationException
+     */
     public function createProcess(Commands $commands): Process
     {
         return $this->getProcess($this->getCommandStringByCommand($commands));

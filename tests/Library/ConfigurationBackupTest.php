@@ -99,6 +99,27 @@ class ConfigurationBackupTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testCheckInputParametersByCommandSamePaths(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage(
+            'Repository path and backup path should not be the same'
+        );
+
+        $commandConfigMock = $this->createMock(CommandParameterConfiguration::class);
+        $commandConfigMock->method('getCommandParameterConfigurationByCommand')
+            ->with(Commands::BACKUP)
+            ->willReturn($this->getCommandEntityParameters());
+
+        $configuration = $this->getMockForAbstractClass(Configuration::class);
+        $configuration->setRepositoryPassword('password');
+        $configuration->setRepositoryPath('/var/repository');
+        $configuration->setBackupPath('/var/repository');
+
+        $result = $configuration->checkInputParametersByCommand(Commands::BACKUP);
+        $this->assertTrue(true);
+    }
+
     protected function getCommandEntityParameters(): CommandEntity
     {
         $commandEntity = new CommandEntity();
