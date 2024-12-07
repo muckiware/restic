@@ -6,11 +6,13 @@ use PHPUnit\Framework\TestCase;
 
 use MuckiRestic\Test\TestData;
 use MuckiRestic\Library\Backup;
+use MuckiRestic\Library\Manage;
 use MuckiRestic\Entity\Result\ResultEntity;
 
 class IntegrationTest extends TestCase
 {
     protected Backup $backupClient;
+    protected Manage $manageClient;
     protected function setUp(): void
     {
         $this->backupClient = Backup::create();
@@ -18,6 +20,12 @@ class IntegrationTest extends TestCase
         $this->backupClient->setRepositoryPassword(TestData::REPOSITORY_TEST_PASSWORD);
         $this->backupClient->setRepositoryPath(TestData::REPOSITORY_TEST_PATH);
         $this->backupClient->setBackupPath(TestData::BACKUP_TEST_PATH);
+
+        $this->manageClient = Manage::create();
+        $this->manageClient->setBinaryPath(TestData::RESTIC_TEST_PATH);
+        $this->manageClient->setRepositoryPassword(TestData::REPOSITORY_TEST_PASSWORD);
+        $this->manageClient->setRepositoryPath(TestData::REPOSITORY_TEST_PATH);
+        $this->manageClient->setBackupPath(TestData::BACKUP_TEST_PATH);
     }
     public function testInitRepository(): void
     {
@@ -43,6 +51,16 @@ class IntegrationTest extends TestCase
     public function testCheckRepository(): void
     {
         $resultCheck = $this->backupClient->checkBackup();
+
+        $this->assertInstanceOf(ResultEntity::class, $resultCheck, 'Result should be an instance of ResultEntity');
+        $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');
+        $this->assertIsString($resultCheck->getOutput(), 'Output should be a string');
+        $this->assertIsFloat($resultCheck->getDuration(), 'Duration should be a float');
+    }
+
+    public function testGetSnapshots(): void
+    {
+        $resultCheck = $this->manageClient->getSnapshots();
 
         $this->assertInstanceOf(ResultEntity::class, $resultCheck, 'Result should be an instance of ResultEntity');
         $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');

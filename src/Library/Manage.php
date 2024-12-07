@@ -19,11 +19,11 @@ use MuckiRestic\Service\Helper;
 
 class Manage extends Configuration
 {
-    public function checkBackup(): ResultEntity
+    public function getSnapshots(): ResultEntity
     {
-        if($this->checkInputParametersByCommand(Commands::LIST)) {
+        if($this->checkInputParametersByCommand(Commands::SNAPSHOTS)) {
 
-            $process = $this->createProcess(Commands::LIST);
+            $process = $this->createProcess(Commands::SNAPSHOTS);
             $process->run();
 
             $checkResult = CheckResultParser::textParserResult($process->getOutput());

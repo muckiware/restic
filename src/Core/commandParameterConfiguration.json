@@ -22,7 +22,7 @@
   },
   {
     "command": "Backup",
-    "description": "Create a backup",
+    "description": "Create a backup into repository",
     "parameters": [
       {
         "name": "resticBinaryPath",
@@ -49,6 +49,27 @@
   {
     "command": "Check",
     "description": "Check repository",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPath",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  {
+    "command": "Snapshots",
+    "description": "Get snapshots of repository",
     "parameters": [
       {
         "name": "resticBinaryPath",
