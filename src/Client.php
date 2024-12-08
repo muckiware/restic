@@ -12,8 +12,10 @@
 namespace MuckiRestic;
 
 use Symfony\Component\Process\Process;
+use JsonMapper;
 
-use MuckiRestic\ResultParser\OutputParser;
+use MuckiRestic\Entity\Result\ResultEntity;
+use MuckiRestic\Entity\Result\ResticResponse\Version;
 
 abstract class Client
 {
@@ -31,12 +33,20 @@ abstract class Client
         return Process::fromShellCommandline($command, null, null, null, 1000);
     }
 
-    public function getResticVersion(): string
+    public function getResticVersion(): ResultEntity
     {
-        $process = $this->getProcess($this->resticBinaryPath.' version');
+        $process = $this->getProcess($this->resticBinaryPath.' version --json');
         $process->run();
 
-        return $process->getOutput();
+        $mapper = new JsonMapper();
+        $version = $mapper->map(json_decode($process->getOutput()),new Version());
+
+        $versionResultEntity = new ResultEntity();
+        $versionResultEntity->setCommandLine($process->getCommandLine());
+        $versionResultEntity->setResticResponse($version);
+        $versionResultEntity->setOutput($process->getOutput());
+
+        return $versionResultEntity;
     }
 
     abstract public function setBinaryPath(string $path): void;

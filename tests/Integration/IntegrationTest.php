@@ -96,4 +96,13 @@ class IntegrationTest extends TestCase
         $this->assertIsArray($resultCheck->getResticResponse(), 'Restic response should be an array');
         $this->assertCount(2, $resultCheck->getResticResponse(), 'Restic response should have 2 snapshots');
     }
+
+    public function testGetResticVersion(): void
+    {
+        $this->createSetup();
+        $resultVersion = $this->backupClient->getResticVersion();
+
+        $this->assertInstanceOf(ResultEntity::class, $resultVersion, 'Result should be an instance of ResultEntity');
+        $this->assertIsString($resultVersion->getOutput(), 'Output should be a string');
+    }
 }

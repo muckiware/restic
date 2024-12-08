@@ -25,9 +25,9 @@ class Commands extends Command
     public function getVersion(OutputInterface $output): int
     {
         $backupClient = Backup::create();
-        $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
+        $backupClient->setBinaryPath('./bin/restic_0.17.3_linux_386');
 
-        $output->writeln(sprintf('Binary restic version: %s', $backupClient->getResticVersion()));
+        $output->writeln(sprintf('Binary restic version: %s', $backupClient->getResticVersion()->getOutput()));
         return Command::SUCCESS;
     }
 
@@ -36,7 +36,7 @@ class Commands extends Command
         try {
 
             $backupClient = Backup::create();
-            $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
+            $backupClient->setBinaryPath('./bin/restic_0.17.3_linux_386');
             $backupClient->setRepositoryPassword('1234');
             $backupClient->setRepositoryPath('./testRep');
 
@@ -58,7 +58,7 @@ class Commands extends Command
         try {
 
             $backupClient = Backup::create();
-            $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
+            $backupClient->setBinaryPath('./bin/restic_0.17.3_linux_386');
             $backupClient->setRepositoryPassword('1234');
             $backupClient->setRepositoryPath('./testRep');
             $backupClient->setBackupPath('/var/www/html/test');
@@ -80,7 +80,7 @@ class Commands extends Command
         try {
 
             $backupClient = Backup::create();
-            $backupClient->setBinaryPath('/var/www/html/bin/restic_0.17.3_linux_386');
+            $backupClient->setBinaryPath('./bin/restic_0.17.3_linux_386');
             $backupClient->setRepositoryPassword('1234');
             $backupClient->setRepositoryPath('./testRep');
             $result = $backupClient->createBackup()->getOutput();

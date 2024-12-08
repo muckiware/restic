@@ -16,7 +16,7 @@ use MuckiRestic\Entity\Result\ResticResponse\Snapshot;
 
 class ResultEntity extends DataSet
 {
-    protected ?SnapshotsResultEntity $snapshots=null;
+    protected ?SnapshotsResultEntity $snapshots;
     protected ?FilesDirsResultEntity $files;
     protected ?FilesDirsResultEntity $directories;
 
@@ -36,9 +36,9 @@ class ResultEntity extends DataSet
     protected ?string $output;
 
     /**
-     * @var array<Snapshot>|null
+     * @var mixed
      */
-    protected ?array $resticResponse;
+    protected mixed $resticResponse;
 
     public function getSnapshots(): ?SnapshotsResultEntity
     {
@@ -158,17 +158,17 @@ class ResultEntity extends DataSet
     }
 
     /**
-     * @return array<mixed>|null
+     * @return mixed
      */
-    public function getResticResponse(): ?array
+    public function getResticResponse(): mixed
     {
         return $this->resticResponse;
     }
 
     /**
-     * @param array<mixed> $resticResponse
+     * @param mixed $resticResponse
      */
-    public function setResticResponse(array $resticResponse): void
+    public function setResticResponse(mixed $resticResponse): void
     {
         $this->resticResponse = $resticResponse;
     }
