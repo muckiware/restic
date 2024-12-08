@@ -12,6 +12,7 @@
 namespace MuckiRestic\Entity\Result;
 
 use MuckiRestic\Entity\DataSet;
+use MuckiRestic\Entity\Result\ResticResponse\Snapshot;
 
 class ResultEntity extends DataSet
 {
@@ -33,6 +34,11 @@ class ResultEntity extends DataSet
     protected ?float $endTime;
 
     protected ?string $output;
+
+    /**
+     * @var array<Snapshot>|null
+     */
+    protected ?array $resticResponse;
 
     public function getSnapshots(): ?SnapshotsResultEntity
     {
@@ -149,5 +155,21 @@ class ResultEntity extends DataSet
     public function setOutput(?string $output): void
     {
         $this->output = $output;
+    }
+
+    /**
+     * @return array<mixed>|null
+     */
+    public function getResticResponse(): ?array
+    {
+        return $this->resticResponse;
+    }
+
+    /**
+     * @param array<mixed> $resticResponse
+     */
+    public function setResticResponse(array $resticResponse): void
+    {
+        $this->resticResponse = $resticResponse;
     }
 }

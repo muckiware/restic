@@ -17,7 +17,10 @@ class TestData
     public const NEXT_BACKUP_TEST_FILES = [
         'TEST file content 4',
         'TEST file content 5',
-        'TEST file content 6'
+        'TEST file content 6',
+        'TEST file content 7',
+        'TEST file content 8',
+        'TEST file content 9'
     ];
 
     public const PARAMETER_CONFIG_BACKUP = array(

@@ -19,7 +19,7 @@ abstract class Snapshots implements CommandLineInterface
     public static function getCommandLine(Configuration $configuration): string
     {
         return sprintf(
-            'export RESTIC_PASSWORD="%s"'."\n".'%s --repo %s snapshots',
+            'export RESTIC_PASSWORD="%s"'."\n".'%s --repo %s snapshots --json',
             $configuration->getRepositoryPassword(),
             $configuration->getBinaryPath(),
             $configuration->getRepositoryPath()
