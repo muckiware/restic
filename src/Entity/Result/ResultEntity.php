@@ -15,14 +15,14 @@ use MuckiRestic\Entity\DataSet;
 
 class ResultEntity extends DataSet
 {
-    protected ?SnapshotsResultEntity $snapshots;
+    protected ?SnapshotsResultEntity $snapshots=null;
     protected ?FilesDirsResultEntity $files;
     protected ?FilesDirsResultEntity $directories;
 
     /**
      * @var array<mixed>|null
      */
-    protected ?array $processed;
+    protected ?array $processed = [];
 
     protected ?string $commandLine;
 

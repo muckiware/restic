@@ -25,6 +25,7 @@ class Manage extends Configuration
 
             $process = $this->createProcess(Commands::SNAPSHOTS);
             $process->run();
+//            $json = json_decode($process->getOutput(), true);
 
             $checkResult = CheckResultParser::textParserResult($process->getOutput());
             $checkResult->setCommandLine($process->getCommandLine());

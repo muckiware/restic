@@ -13,8 +13,8 @@ namespace MuckiRestic\Entity\Result;
 
 class SnapshotsResultEntity
 {
-    protected ?string $old;
-    protected ?string $new;
+    protected ?string $old = null;
+    protected ?string $new = null;
 
     public function getOld(): ?string
     {

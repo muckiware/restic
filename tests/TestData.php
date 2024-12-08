@@ -14,6 +14,12 @@ class TestData
         'TEST file content 3'
     ];
 
+    public const NEXT_BACKUP_TEST_FILES = [
+        'TEST file content 4',
+        'TEST file content 5',
+        'TEST file content 6'
+    ];
+
     public const PARAMETER_CONFIG_BACKUP = array(
 
         "parameters" => [
