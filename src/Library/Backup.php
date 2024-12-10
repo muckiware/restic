@@ -18,6 +18,7 @@ use MuckiRestic\Exception\InvalidConfigurationException;
 use MuckiRestic\Entity\Result\ResultEntity;
 use MuckiRestic\Core\Commands;
 use MuckiRestic\Service\Helper;
+use MuckiRestic\Service\Json;
 
 class Backup extends Configuration
 {
@@ -62,6 +63,8 @@ class Backup extends Configuration
             $process = $this->createProcess(Commands::BACKUP);
             $process->run();
 
+            $backupOutput = Json::decode(BackupResultParser::fixBackupJsonOutput($process->getOutput()));
+
             $backupResult = BackupResultParser::textParserResult($process->getOutput());
             $backupResult->setCommandLine($process->getCommandLine());
             $backupResult->setStatus($process->getStatus());
@@ -69,6 +72,7 @@ class Backup extends Configuration
             $backupResult->setEndTime($process->getLastOutputTime());
             $backupResult->setDuration();
             $backupResult->setOutput($process->getOutput());
+            $backupResult->setResticResponse($backupOutput);
 
             return $backupResult;
 

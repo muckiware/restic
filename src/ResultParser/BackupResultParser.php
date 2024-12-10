@@ -60,6 +60,11 @@ class BackupResultParser extends OutputParser
         return $backupResultEntity;
     }
 
+    public static function fixBackupJsonOutput($processOutput): string
+    {
+        return '['. preg_replace('/,$/','',str_replace("\n", ',', $processOutput)).']';
+    }
+
     /**
      * @param string $input
      * @return array<mixed>

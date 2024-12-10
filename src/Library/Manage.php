@@ -26,6 +26,7 @@ class Manage extends Configuration
     /**
      * @throws \JsonMapper_Exception
      * @throws InvalidConfigurationException
+     * @throws \Exception
      */
     public function getSnapshots(): ResultEntity
     {

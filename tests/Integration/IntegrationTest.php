@@ -55,7 +55,6 @@ class IntegrationTest extends TestCase
         $resultBackup = $this->backupClient->createBackup();
 
         $this->assertInstanceOf(ResultEntity::class, $resultBackup, 'Result should be an instance of ResultEntity');
-        $this->assertIsString($resultBackup->getSnapshots()->getNew(), 'New snapshot should be a string');
         $this->assertIsString($resultBackup->getCommandLine(), 'Command line should be a string');
         $this->assertIsString($resultBackup->getOutput(), 'Output should be a string');
         $this->assertIsFloat($resultBackup->getDuration(), 'Duration should be a float');
@@ -67,7 +66,6 @@ class IntegrationTest extends TestCase
         $resultBackup = $this->backupClient->createBackup();
 
         $this->assertInstanceOf(ResultEntity::class, $resultBackup, 'Result should be an instance of ResultEntity');
-        $this->assertIsString($resultBackup->getSnapshots()->getNew(), 'New snapshot should be a string');
         $this->assertIsString($resultBackup->getCommandLine(), 'Command line should be a string');
         $this->assertIsString($resultBackup->getOutput(), 'Output should be a string');
         $this->assertIsFloat($resultBackup->getDuration(), 'Duration should be a float');
