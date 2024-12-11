@@ -42,16 +42,16 @@ class Manage extends Configuration
                 $snapshots[] = $mapper->map($snapshot, new Snapshot());
             }
 
-            $snapshotsResultEntity = new ResultEntity();
-            $snapshotsResultEntity->setCommandLine($process->getCommandLine());
-            $snapshotsResultEntity->setStatus($process->getStatus());
-            $snapshotsResultEntity->setStartTime($process->getStartTime());
-            $snapshotsResultEntity->setEndTime($process->getLastOutputTime());
-            $snapshotsResultEntity->setDuration();
-            $snapshotsResultEntity->setResticResponse($snapshots);
-            $snapshotsResultEntity->setOutput($process->getOutput());
+            $snapshotsResult = new ResultEntity();
+            $snapshotsResult->setCommandLine($process->getCommandLine());
+            $snapshotsResult->setStatus($process->getStatus());
+            $snapshotsResult->setStartTime($process->getStartTime());
+            $snapshotsResult->setEndTime($process->getLastOutputTime());
+            $snapshotsResult->setDuration();
+            $snapshotsResult->setResticResponse($snapshots);
+            $snapshotsResult->setOutput($process->getOutput());
 
-            return $snapshotsResultEntity;
+            return $snapshotsResult;
 
         } else {
             throw new InvalidConfigurationException('Invalid configuration');

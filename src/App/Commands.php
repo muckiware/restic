@@ -19,9 +19,14 @@ use MuckiRestic\Library\Configuration;
 use MuckiRestic\Library\Backup;
 use MuckiRestic\Library\Restore;
 use MuckiRestic\Exception\InvalidConfigurationException;
+use MuckiRestic\Test\TestData;
+use MuckiRestic\Test\TestHelper;
 
 class Commands extends Command
 {
+    protected const BACKUP_PATH = './test';
+    protected const REPOSITORY_PATH = './testRep';
+    protected const REPOSITORY_PASSWORD = '1234';
     public function getVersion(OutputInterface $output): int
     {
         $backupClient = Backup::create();
@@ -37,8 +42,8 @@ class Commands extends Command
 
             $backupClient = Backup::create();
             $backupClient->setBinaryPath('./bin/restic_0.17.3_linux_386');
-            $backupClient->setRepositoryPassword('1234');
-            $backupClient->setRepositoryPath('./testRep');
+            $backupClient->setRepositoryPassword(self::REPOSITORY_PASSWORD);
+            $backupClient->setRepositoryPath(self::REPOSITORY_PATH);
 
             $result = $backupClient->createRepository(true)->getOutput();
             if(is_string($result)) {
@@ -55,13 +60,14 @@ class Commands extends Command
 
     public function createBackup(OutputInterface $output): int
     {
+        TestHelper::createTextFiles(self::BACKUP_PATH, TestData::BACKUP_TEST_FILES);
         try {
 
             $backupClient = Backup::create();
             $backupClient->setBinaryPath('./bin/restic_0.17.3_linux_386');
-            $backupClient->setRepositoryPassword('1234');
-            $backupClient->setRepositoryPath('./testRep');
-            $backupClient->setBackupPath('/var/www/html/test');
+            $backupClient->setRepositoryPassword(self::REPOSITORY_PASSWORD);
+            $backupClient->setRepositoryPath(self::REPOSITORY_PATH);
+            $backupClient->setBackupPath(self::BACKUP_PATH);
             $result = $backupClient->createBackup()->getOutput();
             if(is_string($result)) {
                 $output->writeln(sprintf('Create backup: %s', $result));
@@ -81,8 +87,8 @@ class Commands extends Command
 
             $backupClient = Backup::create();
             $backupClient->setBinaryPath('./bin/restic_0.17.3_linux_386');
-            $backupClient->setRepositoryPassword('1234');
-            $backupClient->setRepositoryPath('./testRep');
+            $backupClient->setRepositoryPassword(self::REPOSITORY_PASSWORD);
+            $backupClient->setRepositoryPath(self::REPOSITORY_PATH);
             $result = $backupClient->createBackup()->getOutput();
             if(is_string($result)) {
                 $output->writeln(sprintf('Create backup: %s', $result));

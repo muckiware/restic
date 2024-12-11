@@ -37,13 +37,16 @@ class Backup extends Configuration
             $process = $this->createProcess(Commands::INIT);
             $process->run();
 
-            $initResult = InitResultParser::textParserResult($process->getOutput());
+            $initOutput = Json::decode($process->getOutput());
+
+            $initResult = new ResultEntity();
             $initResult->setCommandLine($process->getCommandLine());
             $initResult->setStatus($process->getStatus());
             $initResult->setStartTime($process->getStartTime());
             $initResult->setEndTime($process->getLastOutputTime());
             $initResult->setDuration();
             $initResult->setOutput($process->getOutput());
+            $initResult->setResticResponse($initOutput);
 
             return $initResult;
 
@@ -65,7 +68,7 @@ class Backup extends Configuration
 
             $backupOutput = Json::decode(BackupResultParser::fixBackupJsonOutput($process->getOutput()));
 
-            $backupResult = BackupResultParser::textParserResult($process->getOutput());
+            $backupResult = new ResultEntity();
             $backupResult->setCommandLine($process->getCommandLine());
             $backupResult->setStatus($process->getStatus());
             $backupResult->setStartTime($process->getStartTime());

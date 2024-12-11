@@ -49,7 +49,6 @@ class IntegrationTest extends TestCase
         $resultInit = $this->backupClient->createRepository(true);
 
         $this->assertInstanceOf(ResultEntity::class, $resultInit, 'Result should be an instance of ResultEntity');
-        $this->assertIsString($resultInit->getSnapshots()->getNew(), 'New snapshot should be a string');
         $this->assertIsString($resultInit->getCommandLine(), 'Command line should be a string');
         $this->assertIsFloat($resultInit->getDuration(), 'Duration should be a float');
 

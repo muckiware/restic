@@ -23,7 +23,7 @@ class ResultEntity extends DataSet
     /**
      * @var array<mixed>|null
      */
-    protected ?array $processed = [];
+    protected ?array $processed;
 
     protected ?string $commandLine;
 

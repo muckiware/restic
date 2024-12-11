@@ -19,7 +19,7 @@ abstract class Init implements CommandLineInterface
     public static function getCommandLine(Configuration $configuration): string
     {
         return sprintf(
-            'export RESTIC_PASSWORD="%s"'."\n".'%s init --repo %s',
+            'export RESTIC_PASSWORD="%s"'."\n".'%s init --repo %s --json',
             $configuration->getRepositoryPassword(),
             $configuration->getBinaryPath(),
             $configuration->getRepositoryPath()
