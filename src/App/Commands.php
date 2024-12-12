@@ -89,7 +89,7 @@ class Commands extends Command
             $backupClient->setBinaryPath('./bin/restic_0.17.3_linux_386');
             $backupClient->setRepositoryPassword(self::REPOSITORY_PASSWORD);
             $backupClient->setRepositoryPath(self::REPOSITORY_PATH);
-            $result = $backupClient->createBackup()->getOutput();
+            $result = $backupClient->checkBackup()->getOutput();
             if(is_string($result)) {
                 $output->writeln(sprintf('Create backup: %s', $result));
             }
