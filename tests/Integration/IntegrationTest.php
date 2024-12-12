@@ -51,6 +51,13 @@ class IntegrationTest extends TestCase
         $this->assertInstanceOf(ResultEntity::class, $resultInit, 'Result should be an instance of ResultEntity');
         $this->assertIsString($resultInit->getCommandLine(), 'Command line should be a string');
         $this->assertIsFloat($resultInit->getDuration(), 'Duration should be a float');
+        $this->assertSame('initialized', $resultInit->getResticResponse()->message_type, 'Repository should be initialized');
+        $this->assertIsString($resultInit->getResticResponse()->id, 'Repository id should be a string');
+        $this->assertSame(
+            $resultInit->getResticResponse()->repository,
+            TestData::REPOSITORY_TEST_PATH,
+            'Repository path should be '.TestData::REPOSITORY_TEST_PATH
+        );
 
         $this->backupRepository();
         $this->backupNextRepository();
@@ -66,6 +73,13 @@ class IntegrationTest extends TestCase
         $this->assertIsString($resultBackup->getCommandLine(), 'Command line should be a string');
         $this->assertIsString($resultBackup->getOutput(), 'Output should be a string');
         $this->assertIsFloat($resultBackup->getDuration(), 'Duration should be a float');
+
+        foreach ($resultBackup->getResticResponse() as $response) {
+
+            if($response->message_type === 'summary') {
+                $this->assertIsString($response->snapshot_id, 'Snapshot id should be a string');
+            }
+        }
     }
 
     public function backupNextRepository(): void
@@ -77,6 +91,13 @@ class IntegrationTest extends TestCase
         $this->assertIsString($resultBackup->getCommandLine(), 'Command line should be a string');
         $this->assertIsString($resultBackup->getOutput(), 'Output should be a string');
         $this->assertIsFloat($resultBackup->getDuration(), 'Duration should be a float');
+
+        foreach ($resultBackup->getResticResponse() as $response) {
+
+            if($response->message_type === 'summary') {
+                $this->assertIsString($response->snapshot_id, 'Snapshot id should be a string');
+            }
+        }
     }
 
     #[Depends('testBackupRepository')]
@@ -88,6 +109,10 @@ class IntegrationTest extends TestCase
         $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');
         $this->assertIsString($resultCheck->getOutput(), 'Output should be a string');
         $this->assertIsFloat($resultCheck->getDuration(), 'Duration should be a float');
+
+        $processed = $resultCheck->getProcessed();
+        $lastProcess = end($processed);
+        $this->assertSame('no errors were found', $lastProcess, 'Message should be "no errors were found"');
     }
 
     #[Depends('testBackupRepository')]
