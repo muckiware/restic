@@ -19,7 +19,7 @@ abstract class Check implements CommandLineInterface
     public static function getCommandLine(Configuration $configuration): string
     {
         return sprintf(
-            'export RESTIC_PASSWORD="%s"'."\n".'export RESTIC_REPOSITORY="%s"'."\n".'%s check',
+            'export RESTIC_PASSWORD="%s"'."\n".'export RESTIC_REPOSITORY="%s"'."\n".'export RESTIC_COMPRESSION="auto"'."\n".'%s check --read-data',
             $configuration->getRepositoryPassword(),
             $configuration->getRepositoryPath(),
             $configuration->getBinaryPath()

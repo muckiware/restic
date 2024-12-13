@@ -11,6 +11,8 @@
  */
 namespace MuckiRestic\Library;
 
+use Symfony\Component\Process\Exception\ProcessFailedException;
+
 use MuckiRestic\ResultParser\InitResultParser;
 use MuckiRestic\ResultParser\BackupResultParser;
 use MuckiRestic\ResultParser\CheckResultParser;
@@ -63,6 +65,7 @@ class Backup extends Configuration
     {
         if($this->checkInputParametersByCommand(Commands::BACKUP)) {
 
+            $this->prepareBackup();
             $process = $this->createProcess(Commands::BACKUP);
             $process->run();
 
@@ -82,6 +85,15 @@ class Backup extends Configuration
         } else {
             throw new InvalidConfigurationException('Invalid configuration');
         }
+    }
+
+    /**
+     * @throws InvalidConfigurationException
+     */
+    public function prepareBackup(): void
+    {
+        $this->runUnlockCommand();
+        $this->runPruneCommand();
     }
 
     /**
@@ -107,6 +119,32 @@ class Backup extends Configuration
 
         } else {
             throw new InvalidConfigurationException('Invalid configuration');
+        }
+    }
+
+    /**
+     * @throws InvalidConfigurationException
+     */
+    public function runUnlockCommand(): void
+    {
+        $process = $this->createProcess(Commands::UNLOCK);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+    }
+
+    /**
+     * @throws InvalidConfigurationException
+     */
+    public function runPruneCommand(): void
+    {
+        $process = $this->createProcess(Commands::PRUNE);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
         }
     }
 }

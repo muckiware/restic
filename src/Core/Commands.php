@@ -15,4 +15,5 @@ enum Commands: string
     case VERSION = 'Version';
     case HELP = 'Help';
     case TEST_COMMAND = 'TestCommand';
+    case UNLOCK = 'Unlock';
 }

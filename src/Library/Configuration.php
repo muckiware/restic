@@ -29,6 +29,15 @@ abstract class Configuration extends Client
 
     protected ?string $backupPath = null;
 
+    /**
+     * forget command parameters
+     * @var int|null
+     */
+    protected int $keepDaily=7;
+    protected int $keepWeekly=5;
+    protected int $keepMonthly=12;
+    protected int $keepYearly=75;
+
     public function setBinaryPath(string $path): void
     {
         $this->resticBinaryPath = $path;
@@ -67,6 +76,46 @@ abstract class Configuration extends Client
     public function setBackupPath(string $backupPath): void
     {
         $this->backupPath = $backupPath;
+    }
+
+    public function getKeepDaily(): int
+    {
+        return $this->keepDaily;
+    }
+
+    public function setKeepDaily(int $keepDaily): void
+    {
+        $this->keepDaily = $keepDaily;
+    }
+
+    public function getKeepWeekly(): int
+    {
+        return $this->keepWeekly;
+    }
+
+    public function setKeepWeekly(int $keepWeekly): void
+    {
+        $this->keepWeekly = $keepWeekly;
+    }
+
+    public function getKeepMonthly(): int
+    {
+        return $this->keepMonthly;
+    }
+
+    public function setKeepMonthly(int $keepMonthly): void
+    {
+        $this->keepMonthly = $keepMonthly;
+    }
+
+    public function getKeepYearly(): int
+    {
+        return $this->keepYearly;
+    }
+
+    public function setKeepYearly(int $keepYearly): void
+    {
+        $this->keepYearly = $keepYearly;
     }
 
     /**

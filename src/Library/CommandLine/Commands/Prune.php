@@ -14,16 +14,15 @@ namespace MuckiRestic\Library\CommandLine\Commands;
 use MuckiRestic\Library\CommandLine\CommandLineInterface;
 use MuckiRestic\Library\Configuration;
 
-abstract class Backup implements CommandLineInterface
+abstract class Prune implements CommandLineInterface
 {
     public static function getCommandLine(Configuration $configuration): string
     {
         return sprintf(
-            'export RESTIC_PASSWORD="%s"'."\n".'export RESTIC_REPOSITORY="%s"'."\n".'export RESTIC_COMPRESSION="auto"'."\n".'%s backup %s --json',
+            'export RESTIC_PASSWORD="%s"'."\n".'export RESTIC_REPOSITORY="%s"'."\n".'export RESTIC_COMPRESSION="auto"'."\n".'%s prune',
             $configuration->getRepositoryPassword(),
             $configuration->getRepositoryPath(),
-            $configuration->getBinaryPath(),
-            $configuration->getBackupPath()
+            $configuration->getBinaryPath()
         );
     }
 }
