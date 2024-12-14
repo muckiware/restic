@@ -39,6 +39,10 @@ class Backup extends Configuration
             $process = $this->createProcess(Commands::INIT);
             $process->run();
 
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
+
             $initOutput = Json::decode($process->getOutput());
 
             $initResult = new ResultEntity();
@@ -68,6 +72,10 @@ class Backup extends Configuration
             $this->prepareBackup();
             $process = $this->createProcess(Commands::BACKUP);
             $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
 
             $backupOutput = Json::decode(BackupResultParser::fixBackupJsonOutput($process->getOutput()));
 
@@ -106,6 +114,10 @@ class Backup extends Configuration
 
             $process = $this->createProcess(Commands::CHECK);
             $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
 
             $checkResult = CheckResultParser::textParserResult($process->getOutput());
             $checkResult->setCommandLine($process->getCommandLine());

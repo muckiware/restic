@@ -11,6 +11,7 @@
  */
 namespace MuckiRestic\Library;
 
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use JsonMapper;
 
 use MuckiRestic\ResultParser\CheckResultParser;
@@ -34,6 +35,10 @@ class Manage extends Configuration
 
             $process = $this->createProcess(Commands::SNAPSHOTS);
             $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
 
             $snapshots = array();
             foreach (json_decode($process->getOutput()) as $snapshot) {
