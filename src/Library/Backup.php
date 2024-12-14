@@ -79,7 +79,7 @@ class Backup extends Configuration
                 throw new ProcessFailedException($process);
             }
 
-            $backupOutput = Json::decode(BackupResultParser::fixBackupJsonOutput($process->getOutput()));
+            $backupOutput = Json::decode(BackupResultParser::fixJsonOutput($process->getOutput()));
 
             $backupResult = new ResultEntity();
             $backupResult->setCommandLine($process->getCommandLine());

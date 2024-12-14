@@ -108,5 +108,36 @@
         "required": true
       }
     ]
+  },
+  {
+    "command": "Restore",
+    "description": "Restore item of repository",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "restoreItem",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "restoreTarget",
+        "type": "string",
+        "required": true
+      }
+    ]
   }
 ]

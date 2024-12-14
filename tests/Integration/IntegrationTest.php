@@ -18,6 +18,7 @@ use MuckiRestic\Test\TestData;
 use MuckiRestic\Test\TestHelper;
 use MuckiRestic\Library\Backup;
 use MuckiRestic\Library\Manage;
+use MuckiRestic\Library\Restore;
 use MuckiRestic\Entity\Result\ResultEntity;
 use MuckiRestic\Service\Helper;
 
@@ -25,11 +26,13 @@ class IntegrationTest extends TestCase
 {
     protected Backup $backupClient;
     protected Manage $manageClient;
+    protected Restore $restoreClient;
 
     public function createSetup(): void
     {
         Helper::deleteDirectory(TestData::REPOSITORY_TEST_PATH);
         Helper::deleteDirectory(TestData::BACKUP_TEST_PATH);
+        Helper::deleteDirectory(TestData::RESTORE_TEST_PATH);
 
         $this->backupClient = Backup::create();
         $this->backupClient->setBinaryPath(TestData::RESTIC_TEST_PATH);
@@ -42,6 +45,12 @@ class IntegrationTest extends TestCase
         $this->manageClient->setRepositoryPassword(TestData::REPOSITORY_TEST_PASSWORD);
         $this->manageClient->setRepositoryPath(TestData::REPOSITORY_TEST_PATH);
         $this->manageClient->setBackupPath(TestData::BACKUP_TEST_PATH);
+
+        $this->restoreClient = Restore::create();
+        $this->restoreClient->setBinaryPath(TestData::RESTIC_TEST_PATH);
+        $this->restoreClient->setRepositoryPassword(TestData::REPOSITORY_TEST_PASSWORD);
+        $this->restoreClient->setRepositoryPath(TestData::REPOSITORY_TEST_PATH);
+        $this->restoreClient->setRestoreTarget(TestData::RESTORE_TEST_PATH);
     }
     public function testIntegration(): void
     {
@@ -64,6 +73,7 @@ class IntegrationTest extends TestCase
         $this->checkRepository();
         $this->getSnapshots();
         $this->executeForget();
+        $this->createRestore();
     }
     public function backupRepository(): void
     {
@@ -137,6 +147,30 @@ class IntegrationTest extends TestCase
         $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');
         $this->assertIsString($resultCheck->getOutput(), 'Output should be a string');
         $this->assertIsFloat($resultCheck->getDuration(), 'Duration should be a float');
+    }
+
+    public function createRestore(): void
+    {
+        $resultCheck = $this->restoreClient->createRestore();
+
+        $this->assertInstanceOf(ResultEntity::class, $resultCheck, 'Result should be an instance of ResultEntity');
+        $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');
+        $this->assertIsString($resultCheck->getOutput(), 'Output should be a string');
+        $this->assertIsFloat($resultCheck->getDuration(), 'Duration should be a float');
+        $this->assertIsArray($resultCheck->getResticResponse(), 'Restic response should be an array');
+
+        $fileCounter = 1;
+        foreach (TestData::BACKUP_TEST_FILES as $file) {
+
+            $filePath = TestData::RESTORE_TEST_PATH.str_replace('.','',TestData::BACKUP_TEST_PATH).DIRECTORY_SEPARATOR.'file'.$fileCounter.'.txt';
+            $this->assertFileExists($filePath, 'File '.$filePath.'should exist');
+        }
+
+        foreach (TestData::NEXT_BACKUP_TEST_FILES as $file) {
+
+            $filePath = TestData::RESTORE_TEST_PATH.str_replace('.','',TestData::BACKUP_TEST_PATH).DIRECTORY_SEPARATOR.'file'.$fileCounter.'.txt';
+            $this->assertFileExists($filePath, 'File '.$filePath.'should exist');
+        }
     }
 
     public function testGetResticVersion(): void

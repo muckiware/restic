@@ -21,4 +21,9 @@ abstract class OutputParser
         }
         return $result;
     }
+
+    public static function fixJsonOutput($processOutput): string
+    {
+        return '['. preg_replace('/,$/','',str_replace("\n", ',', $processOutput)).']';
+    }
 }

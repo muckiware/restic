@@ -15,7 +15,7 @@ class TestHelper
     {
         self::createDirectory($directory);
         foreach ($files as $index => $content) {
-            $filePath = $directory . DIRECTORY_SEPARATOR . 'file' . ($index + 1) . '.txt';
+            $filePath = $directory.DIRECTORY_SEPARATOR.'file'.($index + 1).'.txt';
             if (file_put_contents($filePath, $content) === false) {
                 return false;
             }

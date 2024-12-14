@@ -24,7 +24,6 @@ abstract class Configuration extends Client
     protected string $resticBinaryPath = 'restic';
 
     protected string $repositoryPath;
-
     protected string $repositoryPassword;
 
     protected ?string $backupPath = null;
@@ -40,6 +39,8 @@ abstract class Configuration extends Client
 
     protected bool $skipPrepareBackup=false;
     protected bool $compress=true;
+    protected string $restoreItem = 'latest';
+    protected string $restoreTarget;
 
     public function setBinaryPath(string $path): void
     {
@@ -139,6 +140,26 @@ abstract class Configuration extends Client
     public function setCompress(bool $compress): void
     {
         $this->compress = $compress;
+    }
+
+    public function getRestoreItem(): string
+    {
+        return $this->restoreItem;
+    }
+
+    public function setRestoreItem(string $restoreItem): void
+    {
+        $this->restoreItem = $restoreItem;
+    }
+
+    public function getRestoreTarget(): string
+    {
+        return $this->restoreTarget;
+    }
+
+    public function setRestoreTarget(string $restoreTarget): void
+    {
+        $this->restoreTarget = $restoreTarget;
     }
 
     /**
