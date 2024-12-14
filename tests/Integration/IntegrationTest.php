@@ -39,6 +39,8 @@ class IntegrationTest extends TestCase
         $this->backupClient->setRepositoryPassword(TestData::REPOSITORY_TEST_PASSWORD);
         $this->backupClient->setRepositoryPath(TestData::REPOSITORY_TEST_PATH);
         $this->backupClient->setBackupPath(TestData::BACKUP_TEST_PATH);
+        $this->backupClient->setCompress(true);
+        $this->backupClient->setSkipPrepareBackup(false);
 
         $this->manageClient = Manage::create();
         $this->manageClient->setBinaryPath(TestData::RESTIC_TEST_PATH);
@@ -51,6 +53,10 @@ class IntegrationTest extends TestCase
         $this->restoreClient->setRepositoryPassword(TestData::REPOSITORY_TEST_PASSWORD);
         $this->restoreClient->setRepositoryPath(TestData::REPOSITORY_TEST_PATH);
         $this->restoreClient->setRestoreTarget(TestData::RESTORE_TEST_PATH);
+//        $this->restoreClient->setKeepDaily(1);
+//        $this->restoreClient->setKeepWeekly(1);
+//        $this->restoreClient->setKeepMonthly(1);
+//        $this->restoreClient->setKeepYearly(1);
     }
     public function testIntegration(): void
     {
