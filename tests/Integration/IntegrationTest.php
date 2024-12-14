@@ -63,6 +63,7 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
+        $this->executeForget();
     }
     public function backupRepository(): void
     {
@@ -126,6 +127,16 @@ class IntegrationTest extends TestCase
         $this->assertIsFloat($resultCheck->getDuration(), 'Duration should be a float');
         $this->assertIsArray($resultCheck->getResticResponse(), 'Restic response should be an array');
         $this->assertCount(2, $resultCheck->getResticResponse(), 'Restic response should have 2 snapshots');
+    }
+
+    public function executeForget(): void
+    {
+        $resultCheck = $this->manageClient->executeForget();
+
+        $this->assertInstanceOf(ResultEntity::class, $resultCheck, 'Result should be an instance of ResultEntity');
+        $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');
+        $this->assertIsString($resultCheck->getOutput(), 'Output should be a string');
+        $this->assertIsFloat($resultCheck->getDuration(), 'Duration should be a float');
     }
 
     public function testGetResticVersion(): void

@@ -21,6 +21,7 @@ use MuckiRestic\Core\Commands;
 use MuckiRestic\Service\Helper;
 use MuckiRestic\Entity\Result\ResticResponse\Snapshot;
 use MuckiRestic\Entity\Result\ResticResponse\Summary;
+use MuckiRestic\Service\Json;
 
 class Manage extends Configuration
 {
@@ -57,6 +58,35 @@ class Manage extends Configuration
             $snapshotsResult->setOutput($process->getOutput());
 
             return $snapshotsResult;
+
+        } else {
+            throw new InvalidConfigurationException('Invalid configuration');
+        }
+    }
+
+    public function executeForget(): ResultEntity
+    {
+        if($this->checkInputParametersByCommand(Commands::FORGET)) {
+
+            $process = $this->createProcess(Commands::FORGET);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
+
+            $resultOutput = Json::decode($process->getOutput());
+
+            $forgetResult = new ResultEntity();
+            $forgetResult->setCommandLine($process->getCommandLine());
+            $forgetResult->setStatus($process->getStatus());
+            $forgetResult->setStartTime($process->getStartTime());
+            $forgetResult->setEndTime($process->getLastOutputTime());
+            $forgetResult->setDuration();
+            $forgetResult->setResticResponse($resultOutput);
+            $forgetResult->setOutput($process->getOutput());
+
+            return $forgetResult;
 
         } else {
             throw new InvalidConfigurationException('Invalid configuration');
