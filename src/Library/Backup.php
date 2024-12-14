@@ -69,7 +69,9 @@ class Backup extends Configuration
     {
         if($this->checkInputParametersByCommand(Commands::BACKUP)) {
 
-            $this->prepareBackup();
+            if(!$this->skipPrepareBackup) {
+                $this->prepareBackup();
+            }
             $process = $this->createProcess(Commands::BACKUP);
             $process->run();
 

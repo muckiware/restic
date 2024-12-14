@@ -38,6 +38,8 @@ abstract class Configuration extends Client
     protected int $keepMonthly=12;
     protected int $keepYearly=75;
 
+    protected bool $skipPrepareBackup=false;
+
     public function setBinaryPath(string $path): void
     {
         $this->resticBinaryPath = $path;
@@ -116,6 +118,16 @@ abstract class Configuration extends Client
     public function setKeepYearly(int $keepYearly): void
     {
         $this->keepYearly = $keepYearly;
+    }
+
+    public function isSkipPrepareBackup(): bool
+    {
+        return $this->skipPrepareBackup;
+    }
+
+    public function setSkipPrepareBackup(bool $skipPrepareBackup): void
+    {
+        $this->skipPrepareBackup = $skipPrepareBackup;
     }
 
     /**

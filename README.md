@@ -109,4 +109,3 @@ MIT License (MIT). Please see LICENSE File for more information.
 
 # Notice
 If you run muckiware/restic on a ddev/Docker environment, you could get an read error of the backup files. In this case, check the mutagen status, and enable the mutagen sync.
-```
