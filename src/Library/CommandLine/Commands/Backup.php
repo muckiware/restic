@@ -18,11 +18,15 @@ abstract class Backup implements CommandLineInterface
 {
     public static function getCommandLine(Configuration $configuration): string
     {
+        $command = 'export RESTIC_PASSWORD="%s"'."\n".'%s -r %s backup %s --json';
+        if($configuration->isCompress()) {
+            $command .= ' --compression auto';
+        }
         return sprintf(
-            'export RESTIC_PASSWORD="%s"'."\n".'export RESTIC_REPOSITORY="%s"'."\n".'%s backup %s --json',
+            $command,
             $configuration->getRepositoryPassword(),
-            $configuration->getRepositoryPath(),
             $configuration->getBinaryPath(),
+            $configuration->getRepositoryPath(),
             $configuration->getBackupPath()
         );
     }

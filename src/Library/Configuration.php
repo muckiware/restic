@@ -39,6 +39,7 @@ abstract class Configuration extends Client
     protected int $keepYearly=75;
 
     protected bool $skipPrepareBackup=false;
+    protected bool $compress=true;
 
     public function setBinaryPath(string $path): void
     {
@@ -128,6 +129,16 @@ abstract class Configuration extends Client
     public function setSkipPrepareBackup(bool $skipPrepareBackup): void
     {
         $this->skipPrepareBackup = $skipPrepareBackup;
+    }
+
+    public function isCompress(): bool
+    {
+        return $this->compress;
+    }
+
+    public function setCompress(bool $compress): void
+    {
+        $this->compress = $compress;
     }
 
     /**
