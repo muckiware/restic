@@ -53,6 +53,7 @@ class IntegrationTest extends TestCase
         $this->restoreClient->setRepositoryPassword(TestData::REPOSITORY_TEST_PASSWORD);
         $this->restoreClient->setRepositoryPath(TestData::REPOSITORY_TEST_PATH);
         $this->restoreClient->setRestoreTarget(TestData::RESTORE_TEST_PATH);
+        $this->restoreClient->setRestoreItem();
 //        $this->restoreClient->setKeepDaily(1);
 //        $this->restoreClient->setKeepWeekly(1);
 //        $this->restoreClient->setKeepMonthly(1);
@@ -78,7 +79,7 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
-        $this->executeForget();
+        $this->removeSnapshots();
         $this->createRestore();
     }
     public function backupRepository(): void
@@ -145,9 +146,9 @@ class IntegrationTest extends TestCase
         $this->assertCount(2, $resultCheck->getResticResponse(), 'Restic response should have 2 snapshots');
     }
 
-    public function executeForget(): void
+    public function removeSnapshots(): void
     {
-        $resultCheck = $this->manageClient->executeForget();
+        $resultCheck = $this->manageClient->removeSnapshots();
 
         $this->assertInstanceOf(ResultEntity::class, $resultCheck, 'Result should be an instance of ResultEntity');
         $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');

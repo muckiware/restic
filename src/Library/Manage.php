@@ -64,7 +64,7 @@ class Manage extends Configuration
         }
     }
 
-    public function executeForget(): ResultEntity
+    public function removeSnapshots(): ResultEntity
     {
         if($this->checkInputParametersByCommand(Commands::FORGET)) {
 
