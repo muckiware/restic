@@ -3,8 +3,12 @@
     "description": "php client for restic backup tool",
     "keywords": [
         "Library",
-        "Backup",
-        "restic"
+        "backup",
+        "restic",
+        "repository",
+        "restore",
+        "snapshot",
+        "storage"
     ],
     "homepage": "https://github.com/muckiware/restic",
     "license": "MIT",
