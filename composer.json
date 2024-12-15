@@ -1,6 +1,6 @@
 {
     "name": "muckiware/restic",
-    "description": "php client for restic",
+    "description": "php client for restic backup tool",
     "keywords": [
         "Library",
         "Backup",
