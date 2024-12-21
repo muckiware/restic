@@ -35,7 +35,8 @@ class BackupService
             $backupClient->setBinaryPath('./bin/restic_0.17.3_linux_386'); //optional
             $backupClient->setRepositoryPassword('1234');
             $backupClient->setRepositoryPath('./path_to_repository');
-            $backupClient->createRepository()->getOutput();
+
+            echo $backupClient->createRepository()->getOutput();
         
         } catch (\Exception $e) {
             echo $e->getMessage();
