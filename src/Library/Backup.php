@@ -21,6 +21,7 @@ use MuckiRestic\Entity\Result\ResultEntity;
 use MuckiRestic\Core\Commands;
 use MuckiRestic\Service\Helper;
 use MuckiRestic\Service\Json;
+use MuckiRestic\Entity\Result\ResticResponse\Version;
 
 class Backup extends Configuration
 {
@@ -43,7 +44,13 @@ class Backup extends Configuration
                 throw new ProcessFailedException($process);
             }
 
-            $initOutput = Json::decode($process->getOutput());
+            /** @var Version $resticVersion */
+            $resticVersion = $this->getResticVersion()->getResticResponse();
+            if (version_compare($resticVersion->getVersion(), '0.15.0') >= 0) {
+                $initOutput = Json::decode($process->getOutput());
+            } else {
+                $initOutput = InitResultParser::textParserResult($process->getOutput());
+            }
 
             $initResult = new ResultEntity();
             $initResult->setCommandLine($process->getCommandLine());
