@@ -42,6 +42,8 @@ abstract class Configuration extends Client
     protected string $restoreItem = 'latest';
     protected string $restoreTarget;
 
+    protected bool $jsonOutput = true;
+
     public function setBinaryPath(string $path): void
     {
         $this->resticBinaryPath = $path;
@@ -160,6 +162,16 @@ abstract class Configuration extends Client
     public function setRestoreTarget(string $restoreTarget): void
     {
         $this->restoreTarget = $restoreTarget;
+    }
+
+    public function isJsonOutput(): bool
+    {
+        return $this->jsonOutput;
+    }
+
+    public function setJsonOutput(bool $jsonOutput): void
+    {
+        $this->jsonOutput = $jsonOutput;
     }
 
     /**

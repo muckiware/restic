@@ -42,10 +42,12 @@ class Manage extends Configuration
             }
 
             $snapshots = array();
-            foreach (json_decode($process->getOutput()) as $snapshot) {
+            if($this->isJsonOutput()) {
+                foreach (json_decode($process->getOutput()) as $snapshot) {
 
-                $mapper = new JsonMapper();
-                $snapshots[] = $mapper->map($snapshot, new Snapshot());
+                    $mapper = new JsonMapper();
+                    $snapshots[] = $mapper->map($snapshot, new Snapshot());
+                }
             }
 
             $snapshotsResult = new ResultEntity();
