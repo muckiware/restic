@@ -18,7 +18,11 @@ abstract class Restore implements CommandLineInterface
 {
     public static function getCommandLine(Configuration $configuration): string
     {
-        $command = 'export RESTIC_PASSWORD="%s"'."\n".'%s restore %s -r %s  --target %s --json';
+        $command = 'export RESTIC_PASSWORD="%s"'."\n".'%s restore %s -r %s  --target %s';
+
+        if($configuration->isJsonOutput()) {
+            $command .= ' --json';
+        }
 
         return sprintf(
             $command,

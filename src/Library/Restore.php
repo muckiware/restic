@@ -36,7 +36,12 @@ class Restore extends Configuration
                 throw new ProcessFailedException($process);
             }
 
-            $resultOutput = Json::decode(RestoreResultParser::fixJsonOutput($process->getOutput()));
+            if($this->isJsonOutput()) {
+                $resultOutput = Json::decode(RestoreResultParser::fixJsonOutput($process->getOutput()));
+            } else {
+                $resultOutput = $process->getOutput();
+            }
+
 
             $restoreResult = new ResultEntity();
             $restoreResult->setCommandLine($process->getCommandLine());
