@@ -43,6 +43,7 @@ abstract class Configuration extends Client
     protected string $restoreTarget;
 
     protected bool $jsonOutput = true;
+    protected ?string $snapshotId;
 
     public function setBinaryPath(string $path): void
     {
@@ -172,6 +173,16 @@ abstract class Configuration extends Client
     public function setJsonOutput(bool $jsonOutput): void
     {
         $this->jsonOutput = $jsonOutput;
+    }
+
+    public function getSnapshotId(): ?string
+    {
+        return $this->snapshotId;
+    }
+
+    public function setSnapshotId(?string $snapshotId): void
+    {
+        $this->snapshotId = $snapshotId;
     }
 
     /**

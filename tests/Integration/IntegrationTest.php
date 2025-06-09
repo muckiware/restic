@@ -86,7 +86,7 @@ class IntegrationTest extends TestCase
 
     public function testIntegration014(): void
     {
-        $this->createSetup(TestData::RESTIC_TEST_PATH_0_14);
+        $this->createSetup(TestData::RESTIC_TEST_PATH_0_18);
 
         $resultInit = $this->backupClient->createRepository(true);
 

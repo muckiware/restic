@@ -43,8 +43,6 @@ class Backup extends Configuration
                 throw new ProcessFailedException($process);
             }
 
-            $initOutput = Json::decode($process->getOutput());
-
             $initResult = new ResultEntity();
             $initResult->setCommandLine($process->getCommandLine());
             $initResult->setStatus($process->getStatus());
@@ -52,7 +50,7 @@ class Backup extends Configuration
             $initResult->setEndTime($process->getLastOutputTime());
             $initResult->setDuration();
             $initResult->setOutput($process->getOutput());
-            $initResult->setResticResponse($initOutput);
+            $initResult->setResticResponse(Json::decode($process->getOutput()));
 
             return $initResult;
 

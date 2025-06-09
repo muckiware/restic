@@ -5,6 +5,7 @@ PHP client for restic backup tool. This library provides a simple way to create 
 - PHP 8.1 or higher
 - Composer
 - Restic as binary or installed on the system, see https://restic.readthedocs.io/en/stable/020_installation.html
+- Restic version 0.15.0 or higher
 # Installation
 ```bash
 composer require muckiware/restic
@@ -199,96 +200,29 @@ class RestoreService
     }
 }
 ```
-## Class `MuckiRestic\Entity\Result\ResultEntity`
-The `ResultEntity` class is part of the `MuckiRestic` library and extends the `DataSet` class. It represents the result of a backup operation and contains various properties and methods to access and manipulate the result data.
-### Properties
-- `protected ?SnapshotsResultEntity $snapshots`: Stores snapshot results.
-- `protected ?FilesDirsResultEntity $files`: Stores file results.
-- `protected ?FilesDirsResultEntity $directories`: Stores directory results.
-- `protected ?array $processed`: Stores processed data.
-- `protected ?string $commandLine`: Stores the command line used for the operation.
-- `protected ?string $status`: Stores the status of the operation.
-- `protected ?float $duration`: Stores the duration of the operation.
-- `protected ?float $startTime`: Stores the start time of the operation.
-- `protected ?float $endTime`: Stores the end time of the operation.
-- `protected ?string $output`: Stores the output of the operation.
-- `protected mixed $resticResponse`: Stores the response from the restic command.
-
-### Methods
-#### `getSnapshots(): ?SnapshotsResultEntity`
-Returns the snapshot results.
-
-#### `setSnapshots(SnapshotsResultEntity $snapshots): void`
-Sets the snapshot results.
-
-#### `getFiles(): ?FilesDirsResultEntity`
-Returns the file results.
-
-#### `setFiles(FilesDirsResultEntity $files): void`
-Sets the file results.
-
-#### `getDirectories(): ?FilesDirsResultEntity`
-Returns the directory results.
-
-#### `setDirectories(FilesDirsResultEntity $directories): void`
-Sets the directory results.
-
-#### `getProcessed(): ?array`
-Returns the processed data.
-
-#### `setProcessed(array $processed): void`
-Sets the processed data.
-
-#### `addProcessed(string $processed): void`
-Adds a processed data entry.
-
-#### `getCommandLine(): ?string`
-Returns the command line used for the operation.
-
-#### `setCommandLine(?string $commandLine): void`
-Sets the command line used for the operation.
-
-#### `getStatus(): ?string`
-Returns the status of the operation.
-
-#### `setStatus(?string $status): void`
-Sets the status of the operation.
-
-#### `getStartTime(): ?float`
-Returns the start time of the operation.
-
-#### `setStartTime(?float $startTime): void`
-Sets the start time of the operation.
-
-#### `getEndTime(): ?float`
-Returns the end time of the operation.
-
-#### `setEndTime(?float $endTime): void`
-Sets the end time of the operation.
-
-#### `getDuration(): ?float`
-Calculates and returns the duration of the operation.
-
-#### `setDuration(): void`
-Calculates and sets the duration of the operation.
-
-#### `getOutput(): ?string`
-Returns the output of the operation.
-
-#### `setOutput(?string $output): void`
-Sets the output of the operation.
-
-#### `getResticResponse(): mixed`
-Returns the response from the restic command.
-
-#### `setResticResponse(mixed $resticResponse): void`
-Sets the response from the restic command.
 
 ## Example as cli app
 Checkout the App folder for to run as cli command
 ```shell
 bin/console muwa:restic:client --help
 ```
+Get version of restic binary
+```shell
+bin/console muwa:restic:client --Version
+```
+Init a new backup repository
+```shell
+bin/console muwa:restic:client --Init <Repository> <Password>
+```
+- _Repository_ - Free of choice, where the backup data will be stored.<br>
+- _Password_ - Password for the backup repository, which is used to encrypt the backup data. It's required for all operations on the repository.
+  Init a new backup repository
+```shell
+bin/console muwa:restic:client --Backup <Repository> <Password> <Backup>
+```
+- _Repository_ - Path to the backup repository<br>
+- _Password_ - Password for the backup repository.
+- _Backup_ - Path to data which should be backed up. This can be a single file or a folder. If the path is a folder, all files and subfolders will be backed up.
 
 # Testing
 Run phpunit tests

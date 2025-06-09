@@ -6,7 +6,7 @@ class TestData
 {
     public const RESTIC_TEST_PATH = './bin/restic_0.17.3_linux_386';
 
-    public const RESTIC_TEST_PATH_0_14 = './bin/restic_0.14.0_linux_386';
+    public const RESTIC_TEST_PATH_0_18 = './bin/restic_0.18.0_linux_386';
 
     public const RESTIC_TEST_PATH_0_15 = './bin/restic_0.15.2_linux_386';
     public const RESTIC_TEST_PATH_0_16 = './bin/restic_0.16.5_linux_386';

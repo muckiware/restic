@@ -36,6 +36,11 @@ class Console extends Commands
                 new InputOption(ResticCommands::BACKUP->value, null, InputOption::VALUE_NONE, 'Create Backup into repository'),
                 new InputOption(ResticCommands::CHECK->value, null, InputOption::VALUE_NONE, 'Checkup repository'),
                 new InputOption(ResticCommands::RESTORE->value, null, InputOption::VALUE_NONE, 'Restore data from repository'),
+                new InputOption(ResticCommands::SNAPSHOTS->value, null, InputOption::VALUE_NONE, 'Get list of snapshots from repository'),
+                new InputArgument('repositoryPath', InputArgument::OPTIONAL, 'Path to the repository'),
+                new InputArgument('repositoryPassword', InputArgument::OPTIONAL, 'Password for the repository'),
+                new InputArgument('backupPath', InputArgument::OPTIONAL, 'Path to the backup directory'),
+                new InputArgument('snapshotId', InputArgument::OPTIONAL, 'Snapshot id of a repository item')
             ])
         );
     }
@@ -59,13 +64,16 @@ class Console extends Commands
                     $result = $this->getVersion($output);
                     break;
                 case ResticCommands::INIT->value:
-                    $result = $this->createRepository($output);
+                    $result = $this->createRepository($input, $output);
                     break;
                 case ResticCommands::BACKUP->value:
-                    $result = $this->createBackup($output);
+                    $result = $this->createBackup($input, $output);
                     break;
                 case ResticCommands::CHECK->value:
-                    $result = $this->checkBackup($output);
+                    $result = $this->checkBackup($input, $output);
+                    break;
+                case ResticCommands::SNAPSHOTS->value:
+                    $result = $this->checkSnapshots($input, $output);
                     break;
                 default:
                     throw new InvalidArgumentException(sprintf('Invalid option %s', $optionKey));
