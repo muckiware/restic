@@ -16,7 +16,13 @@ use MuckiRestic\Exception\JsonException;
 
 class Json
 {
-    public static function encode($value, int $options = 0, int $depth = 512) : string
+    /**
+     * @param mixed $value
+     * @param int $options
+     * @param int<1, max> $depth
+     * @return false|string
+     */
+    public static function encode(mixed $value, int $options = 0, int $depth = 512) : false|string
     {
         $json = json_encode($value, $options, $depth);
 
@@ -28,7 +34,14 @@ class Json
         return $json;
     }
 
-    public static function decode(string $json, bool $asArray=false, int $depth=512, int $options=0)
+    /**
+     * @param string $json
+     * @param bool $asArray
+     * @param int<1, max> $depth
+     * @param int $options
+     * @return mixed
+     */
+    public static function decode(string $json, bool $asArray=false, int $depth=512, int $options=0): mixed
     {
         $decoded = json_decode($json, $asArray, $depth, $options);
 
