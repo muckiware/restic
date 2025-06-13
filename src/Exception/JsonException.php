@@ -8,7 +8,7 @@ class JsonException extends \RuntimeException
     public string $decodedJson;
     public mixed $encodedValue;
 
-    /** @var array json_last_error() code/message map */
+    /** @var array<string> json_last_error() code/message map */
     public static array $errors = [
         JSON_ERROR_DEPTH => 'The maximum stack depth has been exceeded',
         JSON_ERROR_STATE_MISMATCH => 'Invalid or malformed JSON',
@@ -32,7 +32,7 @@ class JsonException extends \RuntimeException
      */
     public static function encoding(mixed $value, int $code, \Throwable $previous = null): JsonException
     {
-        $e = static::instance($code, $previous);
+        $e = self::instance($code, $previous);
         $e->encodedValue = $value;
 
         return $e;
@@ -48,7 +48,7 @@ class JsonException extends \RuntimeException
      */
     public static function decoding(string $json, int $code, \Throwable $previous = null): JsonException
     {
-        $e = static::instance($code, $previous);
+        $e = self::instance($code, $previous);
         $e->decodedJson = $json;
 
         return $e;

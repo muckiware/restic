@@ -30,7 +30,7 @@ abstract class Configuration extends Client
 
     /**
      * forget command parameters
-     * @var int|null
+     * @var int
      */
     protected int $keepDaily=7;
     protected int $keepWeekly=5;
