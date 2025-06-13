@@ -1,0 +1,33 @@
+name: Deployment Stage
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [main]
+
+    steps:
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: "Check PHP Version"
+        run: php -v
+
+      - name: "Check Composer Version"
+        run: composer -V
+
+      - name: "Checkout Project files"
+        uses: actions/checkout@v4
+
+      - name: Build instance
+        run: |
+          composer install
