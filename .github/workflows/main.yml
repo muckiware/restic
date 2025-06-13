@@ -28,6 +28,9 @@ jobs:
       - name: "Checkout Project files"
         uses: actions/checkout@v4
 
-      - name: Build instance
+      - name: "Build instance"
         run: |
           composer install
+
+      - name: "PHPUnit Tests"
+        run: ./vendor/bin/phpunit --configuration=phpunit.xml
