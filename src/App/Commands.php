@@ -99,14 +99,21 @@ class Commands extends Command
         return Command::SUCCESS;
     }
 
-    public function checkSnapshots(InputInterface $input, OutputInterface $output): int
+    public function snapshots(InputInterface $input, OutputInterface $output): int
     {
         try {
 
             $manageClient = Manage::create();
             $this->prepareExecutionCommand($manageClient, $input);
 
-            $result = $manageClient->getSnapshots()->getOutput();
+            if($this->snapshotAdditionalParameterCheck($input)) {
+
+                $manageClient->setSnapshotId($input->getOption('snapshotId'));
+                $result = $manageClient->removeSnapshotById();
+            } else {
+                $result = $manageClient->getSnapshots()->getOutput();
+            }
+
             if(is_string($result)) {
                 $output->writeln(sprintf('Snapshots: %s', $result));
             }
@@ -119,7 +126,7 @@ class Commands extends Command
         return Command::SUCCESS;
     }
 
-    public function prepareExecutionCommand(Backup|Manage $backupClient, InputInterface $input): Backup|Manage
+    public function prepareExecutionCommand(Backup|Manage $backupClient, InputInterface $input): void
     {
         $backupClient->setBinaryPath('./bin/restic_0.17.3_linux_386');
         $backupClient->setJsonOutput(false);
@@ -135,7 +142,14 @@ class Commands extends Command
         } else {
             $backupClient->setRepositoryPassword(self::REPOSITORY_PASSWORD);
         }
+    }
 
-        return $backupClient;
+    public function snapshotAdditionalParameterCheck(InputInterface $input): bool
+    {
+        if($input->getOption('remove') && $input->getOption('snapshotId')) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -94,4 +94,33 @@ class Manage extends Configuration
             throw new InvalidConfigurationException('Invalid configuration');
         }
     }
+
+    public function removeSnapshotById(): ResultEntity
+    {
+        if($this->checkInputParametersByCommand(Commands::SINGLE_FORGET)) {
+
+            $process = $this->createProcess(Commands::SINGLE_FORGET);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
+
+            $resultOutput = Json::decode($process->getOutput());
+
+            $forgetResult = new ResultEntity();
+            $forgetResult->setCommandLine($process->getCommandLine());
+            $forgetResult->setStatus($process->getStatus());
+            $forgetResult->setStartTime($process->getStartTime());
+            $forgetResult->setEndTime($process->getLastOutputTime());
+            $forgetResult->setDuration();
+            $forgetResult->setResticResponse($resultOutput);
+            $forgetResult->setOutput($process->getOutput());
+
+            return $forgetResult;
+
+        } else {
+            throw new InvalidConfigurationException('Invalid configuration');
+        }
+    }
 }

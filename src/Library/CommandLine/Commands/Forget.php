@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024 by Muckiware
+ * @copyright  Copyright (c) 2024-2025 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -18,10 +18,11 @@ abstract class Forget implements CommandLineInterface
 {
     public static function getCommandLine(Configuration $configuration): string
     {
-        $command = 'export RESTIC_PASSWORD="%s"'."\n".'%s forget -r %s --keep-daily %s --keep-weekly %s --keep-monthly %s --keep-yearly %s --prune --json';
-        if($configuration->isCompress()) {
-            $command .= ' --compression auto';
+        $command = 'export RESTIC_PASSWORD="%s"'."\n".'%s forget -r %s --keep-daily %s --keep-weekly %s --keep-monthly %s --keep-yearly %s --prune';
+        if($configuration->isJsonOutput()) {
+            $command .= ' --json';
         }
+
         return sprintf(
             $command,
             $configuration->getRepositoryPassword(),

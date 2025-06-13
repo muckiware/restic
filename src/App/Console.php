@@ -37,10 +37,11 @@ class Console extends Commands
                 new InputOption(ResticCommands::CHECK->value, null, InputOption::VALUE_NONE, 'Checkup repository'),
                 new InputOption(ResticCommands::RESTORE->value, null, InputOption::VALUE_NONE, 'Restore data from repository'),
                 new InputOption(ResticCommands::SNAPSHOTS->value, null, InputOption::VALUE_NONE, 'Get list of snapshots from repository'),
-                new InputArgument('repositoryPath', InputArgument::OPTIONAL, 'Path to the repository'),
-                new InputArgument('repositoryPassword', InputArgument::OPTIONAL, 'Password for the repository'),
+                new InputArgument('repositoryPath', InputArgument::REQUIRED, 'Path to the repository'),
+                new InputArgument('repositoryPassword', InputArgument::REQUIRED, 'Password for the repository'),
                 new InputArgument('backupPath', InputArgument::OPTIONAL, 'Path to the backup directory'),
-                new InputArgument('snapshotId', InputArgument::OPTIONAL, 'Snapshot id of a repository item')
+                new InputOption('remove', '-r', InputOption::VALUE_NONE, 'Flag for to remove a single snapshot by snapshot id'),
+                new InputOption('snapshotId', null,InputOption::VALUE_OPTIONAL, 'Snapshot id of a repository item')
             ])
         );
     }
@@ -73,7 +74,7 @@ class Console extends Commands
                     $result = $this->checkBackup($input, $output);
                     break;
                 case ResticCommands::SNAPSHOTS->value:
-                    $result = $this->checkSnapshots($input, $output);
+                    $result = $this->snapshots($input, $output);
                     break;
                 default:
                     throw new InvalidArgumentException(sprintf('Invalid option %s', $optionKey));

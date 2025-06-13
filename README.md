@@ -201,7 +201,7 @@ class RestoreService
 }
 ```
 
-## Example as cli app
+## Use as cli app
 Checkout the App folder for to run as cli command
 ```shell
 bin/console muwa:restic:client --help
@@ -210,20 +210,38 @@ Get version of restic binary
 ```shell
 bin/console muwa:restic:client --Version
 ```
-Init a new backup repository
+### Init a new backup repository
 ```shell
 bin/console muwa:restic:client --Init <Repository> <Password>
 ```
 - _Repository_ - Free of choice, where the backup data will be stored.<br>
 - _Password_ - Password for the backup repository, which is used to encrypt the backup data. It's required for all operations on the repository.
   Init a new backup repository
+### Create a backup
 ```shell
 bin/console muwa:restic:client --Backup <Repository> <Password> <Backup>
 ```
 - _Repository_ - Path to the backup repository<br>
 - _Password_ - Password for the backup repository.
 - _Backup_ - Path to data which should be backed up. This can be a single file or a folder. If the path is a folder, all files and subfolders will be backed up.
-
+### Check the backup, by getting a list of all snapshots
+```shell
+bin/console muwa:restic:client --Snapshots <Repository> <Password>
+```
+- _Repository_ - Path to the backup repository<br>
+- _Password_ - Password for the backup repository.
+### Remove specific snapshot
+```shell
+bin/console muwa:restic:client --Snapshots <Repository> <Password> -r --snapshotId <SnapshotId>
+```
+- _Repository_ - Path to the backup repository<br>
+- _Password_ - Password for the backup repository.
+### Remove old snapshots
+```shell
+bin/console muwa:restic:client --Forget <Repository> <Password>
+```
+- _Repository_ - Path to the backup repository<br>
+- _Password_ - Password for the backup repository.
 # Testing
 Run phpunit tests
 ```shell

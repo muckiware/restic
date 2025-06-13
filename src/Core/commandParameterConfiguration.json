@@ -139,5 +139,31 @@
         "required": true
       }
     ]
+  },
+  {
+    "command": "SingleForget",
+    "description": "Remove single snapshot in repository by id",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "snapshotId",
+        "type": "string",
+        "required": true
+      }
+    ]
   }
 ]
