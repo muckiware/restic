@@ -34,3 +34,6 @@ jobs:
 
       - name: "PHPUnit Tests"
         run: ./vendor/bin/phpunit --configuration=phpunit.xml
+
+      - name: "phpstan Tests"
+        run: composer run-script phpstan
