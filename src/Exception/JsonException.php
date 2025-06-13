@@ -30,7 +30,7 @@ class JsonException extends \RuntimeException
      * @param \Throwable|null $previous
      * @return JsonException
      */
-    public static function encoding(mixed $value, int $code, \Throwable $previous = null): JsonException
+    public static function encoding(mixed $value, int $code, ?\Throwable $previous = null): JsonException
     {
         $e = self::instance($code, $previous);
         $e->encodedValue = $value;
@@ -46,7 +46,7 @@ class JsonException extends \RuntimeException
      * @param \Throwable|null $previous
      * @return JsonException
      */
-    public static function decoding(string $json, int $code, \Throwable $previous = null): JsonException
+    public static function decoding(string $json, int $code, ?\Throwable $previous = null): JsonException
     {
         $e = self::instance($code, $previous);
         $e->decodedJson = $json;
@@ -61,7 +61,7 @@ class JsonException extends \RuntimeException
      * @param \Throwable|null $previous
      * @return JsonException
      */
-    private static function instance(int $code, \Throwable $previous = null): JsonException
+    private static function instance(int $code, ?\Throwable $previous = null): JsonException
     {
         return new self(self::$errors[$code] ?? 'Unknown error', $code, $previous);
     }
