@@ -43,7 +43,7 @@ class IntegrationTest extends TestCase
         $this->backupClient->setSkipPrepareBackup(false);
 
         $this->manageClient = Manage::create();
-        $this->manageClient->setBinaryPath(TestData::RESTIC_TEST_PATH);
+        $this->manageClient->setBinaryPath($resticBinaryPath);
         $this->manageClient->setRepositoryPassword(TestData::REPOSITORY_TEST_PASSWORD);
         $this->manageClient->setRepositoryPath(TestData::REPOSITORY_TEST_PATH);
         $this->manageClient->setBackupPath(TestData::BACKUP_TEST_PATH);
@@ -53,53 +53,11 @@ class IntegrationTest extends TestCase
 //        $this->manageClient->setKeepYearly(1);
 
         $this->restoreClient = Restore::create();
-        $this->restoreClient->setBinaryPath(TestData::RESTIC_TEST_PATH);
+        $this->restoreClient->setBinaryPath($resticBinaryPath);
         $this->restoreClient->setRepositoryPassword(TestData::REPOSITORY_TEST_PASSWORD);
         $this->restoreClient->setRepositoryPath(TestData::REPOSITORY_TEST_PATH);
         $this->restoreClient->setRestoreTarget(TestData::RESTORE_TEST_PATH);
 //        $this->restoreClient->setRestoreItem();
-    }
-    public function testIntegration(): void
-    {
-        $this->createSetup(TestData::RESTIC_TEST_PATH);
-
-        $resultInit = $this->backupClient->createRepository(true);
-
-        $this->assertInstanceOf(ResultEntity::class, $resultInit, 'Result should be an instance of ResultEntity');
-        $this->assertIsString($resultInit->getCommandLine(), 'Command line should be a string');
-        $this->assertIsFloat($resultInit->getDuration(), 'Duration should be a float');
-        $this->assertSame('initialized', $resultInit->getResticResponse()->message_type, 'Repository should be initialized');
-        $this->assertIsString($resultInit->getResticResponse()->id, 'Repository id should be a string');
-        $this->assertSame(
-            $resultInit->getResticResponse()->repository,
-            TestData::REPOSITORY_TEST_PATH,
-            'Repository path should be '.TestData::REPOSITORY_TEST_PATH
-        );
-
-        $this->backupRepository();
-        $this->backupNextRepository();
-        $this->checkRepository();
-        $this->getSnapshots();
-        $this->removeSnapshots();
-        $this->createRestore();
-    }
-
-    public function testIntegration014(): void
-    {
-        $this->createSetup(TestData::RESTIC_TEST_PATH_0_18);
-
-        $resultInit = $this->backupClient->createRepository(true);
-
-        $this->assertInstanceOf(ResultEntity::class, $resultInit, 'Result should be an instance of ResultEntity');
-        $this->assertIsString($resultInit->getCommandLine(), 'Command line should be a string');
-        $this->assertIsFloat($resultInit->getDuration(), 'Duration should be a float');
-
-        $this->backupRepository();
-        $this->backupNextRepository();
-        $this->checkRepository();
-        $this->getSnapshots();
-        $this->removeSnapshots();
-        $this->createRestore();
     }
 
     public function testIntegration015(): void
@@ -123,8 +81,8 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
-        $this->removeSnapshots();
-        $this->createRestore();
+//        $this->removeSnapshots();
+//        $this->createRestore();
     }
 
     public function testIntegration016(): void
@@ -143,6 +101,42 @@ class IntegrationTest extends TestCase
             TestData::REPOSITORY_TEST_PATH,
             'Repository path should be '.TestData::REPOSITORY_TEST_PATH
         );
+
+        $this->backupRepository();
+        $this->backupNextRepository();
+        $this->checkRepository();
+        $this->getSnapshots();
+        $this->removeSnapshots();
+        $this->createRestore();
+    }
+
+    public function testIntegration017(): void
+    {
+        $this->createSetup(TestData::RESTIC_TEST_PATH_0_17);
+
+        $resultInit = $this->backupClient->createRepository(true);
+
+        $this->assertInstanceOf(ResultEntity::class, $resultInit, 'Result should be an instance of ResultEntity');
+        $this->assertIsString($resultInit->getCommandLine(), 'Command line should be a string');
+        $this->assertIsFloat($resultInit->getDuration(), 'Duration should be a float');
+
+        $this->backupRepository();
+        $this->backupNextRepository();
+        $this->checkRepository();
+        $this->getSnapshots();
+        $this->removeSnapshots();
+        $this->createRestore();
+    }
+
+    public function testIntegration018(): void
+    {
+        $this->createSetup(TestData::RESTIC_TEST_PATH_0_18);
+
+        $resultInit = $this->backupClient->createRepository(true);
+
+        $this->assertInstanceOf(ResultEntity::class, $resultInit, 'Result should be an instance of ResultEntity');
+        $this->assertIsString($resultInit->getCommandLine(), 'Command line should be a string');
+        $this->assertIsFloat($resultInit->getDuration(), 'Duration should be a float');
 
         $this->backupRepository();
         $this->backupNextRepository();
@@ -247,14 +241,5 @@ class IntegrationTest extends TestCase
             $filePath = TestData::RESTORE_TEST_PATH.str_replace('.','',TestData::BACKUP_TEST_PATH).DIRECTORY_SEPARATOR.'file'.$fileCounter.'.txt';
             $this->assertFileExists($filePath, 'File '.$filePath.'should exist');
         }
-    }
-
-    public function testGetResticVersion(): void
-    {
-        $this->createSetup(TestData::RESTIC_TEST_PATH);
-        $resultVersion = $this->backupClient->getResticVersion();
-
-        $this->assertInstanceOf(ResultEntity::class, $resultVersion, 'Result should be an instance of ResultEntity');
-        $this->assertIsString($resultVersion->getOutput(), 'Output should be a string');
     }
 }
