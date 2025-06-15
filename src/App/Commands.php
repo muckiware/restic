@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024 by Muckiware
+ * @copyright  Copyright (c) 2024-2025 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -109,7 +109,7 @@ class Commands extends Command
             if($this->snapshotAdditionalParameterCheck($input)) {
 
                 $manageClient->setSnapshotId($input->getOption('snapshotId'));
-                $result = $manageClient->removeSnapshotById();
+                $result = $manageClient->removeSnapshotById()->getOutput();
             } else {
                 $result = $manageClient->getSnapshots()->getOutput();
             }

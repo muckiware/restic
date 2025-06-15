@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024 by Muckiware
+ * @copyright  Copyright (c) 2024-2025 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -77,7 +77,11 @@ class Manage extends Configuration
                 throw new ProcessFailedException($process);
             }
 
-            $resultOutput = Json::decode($process->getOutput());
+            if($this->isJsonOutput()) {
+                $resultOutput = Json::decode($process->getOutput());
+            } else {
+                $resultOutput = $process->getOutput();
+            }
 
             $forgetResult = new ResultEntity();
             $forgetResult->setCommandLine($process->getCommandLine());
@@ -106,7 +110,11 @@ class Manage extends Configuration
                 throw new ProcessFailedException($process);
             }
 
-            $resultOutput = Json::decode($process->getOutput());
+            if($this->isJsonOutput()) {
+                $resultOutput = Json::decode($process->getOutput());
+            } else {
+                $resultOutput = $process->getOutput();
+            }
 
             $forgetResult = new ResultEntity();
             $forgetResult->setCommandLine($process->getCommandLine());

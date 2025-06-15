@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024 by Muckiware
+ * @copyright  Copyright (c) 2024-2025 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -76,8 +76,6 @@ class Console extends Commands
                 case ResticCommands::SNAPSHOTS->value:
                     $result = $this->snapshots($input, $output);
                     break;
-                default:
-                    throw new InvalidArgumentException(sprintf('Invalid option %s', $optionKey));
             }
         }
 
