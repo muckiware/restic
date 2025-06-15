@@ -130,6 +130,34 @@ class ManageService
     }
 }
 ```
+## Remove snapshot by id
+You can remove a snapshot of a repository by id with the method `$manageClient->getSnapshots()`. The method `getSnapshots` returns the object `ResultEntity`. The method `getOutput` of the object `ResultEntity` returns the output of the restic command simple as string. If an error occurs, an exception will be thrown.
+### Example
+```php
+<?php declare(strict_types=1);
+
+use MuckiRestic\Library\Manage;
+
+class ManageService
+{
+    public function getSnapshotList(): void
+    {
+        try {
+        
+            $manageClient = Manage::create();
+            $manageClient->setBinaryPath('./bin/restic_0.17.3_linux_386'); //optional
+            $manageClient->setRepositoryPassword('1234'); //required
+            $manageClient->setRepositoryPath('./path_to_repository'); //required
+            $manageClient->setSnapshotId('snapshot_id'); //required
+            
+            echo $manageClient->removeSnapshotById()->getOutput();
+        
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+}
+```
 ## Remove old snapshots
 You can remove old snapshots of a repository with the method `$manageClient->removeSnapshots()`. This is kind a like a cleanup run for the repository. The method `removeSnapshots` returns as always the object `ResultEntity`. The method `getOutput` of the object `ResultEntity` returns the output of the restic command simple as string. If an error occurs, an exception will be thrown.<br>
 This cleanup run needs to be setup with the keep-parameters, which defined the number of daily, weekly, monthly and yearly snapshots to keep. The method `setKeepDaily(int $keepDaily)`, `setKeepWeekly(int $keepWeekly)`, `setKeepMonthly(int $keepMonthly)` and `setKeepYearly(int $keepYearly)` are used to set the keep-parameters.
@@ -155,8 +183,8 @@ class ManageService
         
             $manageClient = Manage::create();
             $manageClient->setBinaryPath('./bin/restic_0.17.3_linux_386'); //optional
-            $manageClient->setRepositoryPassword('1234');
-            $manageClient->setRepositoryPath('./path_to_repository');
+            $manageClient->setRepositoryPassword('1234'); //required
+            $manageClient->setRepositoryPath('./path_to_repository'); //required
             $manageClient->setKeepDaily(1); //optional
             $manageClient->setKeepWeekly(2); //optional
             $manageClient->setKeepMonthly(4); //optional
