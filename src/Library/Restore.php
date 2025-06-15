@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024 by Muckiware
+ * @copyright  Copyright (c) 2024-2025 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -36,12 +36,12 @@ class Restore extends Configuration
                 throw new ProcessFailedException($process);
             }
 
-            if($this->isJsonOutput()) {
+            $resticVersion = $this->getResticVersion()->getResticResponse()->getVersion();
+            if($this->isJsonOutput() && version_compare($resticVersion, '0.16.0', '>=')) {
                 $resultOutput = Json::decode(RestoreResultParser::fixJsonOutput($process->getOutput()));
             } else {
-                $resultOutput = $process->getOutput();
+                $resultOutput = array($process->getOutput());
             }
-
 
             $restoreResult = new ResultEntity();
             $restoreResult->setCommandLine($process->getCommandLine());

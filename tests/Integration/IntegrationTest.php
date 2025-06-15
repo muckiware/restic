@@ -81,8 +81,8 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
-//        $this->removeSnapshots();
-//        $this->createRestore();
+        $this->removeSnapshots();
+        $this->createRestore();
     }
 
     public function testIntegration016(): void

@@ -77,7 +77,8 @@ class Manage extends Configuration
                 throw new ProcessFailedException($process);
             }
 
-            if($this->isJsonOutput()) {
+            $resticVersion = $this->getResticVersion()->getResticResponse()->getVersion();
+            if($this->isJsonOutput() && version_compare($resticVersion, '0.16.0', '>=')) {
                 $resultOutput = Json::decode($process->getOutput());
             } else {
                 $resultOutput = $process->getOutput();
