@@ -11,16 +11,15 @@
  */
 namespace MuckiRestic\Library;
 
-use Symfony\Component\Process\Exception\ProcessFailedException;
 use JsonMapper;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
-use MuckiRestic\ResultParser\CheckResultParser;
-use MuckiRestic\Exception\InvalidConfigurationException;
-use MuckiRestic\Entity\Result\ResultEntity;
 use MuckiRestic\Core\Commands;
-use MuckiRestic\Service\Helper;
 use MuckiRestic\Entity\Result\ResticResponse\Snapshot;
-use MuckiRestic\Entity\Result\ResticResponse\Summary;
+use MuckiRestic\Entity\Result\ResultEntity;
+use MuckiRestic\Exception\InvalidConfigurationException;
+use MuckiRestic\ResultParser\ForgetResultParser;
 use MuckiRestic\Service\Json;
 
 class Manage extends Configuration
@@ -41,12 +40,13 @@ class Manage extends Configuration
                 throw new ProcessFailedException($process);
             }
 
-            $snapshots = array();
+            $snapshots = new ArrayCollection();
+
             if($this->isJsonOutput()) {
                 foreach (json_decode($process->getOutput()) as $snapshot) {
 
                     $mapper = new JsonMapper();
-                    $snapshots[] = $mapper->map($snapshot, new Snapshot());
+                    $snapshots->add($mapper->map($snapshot, new Snapshot()));
                 }
             }
 
@@ -112,7 +112,7 @@ class Manage extends Configuration
             }
 
             if($this->isJsonOutput()) {
-                $resultOutput = Json::decode($process->getOutput());
+                $resultOutput = ForgetResultParser::textParserResult($process->getOutput())->getProcessed();
             } else {
                 $resultOutput = $process->getOutput();
             }

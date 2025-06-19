@@ -22,7 +22,8 @@
         "php": "^8.1",
         "netresearch/jsonmapper": "^5.0",
         "symfony/process": "~v5.0|~v6.0|~v7.0",
-        "symfony/console": "~v5.0|~v6.0|~v7.0"
+        "symfony/console": "~v5.0|~v6.0|~v7.0",
+        "doctrine/collections": "^2.3"
     },
     "require-dev": {
         "phpstan/phpstan" : "*",
