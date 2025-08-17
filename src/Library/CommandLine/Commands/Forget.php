@@ -18,20 +18,45 @@ abstract class Forget implements CommandLineInterface
 {
     public static function getCommandLine(Configuration $configuration): string
     {
-        $command = 'export RESTIC_PASSWORD="%s"'."\n".'%s forget -r %s --keep-daily %s --keep-weekly %s --keep-monthly %s --keep-yearly %s --prune';
+        $command = sprintf(
+            'export RESTIC_PASSWORD="%s"'."\n".'%s forget -r %s --prune',
+            $configuration->getRepositoryPassword(),
+            $configuration->getBinaryPath(),
+            $configuration->getRepositoryPath()
+        );
+
         if($configuration->isJsonOutput()) {
             $command .= ' --json';
         }
 
-        return sprintf(
-            $command,
-            $configuration->getRepositoryPassword(),
-            $configuration->getBinaryPath(),
-            $configuration->getRepositoryPath(),
-            $configuration->getKeepDaily(),
-            $configuration->getKeepWeekly(),
-            $configuration->getKeepMonthly(),
-            $configuration->getKeepYearly()
-        );
+        if($configuration->getKeepDaily() && $configuration->getKeepDaily() > 0) {
+            $command .= sprintf(' --keep-daily %u', $configuration->getKeepDaily());
+        }
+
+        if($configuration->getKeepWeekly() && $configuration->getKeepWeekly() > 0) {
+            $command .= sprintf(' --keep-weekly %u', $configuration->getKeepWeekly());
+        }
+
+        if($configuration->getKeepMonthly() && $configuration->getKeepMonthly() > 0) {
+            $command .= sprintf(' --keep-monthly %u', $configuration->getKeepMonthly());
+        }
+
+        if($configuration->getKeepYearly() && $configuration->getKeepYearly() > 0) {
+            $command .= sprintf(' --keep-yearly %u', $configuration->getKeepYearly());
+        }
+
+        if($configuration->getKeepLast() && $configuration->getKeepLast() > 0) {
+            $command .= sprintf(' --keep-last %u', $configuration->getKeepLast());
+        }
+
+        if($configuration->getGroupBy()) {
+            $command .= sprintf(' --group-by %s', $configuration->getGroupBy());
+        }
+
+        if($configuration->getTag()) {
+            $command .= sprintf(' --group-by %s', $configuration->getTag());
+        }
+
+        return $command;
     }
 }

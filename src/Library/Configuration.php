@@ -11,6 +11,7 @@
  */
 namespace MuckiRestic\Library;
 
+use MuckiRestic\Core\Defaults;
 use Symfony\Component\Process\Process;
 
 use MuckiRestic\Client;
@@ -32,10 +33,13 @@ abstract class Configuration extends Client
      * forget command parameters
      * @var int
      */
-    protected int $keepDaily=7;
-    protected int $keepWeekly=5;
-    protected int $keepMonthly=12;
-    protected int $keepYearly=75;
+    protected int $keepDaily=0;
+    protected int $keepWeekly=0;
+    protected int $keepMonthly=0;
+    protected int $keepYearly=0;
+    protected int $keepLast=0;
+
+    protected ?string $tag = null;
 
     protected bool $skipPrepareBackup=false;
     protected bool $compress=true;
@@ -44,6 +48,18 @@ abstract class Configuration extends Client
 
     protected bool $jsonOutput = true;
     protected ?string $snapshotId;
+
+    /**
+     * Name for to create a snapshot by host name
+     * @var string|null
+     */
+    protected ?string $hostName = null;
+
+    /**
+     * Name for to group hosts with forget command
+     * @var string|null
+     */
+    protected ?string $groupBy = null;
 
     public function setBinaryPath(string $path): void
     {
@@ -125,6 +141,16 @@ abstract class Configuration extends Client
         $this->keepYearly = $keepYearly;
     }
 
+    public function getKeepLast(): int
+    {
+        return $this->keepLast;
+    }
+
+    public function setKeepLast(int $keepLast): void
+    {
+        $this->keepLast = $keepLast;
+    }
+
     public function isSkipPrepareBackup(): bool
     {
         return $this->skipPrepareBackup;
@@ -183,6 +209,36 @@ abstract class Configuration extends Client
     public function setSnapshotId(?string $snapshotId): void
     {
         $this->snapshotId = $snapshotId;
+    }
+
+    public function getHostName(): ?string
+    {
+        return $this->hostName;
+    }
+
+    public function setHostName(?string $hostName): void
+    {
+        $this->hostName = substr($hostName, 0, Defaults::MAXIMUM_RESTIC_PARAMETER_LENGTH);
+    }
+
+    public function getGroupBy(): ?string
+    {
+        return $this->groupBy;
+    }
+
+    public function setGroupBy(?string $groupBy): void
+    {
+        $this->groupBy = substr($groupBy, 0, Defaults::MAXIMUM_RESTIC_PARAMETER_LENGTH);;
+    }
+
+    public function getTag(): ?string
+    {
+        return $this->tag;
+    }
+
+    public function setTag(?string $tag): void
+    {
+        $this->tag = $tag;
     }
 
     /**

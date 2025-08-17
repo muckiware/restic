@@ -18,7 +18,13 @@ abstract class Backup implements CommandLineInterface
 {
     public static function getCommandLine(Configuration $configuration): string
     {
-        $command = 'export RESTIC_PASSWORD="%s"'."\n".'%s -r %s backup %s';
+        $command = sprintf('export RESTIC_PASSWORD="%s"'."\n".'%s -r %s backup %s',
+            $configuration->getRepositoryPassword(),
+            $configuration->getBinaryPath(),
+            $configuration->getRepositoryPath(),
+            $configuration->getBackupPath()
+        );
+
         if($configuration->isJsonOutput()) {
             $command .= ' --json';
         }
@@ -26,12 +32,10 @@ abstract class Backup implements CommandLineInterface
             $command .= ' --compression auto';
         }
 
-        return sprintf(
-            $command,
-            $configuration->getRepositoryPassword(),
-            $configuration->getBinaryPath(),
-            $configuration->getRepositoryPath(),
-            $configuration->getBackupPath()
-        );
+        if($configuration->getHostName()) {
+            $command .= ' --host %s';
+        }
+
+        return $command;
     }
 }

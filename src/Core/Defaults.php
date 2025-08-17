@@ -16,4 +16,5 @@ class Defaults
     const DEFAULT_COMMAND_PARAMETER_CONFIGURATION = 'commandParameterConfiguration.json';
     const RESTIC_VERSION_TEXT_PATTERN = '/\b\d+\.\d+\.\d+\b/';
     const GO_VERSION_TEXT_PATTERN = '/go(\d+\.\d+\.\d+)/';
+    const MAXIMUM_RESTIC_PARAMETER_LENGTH = 255;
 }

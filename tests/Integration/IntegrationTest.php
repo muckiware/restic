@@ -51,10 +51,10 @@ class IntegrationTest extends TestCase
         $this->manageClient->setRepositoryPassword(TestData::REPOSITORY_TEST_PASSWORD);
         $this->manageClient->setRepositoryPath(TestData::REPOSITORY_TEST_PATH);
         $this->manageClient->setBackupPath(TestData::BACKUP_TEST_PATH);
-//        $this->manageClient->setKeepDaily(1);
-//        $this->manageClient->setKeepWeekly(1);
-//        $this->manageClient->setKeepMonthly(1);
-//        $this->manageClient->setKeepYearly(1);
+        $this->manageClient->setKeepDaily(7);
+        $this->manageClient->setKeepWeekly(5);
+        $this->manageClient->setKeepMonthly(12);
+        $this->manageClient->setKeepYearly(75);
 
         $this->restoreClient = Restore::create();
         $this->restoreClient->setBinaryPath($resticBinaryPath);
