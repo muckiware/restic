@@ -216,7 +216,7 @@ abstract class Configuration extends Client
         return $this->hostName;
     }
 
-    public function setHostName(?string $hostName): void
+    public function setHostName(string $hostName): void
     {
         $this->hostName = substr($hostName, 0, Defaults::MAXIMUM_RESTIC_PARAMETER_LENGTH);
     }
@@ -226,9 +226,9 @@ abstract class Configuration extends Client
         return $this->groupBy;
     }
 
-    public function setGroupBy(?string $groupBy): void
+    public function setGroupBy(string $groupBy): void
     {
-        $this->groupBy = substr($groupBy, 0, Defaults::MAXIMUM_RESTIC_PARAMETER_LENGTH);;
+        $this->groupBy = substr($groupBy, 0, Defaults::MAXIMUM_RESTIC_PARAMETER_LENGTH);
     }
 
     public function getTag(): ?string
