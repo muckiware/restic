@@ -54,6 +54,11 @@ abstract class Configuration extends Client
     protected ?string $snapshotId;
 
     /**
+     * @var array <string>
+     */
+    protected array $snapshotIds = [];
+
+    /**
      * Name for to create a snapshot by host name
      * @var string|null
      */
@@ -215,6 +220,31 @@ abstract class Configuration extends Client
         $this->snapshotId = $snapshotId;
     }
 
+    /**
+     * @return array<string>
+     */
+    public function getSnapshotIds(): array
+    {
+        return $this->snapshotIds;
+    }
+
+    /**
+     * @param array<string> $snapshotIds
+     * @return void
+     */
+    public function setSnapshotIds(array $snapshotIds): void
+    {
+        $this->snapshotIds = $snapshotIds;
+    }
+
+    /**
+     * @param string $snapshotId
+     * @return void
+     */
+    public function addSnapshotId(string $snapshotId): void
+    {
+        $this->snapshotIds[] = $snapshotId;
+    }
     public function getHostName(): ?string
     {
         return $this->hostName;
