@@ -15,6 +15,8 @@ class TestData
     public const BACKUP_TEST_PATH = './var/testBackup';
     public const REPOSITORY_TEST_PASSWORD = '12345%ASDEee';
     public const RESTORE_TEST_PATH = './var/testRestore';
+
+    public const BACKUP_TEST_TAG = 'backup-tag';
     public const BACKUP_TEST_FILES = [
         'TEST file content 1',
         'TEST file content 2',
