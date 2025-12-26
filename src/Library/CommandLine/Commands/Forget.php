@@ -53,8 +53,11 @@ abstract class Forget implements CommandLineInterface
             $command .= sprintf(' --group-by %s', $configuration->getGroupBy());
         }
 
-        if($configuration->getTag()) {
-            $command .= sprintf(' --group-by %s', $configuration->getTag());
+        if($configuration->getTags()) {
+
+            foreach($configuration->getTags() as $tag) {
+                $command .= ' --tag '.$tag;
+            }
         }
 
         return $command;
