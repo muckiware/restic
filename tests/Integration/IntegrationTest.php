@@ -46,6 +46,8 @@ class IntegrationTest extends TestCase
         $this->backupClient->setCompress(true);
         $this->backupClient->setSkipPrepareBackup(false);
         $this->backupClient->setTag(TestData::BACKUP_TEST_TAG);
+        $this->backupClient->setHostName(TestData::BACKUP_TEST_HOSTNAME);
+
 
         $this->manageClient = Manage::create();
         $this->manageClient->setBinaryPath($resticBinaryPath);
@@ -219,6 +221,14 @@ class IntegrationTest extends TestCase
         $this->assertIsString($resultCheck->getOutput(), 'Output should be a string');
         $this->assertIsFloat($resultCheck->getDuration(), 'Duration should be a float');
         $this->assertCount(2, $snapshotCollection, 'Restic response should have 2 snapshots');
+
+        /** @var Snapshot $snapshot */
+        foreach ($snapshotCollection as $snapshot) {
+
+            $hostname = $snapshot->getHostname();
+            $this->assertIsString($hostname, 'Hostname should be a string');
+            $this->assertSame(TestData::BACKUP_TEST_HOSTNAME, $hostname, 'Hostname should be '.TestData::BACKUP_TEST_HOSTNAME);
+        }
     }
 
     public function removeSnapshots(): void

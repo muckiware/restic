@@ -33,7 +33,7 @@ abstract class Backup implements CommandLineInterface
         }
 
         if($configuration->getHostName()) {
-            $command .= ' --host %s';
+            $command .= ' --host '.$configuration->getHostName();
         }
 
         if($configuration->getTags()) {
