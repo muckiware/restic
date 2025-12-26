@@ -45,6 +45,7 @@ class IntegrationTest extends TestCase
         $this->backupClient->setBackupPath(TestData::BACKUP_TEST_PATH);
         $this->backupClient->setCompress(true);
         $this->backupClient->setSkipPrepareBackup(false);
+        $this->backupClient->setTag(TestData::BACKUP_TEST_TAG);
 
         $this->manageClient = Manage::create();
         $this->manageClient->setBinaryPath($resticBinaryPath);
