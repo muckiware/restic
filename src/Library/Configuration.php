@@ -41,6 +41,9 @@ abstract class Configuration extends Client
 
     protected ?string $tag = null;
 
+    /**
+     * @var array <string>
+     */
     protected array $tags = [];
     protected bool $skipPrepareBackup=false;
     protected bool $compress=true;
@@ -242,11 +245,17 @@ abstract class Configuration extends Client
         $this->tags[] = $tag;
     }
 
-    public function getTags(): ?array
+    /**
+     * @return array<string>
+     */
+    public function getTags(): array
     {
         return $this->tags;
     }
 
+    /**
+     * @param array<string> $tags
+     */
     public function setTags(array $tags): void
     {
         $this->tags = $tags;

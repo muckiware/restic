@@ -36,7 +36,7 @@ abstract class Backup implements CommandLineInterface
             $command .= ' --host %s';
         }
 
-        if($configuration->getTags() && !empty($configuration->getTags())) {
+        if($configuration->getTags()) {
 
             foreach($configuration->getTags() as $tag) {
                 $command .= ' --tag '.$tag;
