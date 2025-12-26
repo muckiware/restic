@@ -17,6 +17,7 @@ class TestData
     public const RESTORE_TEST_PATH = './var/testRestore';
 
     public const BACKUP_TEST_TAG = 'backup-tag';
+    public const BACKUP_TEST_HOSTNAME = 'backup-host';
     public const BACKUP_TEST_FILES = [
         'TEST file content 1',
         'TEST file content 2',
