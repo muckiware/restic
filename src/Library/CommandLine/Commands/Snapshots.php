@@ -27,6 +27,7 @@ abstract class Snapshots implements CommandLineInterface
         if($configuration->isJsonOutput()) {
             $command .= ' --json';
         }
+
         if($configuration->getHostName()) {
             $command .= ' --host '.$configuration->getHostName();
         }

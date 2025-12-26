@@ -29,6 +29,10 @@ abstract class Forget implements CommandLineInterface
             $command .= ' --json';
         }
 
+        if($configuration->getHostName()) {
+            $command .= ' --host '.$configuration->getHostName();
+        }
+
         if($configuration->getKeepDaily() && $configuration->getKeepDaily() > 0) {
             $command .= sprintf(' --keep-daily %u', $configuration->getKeepDaily());
         }
