@@ -18,17 +18,19 @@ abstract class SingleForget implements CommandLineInterface
 {
     public static function getCommandLine(Configuration $configuration): string
     {
-        $command = 'export RESTIC_PASSWORD="%s"'."\n".'%s -r %s forget %s --prune';
-        if($configuration->isJsonOutput()) {
-            $command .= ' --json';
-        }
+        $command = 'export RESTIC_PASSWORD="%s"'."\n".'%s forget %s -r %s';
+
+        //Does not work with single forget command. The output is just an empty string.
+        //if($configuration->isJsonOutput()) {
+        //  $command .= ' --json';
+        //}
 
         return sprintf(
             $command,
             $configuration->getRepositoryPassword(),
             $configuration->getBinaryPath(),
-            $configuration->getRepositoryPath(),
-            $configuration->getSnapshotId()
+            $configuration->getSnapshotId(),
+            $configuration->getRepositoryPath()
         );
     }
 }
