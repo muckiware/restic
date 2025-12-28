@@ -88,9 +88,9 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
+        $this->removeSnapshotById();
         $this->removeSnapshots();
         $this->createRestore();
-        $this->backupClient->createBackup();
         $this->removeSnapshot();
     }
 
@@ -115,6 +115,7 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
+        $this->removeSnapshotById();
         $this->removeSnapshots();
         $this->createRestore();
         $this->removeSnapshot();
@@ -134,6 +135,7 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
+        $this->removeSnapshotById();
         $this->removeSnapshots();
         $this->createRestore();
         $this->removeSnapshot();
@@ -153,6 +155,7 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
+        $this->removeSnapshotById();
         $this->removeSnapshots();
         $this->createRestore();
         $this->removeSnapshot();
@@ -231,14 +234,41 @@ class IntegrationTest extends TestCase
         }
     }
 
-    public function removeSnapshots(): void
+    public function removeSnapshotById(): void
     {
-        $resultCheck = $this->manageClient->removeSnapshots();
+        $snapshotCollectionBefore = $this->manageClient->getSnapshots();
+        $this->assertCount(2, $snapshotCollectionBefore->getResticResponse(), 'Restic response should have 2 snapshots before remove');
+
+        /** @var Snapshot $firstSnapshot */
+        $firstSnapshot = $snapshotCollectionBefore->getResticResponse()->first();
+
+        $snapshotId = $firstSnapshot->getId();
+        $this->manageClient->setSnapshotId($snapshotId);
+        $resultCheck = $this->manageClient->removeSnapshotById();
 
         $this->assertInstanceOf(ResultEntity::class, $resultCheck, 'Result should be an instance of ResultEntity');
         $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');
         $this->assertIsString($resultCheck->getOutput(), 'Output should be a string');
         $this->assertIsFloat($resultCheck->getDuration(), 'Duration should be a float');
+
+        $snapshotCollectionAfter = $this->manageClient->getSnapshots();
+        $this->assertCount(1, $snapshotCollectionAfter->getResticResponse(), 'Restic response should have 1 snapshots after remove');
+    }
+
+    public function removeSnapshots(): void
+    {
+        $snapshotCollectionBefore = $this->manageClient->getSnapshots();
+
+        $resultCheck = $this->manageClient->removeSnapshots();
+
+        $snapshotCollectionAfter = $this->manageClient->getSnapshots();
+
+        $this->assertInstanceOf(ResultEntity::class, $resultCheck, 'Result should be an instance of ResultEntity');
+        $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');
+        $this->assertIsString($resultCheck->getOutput(), 'Output should be a string');
+        $this->assertIsFloat($resultCheck->getDuration(), 'Duration should be a float');
+
+
     }
 
     public function createRestore(): void
@@ -269,7 +299,7 @@ class IntegrationTest extends TestCase
     {
         $this->backupClient->createBackup();
         $snapshotCollection = $this->manageClient->getSnapshots()->getResticResponse();
-        $this->assertCount(3, $snapshotCollection, 'Restic response should have 3 snapshots');
+        $this->assertCount(2, $snapshotCollection, 'Restic response should have 2 snapshots');
 
         /** @var Snapshot $lastSnapshot */
         $lastSnapshot = $this->manageClient->getSnapshots()->getResticResponse()->last();
@@ -285,7 +315,7 @@ class IntegrationTest extends TestCase
 
         /** @var ArrayCollection $snapshotCollectionAfterRemove */
         $snapshotCollectionAfterRemove = $snapshotsAfterRemove->getResticResponse();
-        $this->assertCount(2, $snapshotCollectionAfterRemove, 'Restic response should have 2 snapshots after remove');
+        $this->assertCount(1, $snapshotCollectionAfterRemove, 'Restic response should have 1 snapshots after remove');
 
         $criteria = new Criteria();
         $criteria->where(new Comparison('short_id', '=', $firstSnapshotShortId));

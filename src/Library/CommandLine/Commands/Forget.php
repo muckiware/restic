@@ -25,6 +25,13 @@ abstract class Forget implements CommandLineInterface
             $configuration->getRepositoryPath()
         );
 
+        if($configuration->getSnapshotIds()) {
+
+            foreach($configuration->getSnapshotIds() as $snapshotId) {
+                $command .= ' '.$snapshotId;
+            }
+        }
+
         if($configuration->isJsonOutput()) {
             $command .= ' --json';
         }
