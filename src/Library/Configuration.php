@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024 by Muckiware
+ * @copyright  Copyright (c) 2024-2025 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -69,6 +69,13 @@ abstract class Configuration extends Client
      * @var string|null
      */
     protected ?string $groupBy = null;
+
+    protected ?string $sftpUsername = null;
+    protected ?string $sftpPassword = null;
+    protected ?string $awsS3Endpoint = null;
+    protected ?string $awsS3Region = null;
+    protected ?string $awsAccessKeyId = null;
+    protected ?string $awsSecretAccessKey = null;
 
     public function setBinaryPath(string $path): void
     {
@@ -334,5 +341,65 @@ abstract class Configuration extends Client
     public function createProcess(Commands $commands): Process
     {
         return $this->getProcess($this->getCommandStringByCommand($commands));
+    }
+
+    public function getSftpUsername(): ?string
+    {
+        return $this->sftpUsername;
+    }
+
+    public function setSftpUsername(?string $sftpUsername): void
+    {
+        $this->sftpUsername = $sftpUsername;
+    }
+
+    public function getSftpPassword(): ?string
+    {
+        return $this->sftpPassword;
+    }
+
+    public function setSftpPassword(?string $sftpPassword): void
+    {
+        $this->sftpPassword = $sftpPassword;
+    }
+
+    public function getAwsAccessKeyId(): ?string
+    {
+        return $this->awsAccessKeyId;
+    }
+
+    public function setAwsAccessKeyId(?string $awsAccessKeyId): void
+    {
+        $this->awsAccessKeyId = $awsAccessKeyId;
+    }
+
+    public function getAwsS3Endpoint(): ?string
+    {
+        return $this->awsS3Endpoint;
+    }
+
+    public function setAwsS3Endpoint(?string $awsS3Endpoint): void
+    {
+        $this->awsS3Endpoint = $awsS3Endpoint;
+    }
+
+    public function getAwsS3Region(): ?string
+    {
+        return $this->awsS3Region;
+    }
+
+    public function setAwsS3Region(?string $awsS3Region): void
+    {
+        $this->awsS3Region = $awsS3Region;
+    }
+
+    public function getAwsSecretAccessKey(): ?string
+    {
+        return $this->awsSecretAccessKey;
+    }
+
+    public function setAwsSecretAccessKey(?string $awsSecretAccessKey): void
+    {
+        $this->awsSecretAccessKey = $awsSecretAccessKey;
     }
 }

@@ -21,6 +21,37 @@
     ]
   },
   {
+    "command": "InitAmazonS3",
+    "description": "Initialize a new repository at Amazon S3 server",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Endpoint",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsAccessKeyId",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsSecretAccessKey",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "command": "Backup",
     "description": "Create a backup into repository",
     "parameters": [

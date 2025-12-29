@@ -14,6 +14,7 @@ namespace MuckiRestic\Core;
 enum Commands: string
 {
     case INIT = 'Init';
+    case INIT_AMAZON_S3 = 'InitAmazonS3';
     case BACKUP = 'Backup';
     case RESTORE = 'Restore';
     case FORGET = 'Forget';
