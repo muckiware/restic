@@ -116,11 +116,11 @@ class AmazonS3 extends Configuration implements BackupInterface
     public function checkBackup(): ResultEntity
     {
         $this->setRepositoryPath('/');
-        if(!$this->checkInputParametersByCommand(Commands::CHECK)) {
+        if(!$this->checkInputParametersByCommand(Commands::CHECK_AMAZON_S3)) {
             throw new InvalidConfigurationException('Invalid configuration');
         }
 
-        $process = $this->createProcess(Commands::CHECK);
+        $process = $this->createProcess(Commands::CHECK_AMAZON_S3);
         $process->run();
 
         if (!$process->isSuccessful()) {

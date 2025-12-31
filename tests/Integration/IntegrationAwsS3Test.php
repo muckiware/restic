@@ -47,6 +47,7 @@ class IntegrationAwsS3Test extends TestCase
         $this->backupClient->setSkipPrepareBackup(false);
         $this->backupClient->setTag(TestData::BACKUP_TEST_TAG);
         $this->backupClient->setHostName(TestData::BACKUP_TEST_HOSTNAME);
+
         $this->backupClient->setAwsAccessKeyId(EnvironmentHelper::getVariable('AWS_ACCESS_KEY_ID'));
         $this->backupClient->setAwsSecretAccessKey(EnvironmentHelper::getVariable('AWS_SECRET_ACCESS_KEY'));
         $this->backupClient->setAwsS3Endpoint(EnvironmentHelper::getVariable('AWS_ENDPOINT_URL'));
@@ -62,9 +63,12 @@ class IntegrationAwsS3Test extends TestCase
         $this->manageClient->setKeepWeekly(5);
         $this->manageClient->setKeepMonthly(12);
         $this->manageClient->setKeepYearly(75);
+
         $this->manageClient->setAwsAccessKeyId(EnvironmentHelper::getVariable('AWS_ACCESS_KEY_ID'));
         $this->manageClient->setAwsSecretAccessKey(EnvironmentHelper::getVariable('AWS_SECRET_ACCESS_KEY'));
         $this->manageClient->setAwsS3Endpoint(EnvironmentHelper::getVariable('AWS_ENDPOINT_URL'));
+        $this->manageClient->setAwsS3Region(EnvironmentHelper::getVariable('AWS_REGION'));
+        $this->manageClient->setAwsS3BucketName(EnvironmentHelper::getVariable('AWS_S3_BUCKET_NAME'));
 
         $this->restoreClient = Restore::create();
         $this->restoreClient->setBinaryPath($resticBinaryPath);
@@ -92,8 +96,8 @@ class IntegrationAwsS3Test extends TestCase
         );
 
         $this->backupRepository();
-//        $this->backupNextRepository();
-//        $this->checkRepository();
+        $this->backupNextRepository();
+        $this->checkRepository();
 //        $this->getSnapshots();
 //        $this->removeSnapshotById();
 //        $this->removeSnapshots();
@@ -188,7 +192,7 @@ class IntegrationAwsS3Test extends TestCase
     public function backupNextRepository(): void
     {
         TestHelper::createTextFiles(TestData::BACKUP_TEST_PATH, TestData::NEXT_BACKUP_TEST_FILES);
-        $resultBackup = $this->backupClient->createBackup();
+        $resultBackup = $this->backupClient->createBackup(RepositoryLocationTypes::AWSS3);
 
         $this->assertInstanceOf(ResultEntity::class, $resultBackup, 'Result should be an instance of ResultEntity');
         $this->assertIsString($resultBackup->getCommandLine(), 'Command line should be a string');
@@ -206,7 +210,7 @@ class IntegrationAwsS3Test extends TestCase
     #[Depends('testBackupRepository')]
     public function checkRepository(): void
     {
-        $resultCheck = $this->backupClient->checkBackup();
+        $resultCheck = $this->backupClient->checkBackup(RepositoryLocationTypes::AWSS3);
 
         $this->assertInstanceOf(ResultEntity::class, $resultCheck, 'Result should be an instance of ResultEntity');
         $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');
@@ -221,7 +225,7 @@ class IntegrationAwsS3Test extends TestCase
     #[Depends('testBackupRepository')]
     public function getSnapshots(): void
     {
-        $resultCheck = $this->manageClient->getSnapshots();
+        $resultCheck = $this->manageClient->getSnapshots(RepositoryLocationTypes::AWSS3);
 
         $snapshotCollection = $resultCheck->getResticResponse();
 

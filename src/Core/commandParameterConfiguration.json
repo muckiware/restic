@@ -160,6 +160,47 @@
     ]
   },
   {
+    "command": "CheckAmazonS3",
+    "description": "Check repository",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Endpoint",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsAccessKeyId",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsSecretAccessKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3BucketName",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Region",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "command": "Snapshots",
     "description": "Get snapshots of repository",
     "parameters": [
