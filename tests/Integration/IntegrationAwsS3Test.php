@@ -87,8 +87,8 @@ class IntegrationAwsS3Test extends TestCase
         $this->assertIsString($resultInit->getResticResponse()->id, 'Repository id should be a string');
         $this->assertSame(
             $resultInit->getResticResponse()->repository,
-            TestData::REPOSITORY_TEST_PATH,
-            'Repository path should be '.TestData::REPOSITORY_TEST_PATH
+            EnvironmentHelper::getVariable('AWS_ENDPOINT_URL'),
+            'Repository path should be '.EnvironmentHelper::getVariable('AWS_ENDPOINT_URL')
         );
 
 //        $this->backupRepository();
@@ -101,8 +101,8 @@ class IntegrationAwsS3Test extends TestCase
 //        $this->removeSnapshot();
     }
 
-    public function testIntegration016(): void
-    {
+//    public function testIntegration016(): void
+//    {
 //        $this->createSetup(TestData::RESTIC_TEST_PATH_0_16);
 //
 //        $resultInit = $this->backupClient->createRepository(true);
@@ -126,10 +126,10 @@ class IntegrationAwsS3Test extends TestCase
 //        $this->removeSnapshots();
 //        $this->createRestore();
 //        $this->removeSnapshot();
-    }
+//    }
 
-    public function testIntegration017(): void
-    {
+//    public function testIntegration017(): void
+//    {
 //        $this->createSetup(TestData::RESTIC_TEST_PATH_0_17);
 //
 //        $resultInit = $this->backupClient->createRepository(true);
@@ -146,10 +146,10 @@ class IntegrationAwsS3Test extends TestCase
 //        $this->removeSnapshots();
 //        $this->createRestore();
 //        $this->removeSnapshot();
-    }
+//    }
 
-    public function testIntegration018(): void
-    {
+//    public function testIntegration018(): void
+//    {
 //        $this->createSetup(TestData::RESTIC_TEST_PATH_0_18);
 //
 //        $resultInit = $this->backupClient->createRepository(true);
@@ -166,7 +166,7 @@ class IntegrationAwsS3Test extends TestCase
 //        $this->removeSnapshots();
 //        $this->createRestore();
 //        $this->removeSnapshot();
-    }
+//    }
     public function backupRepository(): void
     {
         TestHelper::createTextFiles(TestData::BACKUP_TEST_PATH, TestData::BACKUP_TEST_FILES);
