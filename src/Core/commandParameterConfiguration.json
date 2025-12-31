@@ -48,6 +48,16 @@
         "name": "awsSecretAccessKey",
         "type": "string",
         "required": true
+      },
+      {
+        "name": "awsS3BucketName",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Region",
+        "type": "string",
+        "required": true
       }
     ]
   },
@@ -72,6 +82,57 @@
       },
       {
         "name": "backupPath",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  {
+    "command": "BackupAmazonS3",
+    "description": "Create a backup into repository at Amazon S3 server",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "backupPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Endpoint",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsAccessKeyId",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsSecretAccessKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3BucketName",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Region",
         "type": "string",
         "required": true
       }

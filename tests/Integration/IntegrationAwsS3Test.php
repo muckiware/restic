@@ -91,7 +91,7 @@ class IntegrationAwsS3Test extends TestCase
             'Repository path should be '.EnvironmentHelper::getVariable('AWS_ENDPOINT_URL')
         );
 
-//        $this->backupRepository();
+        $this->backupRepository();
 //        $this->backupNextRepository();
 //        $this->checkRepository();
 //        $this->getSnapshots();
@@ -170,7 +170,7 @@ class IntegrationAwsS3Test extends TestCase
     public function backupRepository(): void
     {
         TestHelper::createTextFiles(TestData::BACKUP_TEST_PATH, TestData::BACKUP_TEST_FILES);
-        $resultBackup = $this->backupClient->createBackup();
+        $resultBackup = $this->backupClient->createBackup(RepositoryLocationTypes::AWSS3);
 
         $this->assertInstanceOf(ResultEntity::class, $resultBackup, 'Result should be an instance of ResultEntity');
         $this->assertIsString($resultBackup->getCommandLine(), 'Command line should be a string');

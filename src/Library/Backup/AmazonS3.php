@@ -67,38 +67,37 @@ class AmazonS3 extends Configuration implements BackupInterface
      */
     public function createBackup(): ResultEntity
     {
-        if($this->checkInputParametersByCommand(Commands::BACKUP)) {
-
-            if(!$this->skipPrepareBackup) {
-                $this->prepareBackup();
-            }
-            $process = $this->createProcess(Commands::BACKUP);
-            $process->run();
-
-            if (!$process->isSuccessful()) {
-                throw new ProcessFailedException($process);
-            }
-
-            if($this->isJsonOutput()) {
-                $backupOutput = Json::decode(BackupResultParser::fixJsonOutput($process->getOutput()));
-            } else {
-                $backupOutput = $process->getOutput();
-            }
-
-            $backupResult = new ResultEntity();
-            $backupResult->setCommandLine($process->getCommandLine());
-            $backupResult->setStatus($process->getStatus());
-            $backupResult->setStartTime($process->getStartTime());
-            $backupResult->setEndTime($process->getLastOutputTime());
-            $backupResult->setDuration();
-            $backupResult->setOutput($process->getOutput());
-            $backupResult->setResticResponse($backupOutput);
-
-            return $backupResult;
-
-        } else {
+        $this->setRepositoryPath('/');
+        if(!$this->checkInputParametersByCommand(Commands::BACKUP_AMAZON_S3)) {
             throw new InvalidConfigurationException('Invalid configuration');
         }
+
+        if(!$this->skipPrepareBackup) {
+            $this->prepareBackup();
+        }
+        $process = $this->createProcess(Commands::BACKUP_AMAZON_S3);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+
+        if($this->isJsonOutput()) {
+            $backupOutput = Json::decode(BackupResultParser::fixJsonOutput($process->getOutput()));
+        } else {
+            $backupOutput = $process->getOutput();
+        }
+
+        $backupResult = new ResultEntity();
+        $backupResult->setCommandLine($process->getCommandLine());
+        $backupResult->setStatus($process->getStatus());
+        $backupResult->setStartTime($process->getStartTime());
+        $backupResult->setEndTime($process->getLastOutputTime());
+        $backupResult->setDuration();
+        $backupResult->setOutput($process->getOutput());
+        $backupResult->setResticResponse($backupOutput);
+
+        return $backupResult;
     }
 
     /**
@@ -116,28 +115,27 @@ class AmazonS3 extends Configuration implements BackupInterface
      */
     public function checkBackup(): ResultEntity
     {
-        if($this->checkInputParametersByCommand(Commands::CHECK)) {
-
-            $process = $this->createProcess(Commands::CHECK);
-            $process->run();
-
-            if (!$process->isSuccessful()) {
-                throw new ProcessFailedException($process);
-            }
-
-            $checkResult = CheckResultParser::textParserResult($process->getOutput());
-            $checkResult->setCommandLine($process->getCommandLine());
-            $checkResult->setStatus($process->getStatus());
-            $checkResult->setStartTime($process->getStartTime());
-            $checkResult->setEndTime($process->getLastOutputTime());
-            $checkResult->setDuration();
-            $checkResult->setOutput($process->getOutput());
-
-            return $checkResult;
-
-        } else {
+        $this->setRepositoryPath('/');
+        if(!$this->checkInputParametersByCommand(Commands::CHECK)) {
             throw new InvalidConfigurationException('Invalid configuration');
         }
+
+        $process = $this->createProcess(Commands::CHECK);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+
+        $checkResult = CheckResultParser::textParserResult($process->getOutput());
+        $checkResult->setCommandLine($process->getCommandLine());
+        $checkResult->setStatus($process->getStatus());
+        $checkResult->setStartTime($process->getStartTime());
+        $checkResult->setEndTime($process->getLastOutputTime());
+        $checkResult->setDuration();
+        $checkResult->setOutput($process->getOutput());
+
+        return $checkResult;
     }
 
     /**
@@ -145,7 +143,7 @@ class AmazonS3 extends Configuration implements BackupInterface
      */
     public function runUnlockCommand(): void
     {
-        $process = $this->createProcess(Commands::UNLOCK);
+        $process = $this->createProcess(Commands::UNLOCK_AMAZON_S3);
         $process->run();
 
         if (!$process->isSuccessful()) {
@@ -158,7 +156,7 @@ class AmazonS3 extends Configuration implements BackupInterface
      */
     public function runPruneCommand(): void
     {
-        $process = $this->createProcess(Commands::PRUNE);
+        $process = $this->createProcess(Commands::PRUNE_AMAZON_S3);
         $process->run();
 
         if (!$process->isSuccessful()) {
