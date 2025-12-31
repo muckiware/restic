@@ -4,23 +4,15 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024 by Muckiware
+ * @copyright  Copyright (c) 2024-2025 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
  */
 namespace MuckiRestic\Library;
 
-use Symfony\Component\Process\Exception\ProcessFailedException;
-
-use MuckiRestic\ResultParser\InitResultParser;
-use MuckiRestic\ResultParser\BackupResultParser;
-use MuckiRestic\ResultParser\CheckResultParser;
 use MuckiRestic\Exception\InvalidRepLocationException;
 use MuckiRestic\Entity\Result\ResultEntity;
-use MuckiRestic\Core\Commands;
-use MuckiRestic\Service\Helper;
-use MuckiRestic\Service\Json;
 use MuckiRestic\Core\RepositoryLocationTypes;
 
 class BackupFactory extends Configuration
@@ -31,10 +23,10 @@ class BackupFactory extends Configuration
      */
     public function createRepository(bool $overwrite=false, RepositoryLocationTypes $repositoryLocationTypes=RepositoryLocationTypes::LOCAL): ResultEntity
     {
-        $class = 'MuckiRestic\Library\Backup\\'.$repositoryLocationTypes->value;
+        $className = 'MuckiRestic\Library\Backup\\'.$repositoryLocationTypes->value;
         $method = 'createRepository';
 
-        return $this->callMethod($class, $method)->$method($overwrite);
+        return $this->createClassByName($className, $method)->$method($overwrite);
     }
 
     /**
@@ -43,10 +35,10 @@ class BackupFactory extends Configuration
      */
     public function createBackup(RepositoryLocationTypes $repositoryLocationTypes=RepositoryLocationTypes::LOCAL): ResultEntity
     {
-        $class = 'MuckiRestic\Library\Backup\\'.$repositoryLocationTypes->value;
+        $className = 'MuckiRestic\Library\Backup\\'.$repositoryLocationTypes->value;
         $method = 'createBackup';
 
-        return $this->callMethod($class, $method)->$method();
+        return $this->createClassByName($className, $method)->$method();
     }
 
     /**
@@ -64,10 +56,10 @@ class BackupFactory extends Configuration
      */
     public function checkBackup(RepositoryLocationTypes $repositoryLocationTypes=RepositoryLocationTypes::LOCAL): ResultEntity
     {
-        $class = 'MuckiRestic\Library\Backup\\'.$repositoryLocationTypes->value;
+        $className = 'MuckiRestic\Library\Backup\\'.$repositoryLocationTypes->value;
         $method = 'checkBackup';
 
-        return $this->callMethod($class, $method)->$method();
+        return $this->createClassByName($className, $method)->$method();
     }
 
     /**
@@ -75,10 +67,10 @@ class BackupFactory extends Configuration
      */
     public function runUnlockCommand(RepositoryLocationTypes $repositoryLocationTypes): void
     {
-        $class = 'MuckiRestic\Library\Backup\\'.$repositoryLocationTypes->value;
+        $className = 'MuckiRestic\Library\Backup\\'.$repositoryLocationTypes->value;
         $method = 'runUnlockCommand';
 
-        $this->callMethod($class, $method)->$method();
+        $this->createClassByName($className, $method)->$method();
     }
 
     /**
@@ -86,34 +78,34 @@ class BackupFactory extends Configuration
      */
     public function runPruneCommand(RepositoryLocationTypes $repositoryLocationTypes): void
     {
-        $class = 'MuckiRestic\Library\Backup\\'.$repositoryLocationTypes->value;
-        $method = 'runPruneCommand';
+        $className = 'MuckiRestic\Library\Backup\\'.$repositoryLocationTypes->value;
+        $method = __METHOD__;
 
-        $this->callMethod($class, $method)->$method();
+        $this->createClassByName($className, $method)->$method();
     }
 
     /**
      * @throws InvalidRepLocationException
      */
-    private function callMethod(string $class, string $method): mixed
+    private function createClassByName(string $className, string $method): mixed
     {
-        if (!class_exists($class)) {
-            throw new InvalidRepLocationException('Class not found '.$class);
+        if (!class_exists($className)) {
+            throw new InvalidRepLocationException('Class not found '.$className);
         }
-        if (!method_exists($class, $method)) {
-            throw new InvalidRepLocationException('Method not found: '.$method.' in '.$class);
+        if (!method_exists($className, $method)) {
+            throw new InvalidRepLocationException('Method not found: '.$method.' in '.$className);
         }
 
-        $rm = new \ReflectionMethod($class, $method);
+        $rm = new \ReflectionMethod($className, $method);
         if (!$rm->isPublic()) {
             throw new InvalidRepLocationException('Method is not public: '.$method);
         }
 
-        return $this->createFactoryInstance($class);
+        return $this->createFactoryInstance($className);
     }
 
     /**
-     * Method to create an instance of Factory and copy current configuration properties.
+     * Method to create an instance of Factory class by $className and copy all current configuration properties.
      *
      * @param string $className
      * @return mixed

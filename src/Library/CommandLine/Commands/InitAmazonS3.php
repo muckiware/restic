@@ -18,7 +18,7 @@ abstract class InitAmazonS3 implements CommandLineInterface
 {
     public static function getCommandLine(Configuration $configuration): string
     {
-        $command = 'export RESTIC_PASSWORD="%s"'."\n".'export AWS_ACCESS_KEY_ID="%s"'."\n".'export AWS_SECRET_ACCESS_KEY="%s"'."\n".'%s init --repo s3:%s';
+        $command = 'export RESTIC_PASSWORD="%s"'."\n".'export AWS_ACCESS_KEY_ID="%s"'."\n".'export AWS_SECRET_ACCESS_KEY="%s"'."\n".'export AWS_DEFAULT_REGION="%s"'."\n".'%s init --repo %s';
 
         if($configuration->isJsonOutput()) {
             $command .= ' --json';
@@ -29,6 +29,7 @@ abstract class InitAmazonS3 implements CommandLineInterface
             $configuration->getRepositoryPassword(),
             $configuration->getAwsAccessKeyId(),
             $configuration->getAwsSecretAccessKey(),
+            $configuration->getAwsS3Region(),
             $configuration->getBinaryPath(),
             $configuration->getAwsS3Endpoint()
         );

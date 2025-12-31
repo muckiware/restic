@@ -13,6 +13,7 @@ namespace MuckiRestic\Library\Backup;
 
 use MuckiRestic\Library\Configuration;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Aws\S3\S3Client;
 
 use MuckiRestic\ResultParser\InitResultParser;
 use MuckiRestic\ResultParser\BackupResultParser;
@@ -32,8 +33,13 @@ class AmazonS3 extends Configuration implements BackupInterface
      */
     public function createRepository(bool $overwrite=false): ResultEntity
     {
+        $this->setRepositoryPath('/');
         if(!$this->checkInputParametersByCommand(Commands::INIT_AMAZON_S3)) {
             throw new InvalidConfigurationException('Invalid configuration');
+        }
+
+        if($overwrite) {
+           $this->removeOldRepository();
         }
 
         $process = $this->createProcess(Commands::INIT_AMAZON_S3);
@@ -158,5 +164,42 @@ class AmazonS3 extends Configuration implements BackupInterface
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
+    }
+
+    public function removeOldRepository(): void
+    {
+        $bucketObjectsContent = null;
+        $s3client = $this->getS3Client();
+
+        $bucketObjects = $s3client->listObjectsV2([
+            'Bucket' => $this->getAwsS3BucketName(),
+        ]);
+
+        foreach ($bucketObjects['Contents'] as $content) {
+            $bucketObjectsContent[] = [
+                'Key' => $content['Key'],
+            ];
+        }
+
+        if($bucketObjectsContent !== null) {
+            $s3client->deleteObjects([
+                'Bucket' => $this->getAwsS3BucketName(),
+                'Delete' => [
+                    'Objects' => $bucketObjectsContent,
+                ],
+            ]);
+        }
+    }
+
+    public function getS3Client(): S3Client
+    {
+        return new S3Client([
+            'version' => 'latest',
+            'region'  => $this->getAwsS3Region(),
+            'credentials' => array(
+                'key'    => $this->getAwsAccessKeyId(),
+                'secret' => $this->getAwsSecretAccessKey(),
+            )
+        ]);
     }
 }

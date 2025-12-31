@@ -72,6 +72,8 @@ abstract class Configuration extends Client
 
     protected ?string $sftpUsername = null;
     protected ?string $sftpPassword = null;
+
+    protected ?string $awsS3BucketName = null;
     protected ?string $awsS3Endpoint = null;
     protected ?string $awsS3Region = null;
     protected ?string $awsAccessKeyId = null;
@@ -401,5 +403,15 @@ abstract class Configuration extends Client
     public function setAwsSecretAccessKey(?string $awsSecretAccessKey): void
     {
         $this->awsSecretAccessKey = $awsSecretAccessKey;
+    }
+
+    public function getAwsS3BucketName(): ?string
+    {
+        return $this->awsS3BucketName;
+    }
+
+    public function setAwsS3BucketName(?string $awsS3BucketName): void
+    {
+        $this->awsS3BucketName = $awsS3BucketName;
     }
 }
