@@ -29,6 +29,14 @@ jobs:
       - name: "Checkout Project files"
         uses: actions/checkout@v4
 
+      - name: Create .env.test file
+        run: |
+          echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env.test
+          echo "AWS_ENDPOINT_URL=${{ secrets.AWS_ENDPOINT_URL }}" >> .env.test
+          echo "AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}" >> .env.test
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env.test
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env.test
+
       - name: "Build instance"
         run: |
           composer install
