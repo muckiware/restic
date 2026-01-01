@@ -79,7 +79,7 @@ class BackupFactory extends Configuration
     public function runPruneCommand(RepositoryLocationTypes $repositoryLocationTypes): void
     {
         $className = 'MuckiRestic\Library\Backup\\'.$repositoryLocationTypes->value;
-        $method = __METHOD__;
+        $method = 'runPruneCommand';
 
         $this->createClassByName($className, $method)->$method();
     }
