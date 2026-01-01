@@ -99,8 +99,8 @@ class IntegrationAwsS3Test extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
-//        $this->removeSnapshotById();
-//        $this->removeSnapshots();
+        $this->removeSnapshotById();
+        $this->removeSnapshots();
 //        $this->createRestore();
 //        $this->removeSnapshot();
     }
@@ -247,7 +247,7 @@ class IntegrationAwsS3Test extends TestCase
 
     public function removeSnapshotById(): void
     {
-        $snapshotCollectionBefore = $this->manageClient->getSnapshots();
+        $snapshotCollectionBefore = $this->manageClient->getSnapshots(RepositoryLocationTypes::AWSS3);
         $this->assertCount(2, $snapshotCollectionBefore->getResticResponse(), 'Restic response should have 2 snapshots before remove');
 
         /** @var Snapshot $firstSnapshot */
@@ -255,24 +255,24 @@ class IntegrationAwsS3Test extends TestCase
 
         $snapshotId = $firstSnapshot->getId();
         $this->manageClient->setSnapshotId($snapshotId);
-        $resultCheck = $this->manageClient->removeSnapshotById();
+        $resultCheck = $this->manageClient->removeSnapshotById(RepositoryLocationTypes::AWSS3);
 
         $this->assertInstanceOf(ResultEntity::class, $resultCheck, 'Result should be an instance of ResultEntity');
         $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');
         $this->assertIsString($resultCheck->getOutput(), 'Output should be a string');
         $this->assertIsFloat($resultCheck->getDuration(), 'Duration should be a float');
 
-        $snapshotCollectionAfter = $this->manageClient->getSnapshots();
+        $snapshotCollectionAfter = $this->manageClient->getSnapshots(RepositoryLocationTypes::AWSS3);
         $this->assertCount(1, $snapshotCollectionAfter->getResticResponse(), 'Restic response should have 1 snapshots after remove');
     }
 
     public function removeSnapshots(): void
     {
-        $snapshotCollectionBefore = $this->manageClient->getSnapshots();
+        $snapshotCollectionBefore = $this->manageClient->getSnapshots(RepositoryLocationTypes::AWSS3);
 
-        $resultCheck = $this->manageClient->removeSnapshots();
+        $resultCheck = $this->manageClient->removeSnapshots(RepositoryLocationTypes::AWSS3);
 
-        $snapshotCollectionAfter = $this->manageClient->getSnapshots();
+        $snapshotCollectionAfter = $this->manageClient->getSnapshots(RepositoryLocationTypes::AWSS3);
 
         $this->assertInstanceOf(ResultEntity::class, $resultCheck, 'Result should be an instance of ResultEntity');
         $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');
@@ -309,20 +309,20 @@ class IntegrationAwsS3Test extends TestCase
     public function removeSnapshot(): void
     {
         $this->backupClient->createBackup();
-        $snapshotCollection = $this->manageClient->getSnapshots()->getResticResponse();
+        $snapshotCollection = $this->manageClient->getSnapshots(RepositoryLocationTypes::AWSS3)->getResticResponse();
         $this->assertCount(2, $snapshotCollection, 'Restic response should have 2 snapshots');
 
         /** @var Snapshot $lastSnapshot */
-        $lastSnapshot = $this->manageClient->getSnapshots()->getResticResponse()->last();
-        $firstSnapshot = $this->manageClient->getSnapshots()->getResticResponse()->first();
+        $lastSnapshot = $this->manageClient->getSnapshots(RepositoryLocationTypes::AWSS3)->getResticResponse()->last();
+        $firstSnapshot = $this->manageClient->getSnapshots(RepositoryLocationTypes::AWSS3)->getResticResponse()->first();
         $this->assertInstanceOf(Snapshot::class, $lastSnapshot, 'last item of snapshot collection should be an instance of Snapshot');
 
         $lastSnapshotShortId = $lastSnapshot->getShortId();
         $firstSnapshotShortId = $firstSnapshot->getShortId();
         $this->manageClient->setSnapshotId($lastSnapshotShortId);
-        $this->manageClient->removeSnapshotById();
+        $this->manageClient->removeSnapshotById(RepositoryLocationTypes::AWSS3);
 
-        $snapshotsAfterRemove = $this->manageClient->getSnapshots();
+        $snapshotsAfterRemove = $this->manageClient->getSnapshots(RepositoryLocationTypes::AWSS3);
 
         /** @var ArrayCollection $snapshotCollectionAfterRemove */
         $snapshotCollectionAfterRemove = $snapshotsAfterRemove->getResticResponse();

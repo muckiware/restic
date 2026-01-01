@@ -289,6 +289,47 @@
     ]
   },
   {
+    "command": "ForgetAmazonS3",
+    "description": "Forget older items in repository",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Endpoint",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsAccessKeyId",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsSecretAccessKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3BucketName",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Region",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "command": "Restore",
     "description": "Restore item of repository",
     "parameters": [
@@ -340,6 +381,52 @@
       },
       {
         "name": "snapshotId",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  {
+    "command": "SingleForgetAmazonS3",
+    "description": "Remove single snapshot in repository by id at AmazonS3",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "snapshotId",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Endpoint",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsAccessKeyId",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsSecretAccessKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3BucketName",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Region",
         "type": "string",
         "required": true
       }
