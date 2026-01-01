@@ -98,7 +98,7 @@ class IntegrationAwsS3Test extends TestCase
         $this->backupRepository();
         $this->backupNextRepository();
         $this->checkRepository();
-//        $this->getSnapshots();
+        $this->getSnapshots();
 //        $this->removeSnapshotById();
 //        $this->removeSnapshots();
 //        $this->createRestore();

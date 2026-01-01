@@ -222,6 +222,52 @@
     ]
   },
   {
+    "command": "SnapshotsAmazonS3",
+    "description": "Get snapshots of repository",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Endpoint",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsAccessKeyId",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsSecretAccessKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3BucketName",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Region",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "command": "Forget",
     "description": "Forget older items in repository",
     "parameters": [
