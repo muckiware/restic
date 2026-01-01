@@ -12,6 +12,7 @@ jobs:
       matrix:
         environment: [main]
         php-versions: ['8.1','8.2','8.3', '8.4']
+      max-parallel: 1
 
     steps:
 
