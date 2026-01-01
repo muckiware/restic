@@ -111,72 +111,72 @@ class IntegrationAwsS3Test extends TestCase
         $this->removeSnapshot();
     }
 
-//    public function testIntegration016(): void
-//    {
-//        $this->createSetup(TestData::RESTIC_TEST_PATH_0_16);
-//
-//        $resultInit = $this->backupClient->createRepository(true);
-//
-//        $this->assertInstanceOf(ResultEntity::class, $resultInit, 'Result should be an instance of ResultEntity');
-//        $this->assertIsString($resultInit->getCommandLine(), 'Command line should be a string');
-//        $this->assertIsFloat($resultInit->getDuration(), 'Duration should be a float');
-//        $this->assertSame('initialized', $resultInit->getResticResponse()->message_type, 'Repository should be initialized');
-//        $this->assertIsString($resultInit->getResticResponse()->id, 'Repository id should be a string');
-//        $this->assertSame(
-//            $resultInit->getResticResponse()->repository,
-//            TestData::REPOSITORY_TEST_PATH,
-//            'Repository path should be '.TestData::REPOSITORY_TEST_PATH
-//        );
+    public function testIntegration016(): void
+    {
+        $this->createSetup(TestData::RESTIC_TEST_PATH_0_16);
 
-//        $this->backupRepository();
-//        $this->backupNextRepository();
-//        $this->checkRepository();
-//        $this->getSnapshots();
-//        $this->removeSnapshotById();
-//        $this->removeSnapshots();
-//        $this->createRestore();
-//        $this->removeSnapshot();
-//    }
+        $resultInit = $this->backupClient->createRepository(true, RepositoryLocationTypes::AWSS3);
 
-//    public function testIntegration017(): void
-//    {
-//        $this->createSetup(TestData::RESTIC_TEST_PATH_0_17);
-//
-//        $resultInit = $this->backupClient->createRepository(true);
-//
-//        $this->assertInstanceOf(ResultEntity::class, $resultInit, 'Result should be an instance of ResultEntity');
-//        $this->assertIsString($resultInit->getCommandLine(), 'Command line should be a string');
-//        $this->assertIsFloat($resultInit->getDuration(), 'Duration should be a float');
+        $this->assertInstanceOf(ResultEntity::class, $resultInit, 'Result should be an instance of ResultEntity');
+        $this->assertIsString($resultInit->getCommandLine(), 'Command line should be a string');
+        $this->assertIsFloat($resultInit->getDuration(), 'Duration should be a float');
+        $this->assertSame('initialized', $resultInit->getResticResponse()->message_type, 'Repository should be initialized');
+        $this->assertIsString($resultInit->getResticResponse()->id, 'Repository id should be a string');
+        $this->assertSame(
+            $resultInit->getResticResponse()->repository,
+            EnvironmentHelper::getVariable('AWS_ENDPOINT_URL'),
+            'Repository path should be '.EnvironmentHelper::getVariable('AWS_ENDPOINT_URL')
+        );
 
-//        $this->backupRepository();
-//        $this->backupNextRepository();
-//        $this->checkRepository();
-//        $this->getSnapshots();
-//        $this->removeSnapshotById();
-//        $this->removeSnapshots();
-//        $this->createRestore();
-//        $this->removeSnapshot();
-//    }
+        $this->backupRepository();
+        $this->backupNextRepository();
+        $this->checkRepository();
+        $this->getSnapshots();
+        $this->removeSnapshotById();
+        $this->removeSnapshots();
+        $this->createRestore();
+        $this->removeSnapshot();
+    }
 
-//    public function testIntegration018(): void
-//    {
-//        $this->createSetup(TestData::RESTIC_TEST_PATH_0_18);
-//
-//        $resultInit = $this->backupClient->createRepository(true);
-//
-//        $this->assertInstanceOf(ResultEntity::class, $resultInit, 'Result should be an instance of ResultEntity');
-//        $this->assertIsString($resultInit->getCommandLine(), 'Command line should be a string');
-//        $this->assertIsFloat($resultInit->getDuration(), 'Duration should be a float');
-//
-//        $this->backupRepository();
-//        $this->backupNextRepository();
-//        $this->checkRepository();
-//        $this->getSnapshots();
-//        $this->removeSnapshotById();
-//        $this->removeSnapshots();
-//        $this->createRestore();
-//        $this->removeSnapshot();
-//    }
+    public function testIntegration017(): void
+    {
+        $this->createSetup(TestData::RESTIC_TEST_PATH_0_17);
+
+        $resultInit = $this->backupClient->createRepository(true, RepositoryLocationTypes::AWSS3);
+
+        $this->assertInstanceOf(ResultEntity::class, $resultInit, 'Result should be an instance of ResultEntity');
+        $this->assertIsString($resultInit->getCommandLine(), 'Command line should be a string');
+        $this->assertIsFloat($resultInit->getDuration(), 'Duration should be a float');
+
+        $this->backupRepository();
+        $this->backupNextRepository();
+        $this->checkRepository();
+        $this->getSnapshots();
+        $this->removeSnapshotById();
+        $this->removeSnapshots();
+        $this->createRestore();
+        $this->removeSnapshot();
+    }
+
+    public function testIntegration018(): void
+    {
+        $this->createSetup(TestData::RESTIC_TEST_PATH_0_18);
+
+        $resultInit = $this->backupClient->createRepository(true, RepositoryLocationTypes::AWSS3);
+
+        $this->assertInstanceOf(ResultEntity::class, $resultInit, 'Result should be an instance of ResultEntity');
+        $this->assertIsString($resultInit->getCommandLine(), 'Command line should be a string');
+        $this->assertIsFloat($resultInit->getDuration(), 'Duration should be a float');
+
+        $this->backupRepository();
+        $this->backupNextRepository();
+        $this->checkRepository();
+        $this->getSnapshots();
+        $this->removeSnapshotById();
+        $this->removeSnapshots();
+        $this->createRestore();
+        $this->removeSnapshot();
+    }
     public function backupRepository(): void
     {
         TestHelper::createTextFiles(TestData::BACKUP_TEST_PATH, TestData::BACKUP_TEST_FILES);
