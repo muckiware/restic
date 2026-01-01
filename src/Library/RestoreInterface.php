@@ -11,18 +11,13 @@
  */
 namespace MuckiRestic\Library;
 
-use Symfony\Component\Process\Process;
-
 use MuckiRestic\Exception\InvalidConfigurationException;
 use MuckiRestic\Entity\Result\ResultEntity;
 
-interface ManageInterface
+interface RestoreInterface
 {
-    public function getSnapshots(): ResultEntity;
-
-    public function removeSnapshots(): ResultEntity;
-
-    public function removeSnapshotById(): ResultEntity;
-
-    public function resultsExecution(Process $process, bool $isJsonOutput): ResultEntity;
+    /**
+     * @throws InvalidConfigurationException
+     */
+    public function createRestore(): ResultEntity;
 }

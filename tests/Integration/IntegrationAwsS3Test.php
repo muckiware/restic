@@ -76,6 +76,12 @@ class IntegrationAwsS3Test extends TestCase
         $this->restoreClient->setRepositoryPath(TestData::REPOSITORY_TEST_PATH);
         $this->restoreClient->setRestoreTarget(TestData::RESTORE_TEST_PATH);
 //        $this->restoreClient->setRestoreItem();
+
+        $this->restoreClient->setAwsAccessKeyId(EnvironmentHelper::getVariable('AWS_ACCESS_KEY_ID'));
+        $this->restoreClient->setAwsSecretAccessKey(EnvironmentHelper::getVariable('AWS_SECRET_ACCESS_KEY'));
+        $this->restoreClient->setAwsS3Endpoint(EnvironmentHelper::getVariable('AWS_ENDPOINT_URL'));
+        $this->restoreClient->setAwsS3Region(EnvironmentHelper::getVariable('AWS_REGION'));
+        $this->restoreClient->setAwsS3BucketName(EnvironmentHelper::getVariable('AWS_S3_BUCKET_NAME'));
     }
 
     public function testIntegration015(): void
@@ -101,8 +107,8 @@ class IntegrationAwsS3Test extends TestCase
         $this->getSnapshots();
         $this->removeSnapshotById();
         $this->removeSnapshots();
-//        $this->createRestore();
-//        $this->removeSnapshot();
+        $this->createRestore();
+        $this->removeSnapshot();
     }
 
 //    public function testIntegration016(): void
@@ -284,7 +290,7 @@ class IntegrationAwsS3Test extends TestCase
 
     public function createRestore(): void
     {
-        $resultCheck = $this->restoreClient->createRestore();
+        $resultCheck = $this->restoreClient->createRestore(RepositoryLocationTypes::AWSS3);
 
         $this->assertInstanceOf(ResultEntity::class, $resultCheck, 'Result should be an instance of ResultEntity');
         $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');
@@ -308,7 +314,7 @@ class IntegrationAwsS3Test extends TestCase
 
     public function removeSnapshot(): void
     {
-        $this->backupClient->createBackup();
+        $this->backupClient->createBackup(RepositoryLocationTypes::AWSS3);
         $snapshotCollection = $this->manageClient->getSnapshots(RepositoryLocationTypes::AWSS3)->getResticResponse();
         $this->assertCount(2, $snapshotCollection, 'Restic response should have 2 snapshots');
 

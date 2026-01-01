@@ -4,13 +4,14 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024-2025 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
  */
 namespace MuckiRestic\Library;
 
+use MuckiRestic\Exception\InvalidRepLocationException;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use JsonMapper;
 
@@ -22,40 +23,34 @@ use MuckiRestic\Service\Helper;
 use MuckiRestic\Entity\Result\ResticResponse\Snapshot;
 use MuckiRestic\Entity\Result\ResticResponse\Summary;
 use MuckiRestic\Service\Json;
+use MuckiRestic\Core\RepositoryLocationTypes;
 
 class Restore extends Configuration
 {
-    public function createRestore(): ResultEntity
+    /**
+     * @throws InvalidRepLocationException
+     */
+    public function createRestore(RepositoryLocationTypes $repositoryLocationTypes=RepositoryLocationTypes::LOCAL, bool $overwrite=false): ResultEntity
     {
-        if($this->checkInputParametersByCommand(Commands::RESTORE)) {
+        return $this->createFactoryInstance()->createRestore($overwrite, $repositoryLocationTypes);
+    }
 
-            $process = $this->createProcess(Commands::RESTORE);
-            $process->run();
+    /**
+     * Method to create an instance of BackupFactory and copy current configuration properties.
+     *
+     * @return RestoreFactory
+     */
+    private function createFactoryInstance(): RestoreFactory
+    {
+        $restoreFactory = new RestoreFactory();
+        $ref = new \ReflectionObject($this);
+        foreach ($ref->getProperties() as $prop) {
 
-            if (!$process->isSuccessful()) {
-                throw new ProcessFailedException($process);
+            if(!$prop->isInitialized($this) || $prop->isStatic()) {
+                continue;
             }
-
-            $resticVersion = $this->getResticVersion()->getResticResponse()->getVersion();
-            if($this->isJsonOutput() && version_compare($resticVersion, '0.16.0', '>=')) {
-                $resultOutput = Json::decode(RestoreResultParser::fixJsonOutput($process->getOutput()));
-            } else {
-                $resultOutput = array($process->getOutput());
-            }
-
-            $restoreResult = new ResultEntity();
-            $restoreResult->setCommandLine($process->getCommandLine());
-            $restoreResult->setStatus($process->getStatus());
-            $restoreResult->setStartTime($process->getStartTime());
-            $restoreResult->setEndTime($process->getLastOutputTime());
-            $restoreResult->setDuration();
-            $restoreResult->setResticResponse($resultOutput);
-            $restoreResult->setOutput($process->getOutput());
-
-            return $restoreResult;
-
-        } else {
-            throw new InvalidConfigurationException('Invalid configuration');
+            $prop->setValue($restoreFactory, $prop->getValue($this));
         }
+        return $restoreFactory;
     }
 }

@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024-2025 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -21,10 +21,10 @@ use MuckiRestic\Core\Commands;
 use MuckiRestic\Entity\Result\ResticResponse\Snapshot;
 use MuckiRestic\Entity\Result\ResultEntity;
 use MuckiRestic\Exception\InvalidConfigurationException;
-use MuckiRestic\ResultParser\ForgetResultParser;
 use MuckiRestic\Service\Json;
+use MuckiRestic\Library\ManageInterface;
 
-class Local extends Configuration
+class Local extends Configuration implements ManageInterface
 {
     /**
      * @throws \JsonMapper_Exception

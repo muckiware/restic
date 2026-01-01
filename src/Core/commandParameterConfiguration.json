@@ -361,6 +361,57 @@
     ]
   },
   {
+    "command": "RestoreAmazonS3",
+    "description": "Restore item of repository AmazonS3 server",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "restoreItem",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "restoreTarget",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Endpoint",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsAccessKeyId",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsSecretAccessKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3BucketName",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Region",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "command": "SingleForget",
     "description": "Remove single snapshot in repository by id",
     "parameters": [
