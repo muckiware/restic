@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024-2025 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -18,8 +18,7 @@ abstract class Snapshots implements CommandLineInterface
 {
     public static function getCommandLine(Configuration $configuration): string
     {
-        $command = sprintf('export RESTIC_PASSWORD="%s"'."\n".'%s --repo %s snapshots',
-            $configuration->getRepositoryPassword(),
+        $command = sprintf('%s --repo %s snapshots',
             $configuration->getBinaryPath(),
             $configuration->getRepositoryPath()
         );
@@ -33,5 +32,12 @@ abstract class Snapshots implements CommandLineInterface
         }
 
         return $command;
+    }
+
+    public static function getEnvParameters(Configuration $configuration): array
+    {
+        return [
+            'RESTIC_PASSWORD' => $configuration->getRepositoryPassword()
+        ];
     }
 }

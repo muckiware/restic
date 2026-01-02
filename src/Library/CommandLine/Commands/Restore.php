@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024-2025 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -18,18 +18,24 @@ abstract class Restore implements CommandLineInterface
 {
     public static function getCommandLine(Configuration $configuration): string
     {
-        $command = 'export RESTIC_PASSWORD="%s"'."\n".'%s restore %s -r %s  --target %s';
+        $command = '%s restore %s -r %s  --target %s';
         if($configuration->isJsonOutput()) {
             $command .= ' --json';
         }
 
         return sprintf(
             $command,
-            $configuration->getRepositoryPassword(),
             $configuration->getBinaryPath(),
             $configuration->getRestoreItem(),
             $configuration->getRepositoryPath(),
             $configuration->getRestoreTarget()
         );
+    }
+
+    public static function getEnvParameters(Configuration $configuration): array
+    {
+        return [
+            'RESTIC_PASSWORD' => $configuration->getRepositoryPassword()
+        ];
     }
 }

@@ -30,9 +30,9 @@ abstract class Client
         return new static();
     }
 
-    public function getProcess(string $command): Process
+    public function getProcess(string $command, array $envParameters=[]): Process
     {
-        return Process::fromShellCommandline($command, null, null, null, 1000);
+        return Process::fromShellCommandline($command, null, $envParameters, null, 1000);
     }
 
     public function requestVersion(string $command): Process

@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024-2025 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -19,8 +19,7 @@ abstract class Forget implements CommandLineInterface
     public static function getCommandLine(Configuration $configuration): string
     {
         $command = sprintf(
-            'export RESTIC_PASSWORD="%s"'."\n".'%s forget -r %s --prune',
-            $configuration->getRepositoryPassword(),
+            '%s forget -r %s --prune',
             $configuration->getBinaryPath(),
             $configuration->getRepositoryPath()
         );
@@ -72,5 +71,12 @@ abstract class Forget implements CommandLineInterface
         }
 
         return $command;
+    }
+
+    public static function getEnvParameters(Configuration $configuration): array
+    {
+        return [
+            'RESTIC_PASSWORD' => $configuration->getRepositoryPassword()
+        ];
     }
 }

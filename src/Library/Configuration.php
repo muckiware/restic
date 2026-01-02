@@ -340,9 +340,21 @@ abstract class Configuration extends Client
     /**
      * @throws InvalidConfigurationException
      */
+    public function getEnvParametersByCommand(Commands $command): array
+    {
+        $commandLineFactory = new CommandLineFactory();
+        return $commandLineFactory->createEnvParameters($this, $command);
+    }
+
+    /**
+     * @throws InvalidConfigurationException
+     */
     public function createProcess(Commands $commands): Process
     {
-        return $this->getProcess($this->getCommandStringByCommand($commands));
+        return $this->getProcess(
+            $this->getCommandStringByCommand($commands),
+            $this->getEnvParametersByCommand($commands)
+        );
     }
 
     public function getSftpUsername(): ?string
