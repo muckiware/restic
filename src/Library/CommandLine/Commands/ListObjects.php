@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -19,10 +19,20 @@ abstract class ListObjects implements CommandLineInterface
     public static function getCommandLine(Configuration $configuration): string
     {
         return sprintf(
-            'export RESTIC_PASSWORD="%s"'."\n".'%s --repo %s list',
-            $configuration->getRepositoryPassword(),
+            '%s --repo %s list',
             $configuration->getBinaryPath(),
             $configuration->getRepositoryPath()
         );
+    }
+
+    /**
+     * @param Configuration $configuration
+     * @return array<string,string>
+     */
+    public static function getEnvParameters(Configuration $configuration): array
+    {
+        return [
+            'RESTIC_PASSWORD' => $configuration->getRepositoryPassword()
+        ];
     }
 }

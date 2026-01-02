@@ -18,11 +18,7 @@ abstract class SnapshotsAmazonS3 implements CommandLineInterface
 {
     public static function getCommandLine(Configuration $configuration): string
     {
-        $command = sprintf('export RESTIC_PASSWORD="%s"'."\n".'export AWS_ACCESS_KEY_ID="%s"'."\n".'export AWS_SECRET_ACCESS_KEY="%s"'."\n".'export AWS_DEFAULT_REGION="%s"'."\n".'%s --repo %s snapshots',
-            $configuration->getRepositoryPassword(),
-            $configuration->getAwsAccessKeyId(),
-            $configuration->getAwsSecretAccessKey(),
-            $configuration->getAwsS3Region(),
+        $command = sprintf('%s --repo %s snapshots',
             $configuration->getBinaryPath(),
             $configuration->getAwsS3Endpoint()
         );
@@ -36,5 +32,19 @@ abstract class SnapshotsAmazonS3 implements CommandLineInterface
         }
 
         return $command;
+    }
+
+    /**
+     * @param Configuration $configuration
+     * @return array<string,string|null>
+     */
+    public static function getEnvParameters(Configuration $configuration): array
+    {
+        return [
+            'RESTIC_PASSWORD' => $configuration->getRepositoryPassword(),
+            'AWS_ACCESS_KEY_ID' => $configuration->getAwsAccessKeyId(),
+            'AWS_SECRET_ACCESS_KEY' => $configuration->getAwsSecretAccessKey(),
+            'AWS_DEFAULT_REGION' => $configuration->getAwsS3Region()
+        ];
     }
 }

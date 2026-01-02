@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024-2025 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -18,7 +18,7 @@ abstract class SingleForgetAmazonS3 implements CommandLineInterface
 {
     public static function getCommandLine(Configuration $configuration): string
     {
-        $command = 'export RESTIC_PASSWORD="%s"'."\n".'export AWS_ACCESS_KEY_ID="%s"'."\n".'export AWS_SECRET_ACCESS_KEY="%s"'."\n".'export AWS_DEFAULT_REGION="%s"'."\n".'%s forget %s -r %s';
+        $command = '%s forget %s -r %s';
 
         //Does not work with single forget command. The output is just an empty string.
         //if($configuration->isJsonOutput()) {
@@ -27,13 +27,23 @@ abstract class SingleForgetAmazonS3 implements CommandLineInterface
 
         return sprintf(
             $command,
-            $configuration->getRepositoryPassword(),
-            $configuration->getAwsAccessKeyId(),
-            $configuration->getAwsSecretAccessKey(),
-            $configuration->getAwsS3Region(),
             $configuration->getBinaryPath(),
             $configuration->getSnapshotId(),
             $configuration->getAwsS3Endpoint()
         );
+    }
+
+    /**
+     * @param Configuration $configuration
+     * @return array<string,string|null>
+     */
+    public static function getEnvParameters(Configuration $configuration): array
+    {
+        return [
+            'RESTIC_PASSWORD' => $configuration->getRepositoryPassword(),
+            'AWS_ACCESS_KEY_ID' => $configuration->getAwsAccessKeyId(),
+            'AWS_SECRET_ACCESS_KEY' => $configuration->getAwsSecretAccessKey(),
+            'AWS_DEFAULT_REGION' => $configuration->getAwsS3Region()
+        ];
     }
 }

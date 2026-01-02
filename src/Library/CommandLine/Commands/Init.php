@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -18,16 +18,26 @@ abstract class Init implements CommandLineInterface
 {
     public static function getCommandLine(Configuration $configuration): string
     {
-        $command = 'export RESTIC_PASSWORD="%s"'."\n".'%s init --repo %s';
+        $command = '%s init --repo %s';
         if($configuration->isJsonOutput()) {
             $command .= ' --json';
         }
 
         return sprintf(
             $command,
-            $configuration->getRepositoryPassword(),
             $configuration->getBinaryPath(),
             $configuration->getRepositoryPath()
         );
+    }
+
+    /**
+     * @param Configuration $configuration
+     * @return array<string,string>
+     */
+    public static function getEnvParameters(Configuration $configuration): array
+    {
+        return [
+            'RESTIC_PASSWORD' => $configuration->getRepositoryPassword()
+        ];
     }
 }

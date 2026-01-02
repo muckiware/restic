@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -16,4 +16,10 @@ use MuckiRestic\Library\Configuration;
 interface CommandLineInterface
 {
     public static function getCommandLine(Configuration $configuration): string;
+
+    /**
+     * @param Configuration $configuration
+     * @return array<string,string|null>
+     */
+    public static function getEnvParameters(Configuration $configuration): array;
 }

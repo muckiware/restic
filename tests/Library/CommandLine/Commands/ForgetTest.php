@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -36,8 +36,6 @@ class ForgetTest extends TestCase
         $manage->setRepositoryPath(TestData::REPOSITORY_TEST_PATH);
         $forgetCommand = $manage->getCommandStringByCommand(Commands::FORGET);
 
-        $this::assertEquals('export RESTIC_PASSWORD="12345%ASDEee"
-./bin/restic_0.18.0_linux_386 forget -r ./var/testRep --prune --json', $forgetCommand);
-        $checker =1 ;
+        $this::assertEquals(TestData::RESTIC_TEST_PATH_0_18.' forget -r ./var/testRep --prune --json', $forgetCommand);
     }
 }

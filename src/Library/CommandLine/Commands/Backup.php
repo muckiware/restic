@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024-2025 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -18,8 +18,7 @@ abstract class Backup implements CommandLineInterface
 {
     public static function getCommandLine(Configuration $configuration): string
     {
-        $command = sprintf('export RESTIC_PASSWORD="%s"'."\n".'%s -r %s backup %s',
-            $configuration->getRepositoryPassword(),
+        $command = sprintf('%s -r %s backup %s',
             $configuration->getBinaryPath(),
             $configuration->getRepositoryPath(),
             $configuration->getBackupPath()
@@ -44,5 +43,16 @@ abstract class Backup implements CommandLineInterface
         }
 
         return $command;
+    }
+
+    /**
+     * @param Configuration $configuration
+     * @return array<string,string>
+     */
+    public static function getEnvParameters(Configuration $configuration): array
+    {
+        return [
+            'RESTIC_PASSWORD' => $configuration->getRepositoryPassword()
+        ];
     }
 }
