@@ -339,6 +339,7 @@ abstract class Configuration extends Client
 
     /**
      * @throws InvalidConfigurationException
+     * @return array<string,string>
      */
     public function getEnvParametersByCommand(Commands $command): array
     {

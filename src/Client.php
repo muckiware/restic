@@ -30,6 +30,11 @@ abstract class Client
         return new static();
     }
 
+    /**
+     * @param string $command
+     * @param array<string,string> $envParameters
+     * @return Process
+     */
     public function getProcess(string $command, array $envParameters=[]): Process
     {
         return Process::fromShellCommandline($command, null, $envParameters, null, 1000);

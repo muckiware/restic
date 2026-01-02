@@ -31,6 +31,10 @@ abstract class InitAmazonS3 implements CommandLineInterface
         );
     }
 
+    /**
+     * @param Configuration $configuration
+     * @return array<string,string|null>
+     */
     public static function getEnvParameters(Configuration $configuration): array
     {
         return [

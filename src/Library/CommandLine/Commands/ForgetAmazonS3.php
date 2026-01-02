@@ -73,6 +73,10 @@ abstract class ForgetAmazonS3 implements CommandLineInterface
         return $command;
     }
 
+    /**
+     * @param Configuration $configuration
+     * @return array<string,string|null>
+     */
     public static function getEnvParameters(Configuration $configuration): array
     {
         return [

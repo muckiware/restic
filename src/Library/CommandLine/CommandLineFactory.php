@@ -30,6 +30,12 @@ class CommandLineFactory
         return call_user_func($callable, $configuration);
     }
 
+    /**
+     * @param Configuration $configuration
+     * @param Commands $command
+     * @return array<string,string>
+     * @throws InvalidConfigurationException
+     */
     public function createEnvParameters(Configuration $configuration, Commands $command): array
     {
         $callable = ['MuckiRestic\Library\CommandLine\Commands\\'.$command->value, 'getEnvParameters'];

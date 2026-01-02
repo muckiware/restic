@@ -45,6 +45,10 @@ abstract class Backup implements CommandLineInterface
         return $command;
     }
 
+    /**
+     * @param Configuration $configuration
+     * @return array<string,string>
+     */
     public static function getEnvParameters(Configuration $configuration): array
     {
         return [

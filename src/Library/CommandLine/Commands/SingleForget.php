@@ -33,6 +33,10 @@ abstract class SingleForget implements CommandLineInterface
         );
     }
 
+    /**
+     * @param Configuration $configuration
+     * @return array<string,string>
+     */
     public static function getEnvParameters(Configuration $configuration): array
     {
         return [
