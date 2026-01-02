@@ -1,6 +1,14 @@
 # muckiware/restic
 PHP client for [restic](https://github.com/restic/restic) backup tool. This library provides a simple way to create and manage backups with restic. It uses repositories as storage for backups.
+<div align="center">
 
+[![Latest Stable Version](http://poser.pugx.org/muckiware/restic/v)](https://packagist.org/packages/muckiware/restic)
+[![Total Downloads](http://poser.pugx.org/muckiware/restic/downloads)](https://packagist.org/packages/muckiware/restic)
+[![PHP Version Require](http://poser.pugx.org/muckiware/restic/require/php)](https://packagist.org/packages/muckiware/restic)
+[![Dependents](http://poser.pugx.org/muckiware/restic/dependents)](https://packagist.org/packages/muckiware/restic)
+[![License](https://img.shields.io/github/license/shopware/shopware.svg)](https://github.com/shopware/shopware/blob/trunk/LICENSE)
+
+</div>
 # Requirements
 - PHP 8.1 or higher
 - Composer
