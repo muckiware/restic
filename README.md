@@ -9,11 +9,13 @@ PHP client for [restic](https://github.com/restic/restic) backup tool. This libr
 [![License](https://img.shields.io/github/license/shopware/shopware.svg)](https://github.com/shopware/shopware/blob/trunk/LICENSE)
 
 </div>
+
 # Requirements
 - PHP 8.1 or higher
 - Composer
 - Restic as binary or installed on the system, see https://restic.readthedocs.io/en/stable/020_installation.html
 - Restic version 0.15.0 or higher
+- AWS account with S3 bucket, if you want to use Amazon S3 as external storage for the backup repository
 # Installation
 ```bash
 composer require muckiware/restic
