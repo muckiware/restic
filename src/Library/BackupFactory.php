@@ -63,6 +63,7 @@ class BackupFactory extends Configuration
     }
 
     /**
+     * @deprecated method will move to ManageFactory in future releases
      * @throws InvalidRepLocationException
      */
     public function runUnlockCommand(RepositoryLocationTypes $repositoryLocationTypes): void
@@ -74,6 +75,7 @@ class BackupFactory extends Configuration
     }
 
     /**
+     * @deprecated method is being moved to ManageFactory
      * @throws InvalidRepLocationException
      */
     public function runPruneCommand(RepositoryLocationTypes $repositoryLocationTypes): void
