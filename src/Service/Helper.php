@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -42,5 +42,14 @@ class Helper
         }
 
         return true;
+    }
+
+    public static function checkBinaryVersion(string $resticVersion, bool $skipVersionCheck=false, string $versionBase='0.16.0'): bool
+    {
+        if(version_compare($resticVersion, $versionBase, '>=') || $skipVersionCheck) {
+            return true;
+        }
+
+        return false;
     }
 }

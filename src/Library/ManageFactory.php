@@ -51,6 +51,22 @@ class ManageFactory extends Configuration
         return $this->createClassByName($className, $method)->$method($process, $isJsonOutput);
     }
 
+    public function executePrune(RepositoryLocationTypes $repositoryLocationTypes)
+    {
+        $className = 'MuckiRestic\Library\Manage\\'.$repositoryLocationTypes->value;
+        $method = 'executePrune';
+
+        return $this->createClassByName($className, $method)->$method();
+    }
+
+    public function getRepositoryStats(RepositoryLocationTypes $repositoryLocationTypes)
+    {
+        $className = 'MuckiRestic\Library\Manage\\'.$repositoryLocationTypes->value;
+        $method = 'getRepositoryStats';
+
+        return $this->createClassByName($className, $method)->$method();
+    }
+
     /**
      * @throws InvalidRepLocationException
      */

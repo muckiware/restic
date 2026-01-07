@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -88,7 +88,9 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
+        $totalSizeFirstRun = $this->getRepositoryStats();
         $this->removeSnapshotById();
+        $this->executePrune($totalSizeFirstRun);
         $this->removeSnapshots();
         $this->createRestore();
         $this->removeSnapshot();
@@ -115,7 +117,9 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
+        $totalSizeFirstRun = $this->getRepositoryStats();
         $this->removeSnapshotById();
+        $this->executePrune($totalSizeFirstRun);
         $this->removeSnapshots();
         $this->createRestore();
         $this->removeSnapshot();
@@ -135,7 +139,9 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
+        $totalSizeFirstRun = $this->getRepositoryStats();
         $this->removeSnapshotById();
+        $this->executePrune($totalSizeFirstRun);
         $this->removeSnapshots();
         $this->createRestore();
         $this->removeSnapshot();
@@ -155,7 +161,9 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
+        $totalSizeFirstRun = $this->getRepositoryStats();
         $this->removeSnapshotById();
+        $this->executePrune($totalSizeFirstRun);
         $this->removeSnapshots();
         $this->createRestore();
         $this->removeSnapshot();
@@ -267,8 +275,36 @@ class IntegrationTest extends TestCase
         $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');
         $this->assertIsString($resultCheck->getOutput(), 'Output should be a string');
         $this->assertIsFloat($resultCheck->getDuration(), 'Duration should be a float');
+    }
 
+    public function getRepositoryStats(): int
+    {
+        $resultStats = $this->manageClient->getRepositoryStats();
 
+        $this->assertInstanceOf(ResultEntity::class, $resultStats, 'Result should be an instance of ResultEntity');
+        $this->assertIsString($resultStats->getCommandLine(), 'Command line should be a string');
+        $this->assertIsString($resultStats->getOutput(), 'Output should be a string');
+        $this->assertIsFloat($resultStats->getDuration(), 'Duration should be a float');
+        $this->assertObjectHasProperty('total_size', $resultStats->getResticResponse(), 'Restic response should have total_size key');
+        $this->assertObjectHasProperty('total_file_count', $resultStats->getResticResponse(), 'Restic response should have total_size key');
+        $this->assertObjectHasProperty('snapshots_count', $resultStats->getResticResponse(), 'Restic response should have total_size key');
+
+        $this->assertGreaterThan(0, $resultStats->getResticResponse()->total_size, 'Total size should be greater than 0');
+        $this->assertGreaterThan(0, $resultStats->getResticResponse()->snapshots_count, 'Total size should be greater than 0');
+
+        return $resultStats->getResticResponse()->total_size;
+    }
+
+    public function executePrune(int $totalSizeFirstRun): void
+    {
+        $executePruneResults = $this->manageClient->executePrune();
+        $this->assertInstanceOf(ResultEntity::class, $executePruneResults, 'Result should be an instance of ResultEntity');
+        $this->assertIsString($executePruneResults->getCommandLine(), 'Command line should be a string');
+        $this->assertIsString($executePruneResults->getOutput(), 'Output should be a string');
+        $this->assertIsFloat($executePruneResults->getDuration(), 'Duration should be a float');
+
+        $resultStats = $this->manageClient->getRepositoryStats();
+        $this->assertLessThan($totalSizeFirstRun, $resultStats->getResticResponse()->total_size, 'Total size should be less than '.$totalSizeFirstRun.' after prune run');
     }
 
     public function createRestore(): void

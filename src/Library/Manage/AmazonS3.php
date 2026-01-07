@@ -23,6 +23,7 @@ use MuckiRestic\Entity\Result\ResultEntity;
 use MuckiRestic\Exception\InvalidConfigurationException;
 use MuckiRestic\Service\Json;
 use MuckiRestic\Library\ManageInterface;
+use MuckiRestic\Service\Helper;
 
 class AmazonS3 extends Configuration implements ManageInterface
 {
@@ -107,17 +108,17 @@ class AmazonS3 extends Configuration implements ManageInterface
                 throw new ProcessFailedException($process);
             }
 
-            return $this->resultsExecution($process, false);
+            return $this->resultsExecution($process, false, true);
 
         } else {
             throw new InvalidConfigurationException('Invalid configuration');
         }
     }
 
-    public function resultsExecution(Process $process, bool $isJsonOutput): ResultEntity
+    public function resultsExecution(Process $process, bool $isJsonOutput, bool $skipVersionCheck=false): ResultEntity
     {
-        $resticVersion = $this->getResticVersion()->getResticResponse()->getVersion();
-        if($isJsonOutput && version_compare($resticVersion, '0.16.0', '>=')) {
+        $currentBinaryVersion = $this->getResticVersion()->getResticResponse()->getVersion();
+        if($isJsonOutput && Helper::checkBinaryVersion($currentBinaryVersion, $skipVersionCheck)) {
             $resultOutput = Json::decode($process->getOutput());
         } else {
             $resultOutput = $process->getOutput();
@@ -133,5 +134,49 @@ class AmazonS3 extends Configuration implements ManageInterface
         $forgetResult->setOutput($process->getOutput());
 
         return $forgetResult;
+    }
+
+    /**
+     * @throws InvalidConfigurationException
+     * @throws \Exception
+     */
+    public function executePrune(): ResultEntity
+    {
+        if($this->checkInputParametersByCommand(Commands::PRUNE_AMAZON_S3)) {
+
+            $process = $this->createProcess(Commands::PRUNE_AMAZON_S3);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
+
+            return $this->resultsExecution($process, false, true);
+
+        } else {
+            throw new InvalidConfigurationException('Invalid configuration');
+        }
+    }
+
+    /**
+     * @throws InvalidConfigurationException
+     * @throws \Exception
+     */
+    public function getRepositoryStats(): ResultEntity
+    {
+        if($this->checkInputParametersByCommand(Commands::STATS_AMAZON_S3)) {
+
+            $process = $this->createProcess(Commands::STATS_AMAZON_S3);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
+
+            return $this->resultsExecution($process, $this->isJsonOutput(), true);
+
+        } else {
+            throw new InvalidConfigurationException('Invalid configuration');
+        }
     }
 }

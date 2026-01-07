@@ -25,6 +25,80 @@ How to use the library. This php client interacts with the restic binary to crea
 
 ## Location of backup repository
 The backup repository can be located on the local file system, or on an external S3 storage. Currently this library supports AWS / AmazonS3 as external storage for the backup repository. More details about the Amazon Bucket configuration in the restic documentation https://restic.readthedocs.io/en/latest/080_examples.html#setting-up-restic-with-amazon-s3
+## Overview commands
+This gives you an overview of the possible methods of the framework. The default value for repositoryLocationTypes is local.
+### MuckiRestic\Library\Backup\Backup::_[method]_;
+```php
+<?php declare(strict_types=1);
+
+use MuckiRestic\Library\Backup;
+
+class MyClass
+{
+    public function myMethod(): void
+    {
+        try {
+        
+            $backupClient = Backup::create();
+            //configuration settings
+            ...
+            $backupClient->[method]
+            ...
+```
+| Method             | Parameter variable name [type of variable]                                                                            | Description                                                               |
+|:-------------------|:------------------------------------------------------------------------------------|:--------------------------------------------------------------------------|
+| createRepository() | $overwrite[bool], <br/>$repositoryLocationTypes[RepositoryLocationTypes] (optional) | Creates a new backup repository                                           |
+| createBackup()     | $repositoryLocationTypes[RepositoryLocationTypes] (optional)                        | Creates a backup with and creates a new snapshot in the backup repository |
+| checkBackup()      | $repositoryLocationTypes[RepositoryLocationTypes] (optional)                        | Checks a repository and reads all data for testing                        |
+
+### MuckiRestic\Library\Backup\Manage::_[method]_;
+```php
+<?php declare(strict_types=1);
+
+use MuckiRestic\Library\Manage;
+
+class MyClass
+{
+    public function myMethod(): void
+    {
+        try {
+        
+            $manageClient = Manage::create();
+            //configuration settings
+            ...
+            $manageClient->[method]
+            ...
+```
+| Method               | Parameter variable name [type of variable]                   | Description                                                                     |
+|:---------------------|:-------------------------------------------------------------|:--------------------------------------------------------------------------------|
+| getSnapshots()       | $repositoryLocationTypes[RepositoryLocationTypes] (optional) | Get a list of all snapshots in specific repository                              |
+| removeSnapshots()    | $repositoryLocationTypes[RepositoryLocationTypes] (optional) | Removes snapshots by snapshot ids                                               |
+| removeSnapshotById() | $repositoryLocationTypes[RepositoryLocationTypes] (optional) | Removes a snapshot by specific snapshot id                                      |
+| executePrune()       | $repositoryLocationTypes[RepositoryLocationTypes] (optional) | Performance a clean up of old items after a remove command. Its saved hd space. |
+| getRepositoryStats() | $repositoryLocationTypes[RepositoryLocationTypes] (optional) | Get a list of statistic values of a specific repository                         |
+
+### MuckiRestic\Library\Restore::_[method]_;
+```php
+<?php declare(strict_types=1);
+
+use MuckiRestic\Library\Restore;
+
+class MyClass
+{
+    public function myMethod(): void
+    {
+        try {
+        
+            $restoreClient = Restore::create();
+            //configuration settings
+            ...
+            $restoreClient->[method]
+            ...
+```
+| Method             | Parameter variable name [type of variable]                                                                            | Description                              |
+|:-------------------|:------------------------------------------------------------------------------------|:-----------------------------------------|
+| createRestore() | $overwrite[bool], <br/>$repositoryLocationTypes[RepositoryLocationTypes] (optional) | Creates a restore of a specific snapshot |
+
 ## Create a new backup repository
 You will need first the backup object of the library, for to use the **createRepository** method. Import this class with `use MuckiRestic\Library\Backup;`. The Backup-class has a static `create`-method for to get the Backup object, like this `$backupClient = Backup::create();`. With this create, you have access to all the Backup methods. The `$backupClient->createRepository()` method initialize a new repository and  need the required parameters _password_ and the _repositoryPath_. The repositoryPath is where the backup data will be stored and the password is used to encrypt the backup data. It's required for all operations on the repository. It has to be set by the two setting methods `$backupClient->setRepositoryPassword('1234')` and `$backupClient->setRepositoryPath('./path_to_repository')`<br>
 Optionally you can set the path for the restic binary, with `$backupClient->setBinaryPath('./bin/restic_0.17.3_linux_386')`. This is necessary if the restic binary is not installed in the local system. 

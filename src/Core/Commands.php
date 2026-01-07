@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024-2025 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -35,4 +35,6 @@ enum Commands: string
     case UNLOCK_AMAZON_S3 = 'UnlockAmazonS3';
     case SINGLE_FORGET = 'SingleForget';
     case SINGLE_FORGET_AMAZON_S3 = 'SingleForgetAmazonS3';
+    case STATS = 'Stats';
+    case STATS_AMAZON_S3 = 'StatsAmazonS3';
 }
