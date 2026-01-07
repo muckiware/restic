@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -88,8 +88,9 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
-        $this->getRepositoryStats();
+        $totalSizeFirstRun = $this->getRepositoryStats();
         $this->removeSnapshotById();
+        $this->executePrune($totalSizeFirstRun);
         $this->removeSnapshots();
         $this->createRestore();
         $this->removeSnapshot();
@@ -116,7 +117,9 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
+        $totalSizeFirstRun = $this->getRepositoryStats();
         $this->removeSnapshotById();
+        $this->executePrune($totalSizeFirstRun);
         $this->removeSnapshots();
         $this->createRestore();
         $this->removeSnapshot();
@@ -136,7 +139,9 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
+        $totalSizeFirstRun = $this->getRepositoryStats();
         $this->removeSnapshotById();
+        $this->executePrune($totalSizeFirstRun);
         $this->removeSnapshots();
         $this->createRestore();
         $this->removeSnapshot();
@@ -156,7 +161,9 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
+        $totalSizeFirstRun = $this->getRepositoryStats();
         $this->removeSnapshotById();
+        $this->executePrune($totalSizeFirstRun);
         $this->removeSnapshots();
         $this->createRestore();
         $this->removeSnapshot();
@@ -288,20 +295,16 @@ class IntegrationTest extends TestCase
         return $resultStats->getResticResponse()->total_size;
     }
 
-    public function executePrune(): void
+    public function executePrune(int $totalSizeFirstRun): void
     {
-        $snapshotCollectionBefore = $this->manageClient->getSnapshots();
+        $executePruneResults = $this->manageClient->executePrune();
+        $this->assertInstanceOf(ResultEntity::class, $executePruneResults, 'Result should be an instance of ResultEntity');
+        $this->assertIsString($executePruneResults->getCommandLine(), 'Command line should be a string');
+        $this->assertIsString($executePruneResults->getOutput(), 'Output should be a string');
+        $this->assertIsFloat($executePruneResults->getDuration(), 'Duration should be a float');
 
-//        $resultCheck = $this->manageClient->pru
-
-        $snapshotCollectionAfter = $this->manageClient->getSnapshots();
-
-//        $this->assertInstanceOf(ResultEntity::class, $resultCheck, 'Result should be an instance of ResultEntity');
-//        $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');
-//        $this->assertIsString($resultCheck->getOutput(), 'Output should be a string');
-//        $this->assertIsFloat($resultCheck->getDuration(), 'Duration should be a float');
-
-
+        $resultStats = $this->manageClient->getRepositoryStats();
+        $this->assertLessThan($totalSizeFirstRun, $resultStats->getResticResponse()->total_size, 'Total size should be less than '.$totalSizeFirstRun.' after prune run');
     }
 
     public function createRestore(): void
