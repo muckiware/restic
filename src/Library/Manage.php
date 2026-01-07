@@ -38,6 +38,16 @@ class Manage extends Configuration
         return $this->createFactoryInstance()->resultsExecution($process, $isJsonOutput, $repositoryLocationTypes);
     }
 
+    public function executePrune(RepositoryLocationTypes $repositoryLocationTypes=RepositoryLocationTypes::LOCAL): ResultEntity
+    {
+        return $this->createFactoryInstance()->executePrune($repositoryLocationTypes);
+    }
+
+    public function getRepositoryStats(RepositoryLocationTypes $repositoryLocationTypes=RepositoryLocationTypes::LOCAL): ResultEntity
+    {
+        return $this->createFactoryInstance()->getRepositoryStats($repositoryLocationTypes);
+    }
+
     /**
      * Method to create an instance of BackupFactory and copy current configuration properties.
      *

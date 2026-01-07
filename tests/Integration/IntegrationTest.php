@@ -88,6 +88,7 @@ class IntegrationTest extends TestCase
         $this->backupNextRepository();
         $this->checkRepository();
         $this->getSnapshots();
+        $this->getRepositoryStats();
         $this->removeSnapshotById();
         $this->removeSnapshots();
         $this->createRestore();
@@ -267,6 +268,38 @@ class IntegrationTest extends TestCase
         $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');
         $this->assertIsString($resultCheck->getOutput(), 'Output should be a string');
         $this->assertIsFloat($resultCheck->getDuration(), 'Duration should be a float');
+    }
+
+    public function getRepositoryStats(): int
+    {
+        $resultStats = $this->manageClient->getRepositoryStats();
+
+        $this->assertInstanceOf(ResultEntity::class, $resultStats, 'Result should be an instance of ResultEntity');
+        $this->assertIsString($resultStats->getCommandLine(), 'Command line should be a string');
+        $this->assertIsString($resultStats->getOutput(), 'Output should be a string');
+        $this->assertIsFloat($resultStats->getDuration(), 'Duration should be a float');
+        $this->assertObjectHasProperty('total_size', $resultStats->getResticResponse(), 'Restic response should have total_size key');
+        $this->assertObjectHasProperty('total_file_count', $resultStats->getResticResponse(), 'Restic response should have total_size key');
+        $this->assertObjectHasProperty('snapshots_count', $resultStats->getResticResponse(), 'Restic response should have total_size key');
+
+        $this->assertGreaterThan(0, $resultStats->getResticResponse()->total_size, 'Total size should be greater than 0');
+        $this->assertGreaterThan(0, $resultStats->getResticResponse()->snapshots_count, 'Total size should be greater than 0');
+
+        return $resultStats->getResticResponse()->total_size;
+    }
+
+    public function executePrune(): void
+    {
+        $snapshotCollectionBefore = $this->manageClient->getSnapshots();
+
+//        $resultCheck = $this->manageClient->pru
+
+        $snapshotCollectionAfter = $this->manageClient->getSnapshots();
+
+//        $this->assertInstanceOf(ResultEntity::class, $resultCheck, 'Result should be an instance of ResultEntity');
+//        $this->assertIsString($resultCheck->getCommandLine(), 'Command line should be a string');
+//        $this->assertIsString($resultCheck->getOutput(), 'Output should be a string');
+//        $this->assertIsFloat($resultCheck->getDuration(), 'Duration should be a float');
 
 
     }

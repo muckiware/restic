@@ -482,5 +482,129 @@
         "required": true
       }
     ]
+  },
+  {
+    "command": "Stats",
+    "description": "Check repository by get statistics",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPath",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  {
+    "command": "StatsAmazonS3",
+    "description": "Check repository by get statistics at AmazonS3",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Endpoint",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsAccessKeyId",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsSecretAccessKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3BucketName",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Region",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  {
+    "command": "Prune",
+    "description": "Run Prune command on repository",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPath",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  {
+    "command": "PruneAmazonS3",
+    "description": "Run Prune repository at AmazonS3",
+    "parameters": [
+      {
+        "name": "resticBinaryPath",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "repositoryPassword",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Endpoint",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsAccessKeyId",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsSecretAccessKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3BucketName",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "awsS3Region",
+        "type": "string",
+        "required": true
+      }
+    ]
   }
 ]

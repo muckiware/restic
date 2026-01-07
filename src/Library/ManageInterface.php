@@ -19,10 +19,10 @@ use MuckiRestic\Entity\Result\ResultEntity;
 interface ManageInterface
 {
     public function getSnapshots(): ResultEntity;
-
     public function removeSnapshots(): ResultEntity;
-
     public function removeSnapshotById(): ResultEntity;
+    public function executePrune(): ResultEntity;
+    public function getRepositoryStats(): ResultEntity;
 
-    public function resultsExecution(Process $process, bool $isJsonOutput): ResultEntity;
+    public function resultsExecution(Process $process, bool $isJsonOutput, bool $skipVersionCheck=false): ResultEntity;
 }

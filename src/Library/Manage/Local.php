@@ -23,6 +23,7 @@ use MuckiRestic\Entity\Result\ResultEntity;
 use MuckiRestic\Exception\InvalidConfigurationException;
 use MuckiRestic\Service\Json;
 use MuckiRestic\Library\ManageInterface;
+use MuckiRestic\Service\Helper;
 
 class Local extends Configuration implements ManageInterface
 {
@@ -107,17 +108,63 @@ class Local extends Configuration implements ManageInterface
                 throw new ProcessFailedException($process);
             }
 
-            return $this->resultsExecution($process, false);
+            return $this->resultsExecution($process, false, true);
 
         } else {
             throw new InvalidConfigurationException('Invalid configuration');
         }
     }
 
-    public function resultsExecution(Process $process, bool $isJsonOutput): ResultEntity
+    /**
+     * @throws InvalidConfigurationException
+     * @throws \Exception
+     */
+    public function executePrune(): ResultEntity
     {
-        $resticVersion = $this->getResticVersion()->getResticResponse()->getVersion();
-        if($isJsonOutput && version_compare($resticVersion, '0.16.0', '>=')) {
+        if(!$this->checkInputParametersByCommand(Commands::PRUNE)) {
+            throw new InvalidConfigurationException('Invalid configuration');
+        }
+
+        $process = $this->createProcess(Commands::PRUNE);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+
+        return $this->resultsExecution($process, false, true);
+    }
+
+    /**
+     * @throws InvalidConfigurationException
+     * @throws \Exception
+     */
+    public function getRepositoryStats(): ResultEntity
+    {
+        if(!$this->checkInputParametersByCommand(Commands::STATS)) {
+            throw new InvalidConfigurationException('Invalid configuration');
+        }
+
+        $process = $this->createProcess(Commands::STATS);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+
+        return $this->resultsExecution($process, $this->isJsonOutput(), true);
+    }
+
+    /**
+     * @param Process $process
+     * @param bool $isJsonOutput
+     * @param bool $skipVersionCheck
+     * @return ResultEntity
+     */
+    public function resultsExecution(Process $process, bool $isJsonOutput, bool $skipVersionCheck=false): ResultEntity
+    {
+        $currentBinaryVersion = $this->getResticVersion()->getResticResponse()->getVersion();
+        if($isJsonOutput && Helper::checkBinaryVersion($currentBinaryVersion, $skipVersionCheck)) {
             $resultOutput = Json::decode($process->getOutput());
         } else {
             $resultOutput = $process->getOutput();
