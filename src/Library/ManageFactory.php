@@ -51,7 +51,7 @@ class ManageFactory extends Configuration
         return $this->createClassByName($className, $method)->$method($process, $isJsonOutput);
     }
 
-    public function executePrune(RepositoryLocationTypes $repositoryLocationTypes)
+    public function executePrune(RepositoryLocationTypes $repositoryLocationTypes): ResultEntity
     {
         $className = 'MuckiRestic\Library\Manage\\'.$repositoryLocationTypes->value;
         $method = 'executePrune';
@@ -59,7 +59,7 @@ class ManageFactory extends Configuration
         return $this->createClassByName($className, $method)->$method();
     }
 
-    public function getRepositoryStats(RepositoryLocationTypes $repositoryLocationTypes)
+    public function getRepositoryStats(RepositoryLocationTypes $repositoryLocationTypes): ResultEntity
     {
         $className = 'MuckiRestic\Library\Manage\\'.$repositoryLocationTypes->value;
         $method = 'getRepositoryStats';
