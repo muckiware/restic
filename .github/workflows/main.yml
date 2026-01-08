@@ -1,4 +1,4 @@
-name: Deployment Stage
+name: test
 
 on:
   push:

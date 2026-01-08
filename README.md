@@ -6,6 +6,7 @@ PHP client for [restic](https://github.com/restic/restic) backup tool. This libr
 [![Total Downloads](http://poser.pugx.org/muckiware/restic/downloads)](https://packagist.org/packages/muckiware/restic)
 [![PHP Version Require](http://poser.pugx.org/muckiware/restic/require/php)](https://packagist.org/packages/muckiware/restic)
 [![Dependents](http://poser.pugx.org/muckiware/restic/dependents)](https://packagist.org/packages/muckiware/restic)
+[![Build Status](https://github.com/restic/restic/workflows/test/badge.svg)](https://github.com/muckiware/restic/actions?query=workflow%3Atest)
 [![License](https://img.shields.io/github/license/shopware/shopware.svg)](https://github.com/shopware/shopware/blob/trunk/LICENSE)
 
 </div>
