@@ -97,11 +97,22 @@ class BackupTest extends TestCase
         $backupFactoryTest = $method->invoke($backupFactory);
     }
 
+    /**
+     * With no binary path set, the configuration default 'restic' is used and the
+     * process cannot be started.
+     *
+     * This reads the Process rather than the exception text on purpose. Until 1.5.0
+     * every command went through /bin/sh -c, so stderr always carried
+     * "restic: not found" and the test could match on it. Without a shell that message
+     * only appears when PHP's proc_open rejects the argument-list form and Symfony
+     * falls back to a shell command line — which happens on PHP 8.4 but not on 8.2,
+     * so the old assertion passed locally and failed in CI. Exit code 127 and the
+     * rendered command line are identical on both paths.
+     *
+     * @throws \ReflectionException
+     */
     public function testCheckCreateBackupMissingBinaryPathProperty(): void
     {
-        $this->expectException(ProcessFailedException::class);
-        $this->expectExceptionMessageMatches('/restic: not found/');
-
         $backupFactory = new BackupFactory();
 //        $backupFactory->setBinaryPath(TestData::RESTIC_TEST_PATH_0_15);
         $backupFactory->setRepositoryPassword(TestData::REPOSITORY_TEST_PASSWORD);
@@ -110,6 +121,20 @@ class BackupTest extends TestCase
 
         $method = new ReflectionMethod(BackupFactory::class, 'createBackup');
 
-        $backupFactoryTest = $method->invoke($backupFactory);
+        try {
+            $method->invoke($backupFactory);
+            $this::fail('Expected a ProcessFailedException because no restic binary is available');
+        } catch (ProcessFailedException $exception) {
+            $this::assertSame(
+                127,
+                $exception->getProcess()->getExitCode(),
+                'A missing binary must fail the process with exit code 127 (command not found)'
+            );
+            $this::assertStringContainsString(
+                'restic',
+                $exception->getProcess()->getCommandLine(),
+                'The default binary name from the configuration must appear in the command line'
+            );
+        }
     }
 }

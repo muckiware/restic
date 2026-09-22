@@ -90,6 +90,50 @@ abstract class Configuration extends Client
         return $this->resticBinaryPath;
     }
 
+    public function getProcessTimeout(): ?float
+    {
+        return $this->processTimeout;
+    }
+
+    /**
+     * @param float|null $seconds Wall clock limit for a restic process. Null removes the limit.
+     * @throws InvalidConfigurationException
+     */
+    public function setProcessTimeout(?float $seconds): void
+    {
+        $this->assertPositiveTimeout('processTimeout', $seconds);
+        $this->processTimeout = $seconds;
+    }
+
+    public function getProcessIdleTimeout(): ?float
+    {
+        return $this->processIdleTimeout;
+    }
+
+    /**
+     * @param float|null $seconds Abort after this long without output. Null disables it.
+     * @throws InvalidConfigurationException
+     */
+    public function setProcessIdleTimeout(?float $seconds): void
+    {
+        $this->assertPositiveTimeout('processIdleTimeout', $seconds);
+        $this->processIdleTimeout = $seconds;
+    }
+
+    /**
+     * Symfony reads a timeout of 0 as "no limit". An unfilled integer field in a
+     * consuming admin UI yields exactly 0, so accepting it would silently remove the
+     * limit from a backup process. Null is the explicit way to ask for that.
+     *
+     * @throws InvalidConfigurationException
+     */
+    private function assertPositiveTimeout(string $parameter, ?float $seconds): void
+    {
+        if ($seconds !== null && $seconds <= 0) {
+            throw InvalidConfigurationException::nonPositiveTimeout($parameter, $seconds);
+        }
+    }
+
     public function setRepositoryPath(string $path): void
     {
         $this->assertNotOptionLike('repositoryPath', $path);

@@ -23,6 +23,16 @@ abstract class Client
 {
     protected string $resticBinaryPath = '';
 
+    /**
+     * Wall clock limit for a restic process, in seconds. Null removes the limit.
+     */
+    protected ?float $processTimeout = 3600.0;
+
+    /**
+     * Abort a restic process after this many seconds without output. Null disables it.
+     */
+    protected ?float $processIdleTimeout = null;
+
     final public function __construct()
     {}
     public static function create(): static
@@ -37,7 +47,13 @@ abstract class Client
      */
     public function getProcess(array $command, array $envParameters = []): Process
     {
-        return new Process($command, null, $envParameters, null, 1000);
+        $process = new Process($command, null, $envParameters, null, $this->processTimeout);
+
+        if ($this->processIdleTimeout !== null) {
+            $process->setIdleTimeout($this->processIdleTimeout);
+        }
+
+        return $process;
     }
 
     /**

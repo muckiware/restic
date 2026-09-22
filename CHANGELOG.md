@@ -2,6 +2,30 @@
 
 All notable changes to this project are documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- **Configurable process timeouts.** `setProcessTimeout()` / `getProcessTimeout()` set the
+  wall clock limit for a single restic process, `setProcessIdleTimeout()` /
+  `getProcessIdleTimeout()` abort a process that produces no output for that long. Both
+  accept an integer or a float, and `null` removes the limit. The idle timeout is off by
+  default. The setting lives on the shared configuration base, so it applies to `Backup`,
+  `Manage` and `Restore` alike.
+- Both setters reject `0` and negative values with an `InvalidConfigurationException`.
+  Symfony reads a timeout of `0` as "no limit", and an integer field left empty in a
+  configuration UI yields exactly `0` — without the check, a forgotten setting would
+  silently produce a backup process that can never time out. Use `null` when that is what
+  you mean.
+
+### Changed
+
+- **The default process timeout is now 3600 seconds, up from a hard-coded 1000.** A first
+  backup, or a `prune` on a repository that has grown over time, regularly exceeds 16
+  minutes; those runs were aborted with a `ProcessTimedOutException` and counted as
+  failures. Anything that completed within the old limit is unaffected. Raise it further
+  with `setProcessTimeout()` for large repositories.
+
 ## [1.5.0] - 2026-09-17
 
 ### Security

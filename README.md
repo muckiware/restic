@@ -142,6 +142,54 @@ class MyClass
 |:-------------------|:------------------------------------------------------------------------------------|:-----------------------------------------|
 | createRestore() | $overwrite[bool], <br/>$repositoryLocationTypes[RepositoryLocationTypes] (optional) | Creates a restore of a specific snapshot |
 
+## Process timeouts
+Every restic command is executed as a separate process with a time limit. The limit applies to all three
+clients — `Backup`, `Manage` and `Restore` — because they share the same configuration base, so you set it
+once on the client you are working with.
+
+| Method | Parameter variable name [type of variable] | Description |
+|:-------|:-------------------------------------------|:------------|
+| setProcessTimeout() | $seconds[float\|null] | Wall clock limit for one restic process. Default `3600.0` |
+| getProcessTimeout() | — | Returns the current wall clock limit |
+| setProcessIdleTimeout() | $seconds[float\|null] | Abort the process after this long without output. Default `null`, disabled |
+| getProcessIdleTimeout() | — | Returns the current idle limit |
+
+Both accept an integer as well; `setProcessTimeout(7200)` is fine.
+
+### Wall clock timeout
+The default is one hour. A first backup, or a `prune` on a repository that has grown over time, regularly
+takes longer than that, so raise it for large repositories:
+
+```php
+$backupClient = Backup::create();
+$backupClient->setProcessTimeout(14400);   // four hours
+```
+
+Pass `null` to remove the limit entirely. Do that only where something else can stop a runaway process — a
+message queue worker with its own `--time-limit`, for example:
+
+```php
+$backupClient->setProcessTimeout(null);    // no limit
+```
+
+`0` and negative values are rejected with an `InvalidConfigurationException`. This is deliberate: Symfony
+reads a timeout of `0` as "no limit", and an integer field left empty in a configuration UI yields exactly
+`0`. Without the check, a forgotten setting would silently produce a backup process that can never time out.
+Use `null` when you mean it.
+
+### Idle timeout
+The idle timeout is off by default. When set, the process is aborted if restic produces no output for that
+long, which catches a hung process without putting a ceiling on a legitimately long run:
+
+```php
+$backupClient->setProcessTimeout(null);        // a backup may take as long as it needs
+$backupClient->setProcessIdleTimeout(300);     // but five minutes of silence means it is stuck
+```
+
+Be careful when combining this with `setJsonOutput(false)`. With `--json` restic emits status messages
+continuously, so silence is a reliable signal. Without it, and for `check`, `prune` and `unlock`, output can
+pause for longer stretches during normal operation and a low idle timeout will cut a healthy run short.
+
 ## Create a new backup repository
 You will need first the backup object of the library, for to use the **createRepository** method. Import this class with `use MuckiRestic\Library\Backup;`. The Backup-class has a static `create`-method for to get the Backup object, like this `$backupClient = Backup::create();`. With this create, you have access to all the Backup methods. The `$backupClient->createRepository()` method initialize a new repository and  need the required parameters _password_ and the _repositoryPath_. The repositoryPath is where the backup data will be stored and the password is used to encrypt the backup data. It's required for all operations on the repository. It has to be set by the two setting methods `$backupClient->setRepositoryPassword('1234')` and `$backupClient->setRepositoryPath('./path_to_repository')`<br>
 Optionally you can set the path for the restic binary, with `$backupClient->setBinaryPath('./bin/restic_0.17.3_linux_386')`. This is necessary if the restic binary is not installed in the local system. 

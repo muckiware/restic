@@ -24,6 +24,15 @@ class InvalidConfigurationException extends Exception
         parent::__construct($message, $code, $previous);
     }
 
+    public static function nonPositiveTimeout(string $parameter, float $seconds): self
+    {
+        return new self(sprintf(
+            'Parameter %s must be greater than zero, or null for no limit, got %s',
+            $parameter,
+            var_export($seconds, true)
+        ));
+    }
+
     public static function optionLikeValue(string $parameter, string $value): self
     {
         return new self(sprintf(
