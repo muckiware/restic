@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -164,13 +164,21 @@ class AmazonS3 extends Configuration implements BackupInterface
         }
     }
 
+    /**
+     * @throws InvalidConfigurationException
+     */
     public function removeOldRepository(): void
     {
+        $bucketName = $this->getAwsS3BucketName();
+        if ($bucketName === null) {
+            throw new InvalidConfigurationException('Missing required parameter awsS3BucketName');
+        }
+
         $bucketObjectsContent = null;
         $s3client = $this->getS3Client();
 
         $bucketObjects = $s3client->listObjectsV2([
-            'Bucket' => $this->getAwsS3BucketName(),
+            'Bucket' => $bucketName,
         ]);
 
         foreach ($bucketObjects['Contents'] as $content) {
@@ -181,7 +189,7 @@ class AmazonS3 extends Configuration implements BackupInterface
 
         if($bucketObjectsContent !== null) {
             $s3client->deleteObjects([
-                'Bucket' => $this->getAwsS3BucketName(),
+                'Bucket' => $bucketName,
                 'Delete' => [
                     'Objects' => $bucketObjectsContent,
                 ],

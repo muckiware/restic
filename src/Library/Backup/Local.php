@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -18,6 +18,7 @@ use MuckiRestic\ResultParser\InitResultParser;
 use MuckiRestic\ResultParser\BackupResultParser;
 use MuckiRestic\ResultParser\CheckResultParser;
 use MuckiRestic\Exception\InvalidConfigurationException;
+use MuckiRestic\Exception\ActionException;
 use MuckiRestic\Entity\Result\ResultEntity;
 use MuckiRestic\Core\Commands;
 use MuckiRestic\Service\Helper;
@@ -28,6 +29,7 @@ class Local extends Configuration implements BackupInterface
 {
     /**
      * @throws InvalidConfigurationException
+     * @throws ActionException
      * @throws \Exception
      */
     public function createRepository(bool $overwrite=false): ResultEntity
@@ -35,7 +37,12 @@ class Local extends Configuration implements BackupInterface
         if($this->checkInputParametersByCommand(Commands::INIT)) {
 
             if($overwrite && is_dir($this->getRepositoryPath())) {
-                Helper::deleteDirectory($this->getRepositoryPath());
+                if (!Helper::deleteDirectory($this->getRepositoryPath())) {
+                    throw new ActionException(sprintf(
+                        'Could not remove existing repository path %s before re-initialisation; it may be a symlink',
+                        $this->getRepositoryPath()
+                    ));
+                }
             }
 
             $process = $this->createProcess(Commands::INIT);

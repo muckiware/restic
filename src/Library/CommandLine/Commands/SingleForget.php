@@ -16,21 +16,23 @@ use MuckiRestic\Library\Configuration;
 
 abstract class SingleForget implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        $command = '%s forget %s -r %s';
-
         //Does not work with single forget command. The output is just an empty string.
         //if($configuration->isJsonOutput()) {
-        //  $command .= ' --json';
+        //  $command[] = '--json';
         //}
 
-        return sprintf(
-            $command,
+        return [
             $configuration->getBinaryPath(),
-            $configuration->getSnapshotId(),
-            $configuration->getRepositoryPath()
-        );
+            'forget',
+            '--repo='.$configuration->getRepositoryPath(),
+            '--',
+            (string) $configuration->getSnapshotId(),
+        ];
     }
 
     /**

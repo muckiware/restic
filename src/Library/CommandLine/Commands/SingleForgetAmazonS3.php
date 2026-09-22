@@ -16,21 +16,23 @@ use MuckiRestic\Library\Configuration;
 
 abstract class SingleForgetAmazonS3 implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        $command = '%s forget %s -r %s';
-
         //Does not work with single forget command. The output is just an empty string.
         //if($configuration->isJsonOutput()) {
-        //  $command .= ' --json';
+        //  $command[] = '--json';
         //}
 
-        return sprintf(
-            $command,
+        return [
             $configuration->getBinaryPath(),
-            $configuration->getSnapshotId(),
-            $configuration->getAwsS3Endpoint()
-        );
+            'forget',
+            '--repo='.$configuration->getAwsS3Endpoint(),
+            '--',
+            (string) $configuration->getSnapshotId(),
+        ];
     }
 
     /**

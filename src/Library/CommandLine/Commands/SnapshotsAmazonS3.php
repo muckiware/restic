@@ -16,19 +16,22 @@ use MuckiRestic\Library\Configuration;
 
 abstract class SnapshotsAmazonS3 implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        $command = sprintf('%s --repo %s snapshots',
+        $command = [
             $configuration->getBinaryPath(),
-            $configuration->getAwsS3Endpoint()
-        );
+            '--repo='.$configuration->getAwsS3Endpoint(),
+            'snapshots',
+        ];
 
-        if($configuration->isJsonOutput()) {
-            $command .= ' --json';
+        if ($configuration->isJsonOutput()) {
+            $command[] = '--json';
         }
-
-        if($configuration->getHostName()) {
-            $command .= ' --host '.$configuration->getHostName();
+        if ($configuration->getHostName()) {
+            $command[] = '--host='.$configuration->getHostName();
         }
 
         return $command;

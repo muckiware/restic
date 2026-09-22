@@ -6,3 +6,6 @@
 /var/cache/
 /var/testRep/
 /var/testBackup/
+/var/testRestore/
+/.idea/
+.env.test

@@ -16,18 +16,22 @@ use MuckiRestic\Library\Configuration;
 
 abstract class Init implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        $command = '%s init --repo %s';
-        if($configuration->isJsonOutput()) {
-            $command .= ' --json';
+        $command = [
+            $configuration->getBinaryPath(),
+            'init',
+            '--repo='.$configuration->getRepositoryPath(),
+        ];
+
+        if ($configuration->isJsonOutput()) {
+            $command[] = '--json';
         }
 
-        return sprintf(
-            $command,
-            $configuration->getBinaryPath(),
-            $configuration->getRepositoryPath()
-        );
+        return $command;
     }
 
     /**

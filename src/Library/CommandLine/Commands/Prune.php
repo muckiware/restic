@@ -16,12 +16,12 @@ use MuckiRestic\Library\Configuration;
 
 abstract class Prune implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        return sprintf(
-            '%s prune',
-            $configuration->getBinaryPath()
-        );
+        return [$configuration->getBinaryPath(), 'prune'];
     }
 
     /**

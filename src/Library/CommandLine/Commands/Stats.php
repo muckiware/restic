@@ -16,15 +16,15 @@ use MuckiRestic\Library\Configuration;
 
 abstract class Stats implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        $command = sprintf(
-            '%s stats',
-            $configuration->getBinaryPath()
-        );
+        $command = [$configuration->getBinaryPath(), 'stats'];
 
-        if($configuration->isJsonOutput()) {
-            $command .= ' --json';
+        if ($configuration->isJsonOutput()) {
+            $command[] = '--json';
         }
 
         return $command;

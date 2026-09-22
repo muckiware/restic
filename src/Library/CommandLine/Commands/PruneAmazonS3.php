@@ -16,13 +16,16 @@ use MuckiRestic\Library\Configuration;
 
 abstract class PruneAmazonS3 implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        return sprintf(
-            '%s prune --repo %s',
+        return [
             $configuration->getBinaryPath(),
-            $configuration->getAwsS3Endpoint()
-        );
+            'prune',
+            '--repo='.$configuration->getAwsS3Endpoint(),
+        ];
     }
 
     /**

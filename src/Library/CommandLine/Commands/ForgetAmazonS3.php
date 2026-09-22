@@ -16,57 +16,50 @@ use MuckiRestic\Library\Configuration;
 
 abstract class ForgetAmazonS3 implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        $command = sprintf(
-            '%s forget -r %s --prune',
+        $command = [
             $configuration->getBinaryPath(),
-            $configuration->getAwsS3Endpoint()
-        );
+            'forget',
+            '--repo='.$configuration->getAwsS3Endpoint(),
+            '--prune',
+        ];
 
-        if($configuration->getSnapshotIds()) {
-
-            foreach($configuration->getSnapshotIds() as $snapshotId) {
-                $command .= ' '.$snapshotId;
-            }
+        if ($configuration->isJsonOutput()) {
+            $command[] = '--json';
+        }
+        if ($configuration->getHostName()) {
+            $command[] = '--host='.$configuration->getHostName();
+        }
+        if ($configuration->getKeepDaily() > 0) {
+            $command[] = '--keep-daily='.$configuration->getKeepDaily();
+        }
+        if ($configuration->getKeepWeekly() > 0) {
+            $command[] = '--keep-weekly='.$configuration->getKeepWeekly();
+        }
+        if ($configuration->getKeepMonthly() > 0) {
+            $command[] = '--keep-monthly='.$configuration->getKeepMonthly();
+        }
+        if ($configuration->getKeepYearly() > 0) {
+            $command[] = '--keep-yearly='.$configuration->getKeepYearly();
+        }
+        if ($configuration->getKeepLast() > 0) {
+            $command[] = '--keep-last='.$configuration->getKeepLast();
+        }
+        if ($configuration->getGroupBy()) {
+            $command[] = '--group-by='.$configuration->getGroupBy();
+        }
+        foreach ($configuration->getTags() as $tag) {
+            $command[] = '--tag='.$tag;
         }
 
-        if($configuration->isJsonOutput()) {
-            $command .= ' --json';
-        }
-
-        if($configuration->getHostName()) {
-            $command .= ' --host '.$configuration->getHostName();
-        }
-
-        if($configuration->getKeepDaily() && $configuration->getKeepDaily() > 0) {
-            $command .= sprintf(' --keep-daily %u', $configuration->getKeepDaily());
-        }
-
-        if($configuration->getKeepWeekly() && $configuration->getKeepWeekly() > 0) {
-            $command .= sprintf(' --keep-weekly %u', $configuration->getKeepWeekly());
-        }
-
-        if($configuration->getKeepMonthly() && $configuration->getKeepMonthly() > 0) {
-            $command .= sprintf(' --keep-monthly %u', $configuration->getKeepMonthly());
-        }
-
-        if($configuration->getKeepYearly() && $configuration->getKeepYearly() > 0) {
-            $command .= sprintf(' --keep-yearly %u', $configuration->getKeepYearly());
-        }
-
-        if($configuration->getKeepLast() && $configuration->getKeepLast() > 0) {
-            $command .= sprintf(' --keep-last %u', $configuration->getKeepLast());
-        }
-
-        if($configuration->getGroupBy()) {
-            $command .= sprintf(' --group-by %s', $configuration->getGroupBy());
-        }
-
-        if($configuration->getTags()) {
-
-            foreach($configuration->getTags() as $tag) {
-                $command .= ' --tag '.$tag;
+        if ($configuration->getSnapshotIds()) {
+            $command[] = '--';
+            foreach ($configuration->getSnapshotIds() as $snapshotId) {
+                $command[] = $snapshotId;
             }
         }
 

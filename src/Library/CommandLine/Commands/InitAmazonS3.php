@@ -16,19 +16,22 @@ use MuckiRestic\Library\Configuration;
 
 abstract class InitAmazonS3 implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        $command = '%s init --repo %s';
+        $command = [
+            $configuration->getBinaryPath(),
+            'init',
+            '--repo='.$configuration->getAwsS3Endpoint(),
+        ];
 
-        if($configuration->isJsonOutput()) {
-            $command .= ' --json';
+        if ($configuration->isJsonOutput()) {
+            $command[] = '--json';
         }
 
-        return sprintf(
-            $command,
-            $configuration->getBinaryPath(),
-            $configuration->getAwsS3Endpoint()
-        );
+        return $command;
     }
 
     /**

@@ -16,13 +16,16 @@ use MuckiRestic\Library\Configuration;
 
 abstract class ListObjects implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        return sprintf(
-            '%s --repo %s list',
+        return [
             $configuration->getBinaryPath(),
-            $configuration->getRepositoryPath()
-        );
+            '--repo='.$configuration->getRepositoryPath(),
+            'list',
+        ];
     }
 
     /**

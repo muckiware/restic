@@ -31,29 +31,35 @@ abstract class Client
     }
 
     /**
-     * @param string $command
-     * @param array<string,string> $envParameters
+     * @param list<string> $command
+     * @param array<string,string|null> $envParameters
      * @return Process
      */
-    public function getProcess(string $command, array $envParameters=[]): Process
+    public function getProcess(array $command, array $envParameters = []): Process
     {
-        return Process::fromShellCommandline($command, null, $envParameters, null, 1000);
+        return new Process($command, null, $envParameters, null, 1000);
     }
 
-    public function requestVersion(string $command): Process
+    /**
+     * @param list<string> $arguments
+     * @return Process
+     */
+    public function requestVersion(array $arguments): Process
     {
-        $process = $this->getProcess($this->resticBinaryPath.' '.$command);
+        $process = $this->getProcess(array_merge([$this->resticBinaryPath], $arguments));
         $process->run();
 
         return $process;
     }
     public function getResticVersion(): ResultEntity
     {
-        $process = $this->requestVersion('version');
+        $process = $this->requestVersion(['version']);
         $version = $this->createVersion($process->getOutput());
         if (version_compare($version->getVersion(), '0.17.0', '>=')) {
 
-            $versionRawResult = OutputParser::fixJsonOutput($this->requestVersion('version --json')->getOutput());
+            $versionRawResult = OutputParser::fixJsonOutput(
+                $this->requestVersion(['version', '--json'])->getOutput()
+            );
             $mapper = new JsonMapper();
             $version = $mapper->map(json_decode($versionRawResult)[0], new Version());
         }

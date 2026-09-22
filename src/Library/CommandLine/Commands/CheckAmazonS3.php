@@ -16,13 +16,17 @@ use MuckiRestic\Library\Configuration;
 
 abstract class CheckAmazonS3 implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        return sprintf(
-            '%s -r %s check --read-data',
+        return [
             $configuration->getBinaryPath(),
-            $configuration->getAwsS3Endpoint(),
-        );
+            '--repo='.$configuration->getAwsS3Endpoint(),
+            'check',
+            '--read-data',
+        ];
     }
 
     /**

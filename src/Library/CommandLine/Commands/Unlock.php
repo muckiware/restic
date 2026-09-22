@@ -16,12 +16,12 @@ use MuckiRestic\Library\Configuration;
 
 abstract class Unlock implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        return sprintf(
-            '%s unlock',
-            $configuration->getBinaryPath()
-        );
+        return [$configuration->getBinaryPath(), 'unlock'];
     }
 
     /**

@@ -20,6 +20,49 @@ PHP client for [restic](https://github.com/restic/restic) backup tool. This libr
 ```bash
 composer require muckiware/restic
 ```
+# Upgrading to 1.5.0
+
+Version 1.5.0 fixes a critical command injection. Commands are no longer assembled as
+shell strings but as argument lists executed without a shell.
+
+If you only use `Backup`, `Manage` and `Restore`, nothing changes. If you implement
+`CommandLineInterface` yourself, `getCommandLine()` now returns `array`:
+
+```php
+public static function getCommandLine(Configuration $configuration): array
+{
+    $command = [
+        $configuration->getBinaryPath(),
+        '--repo='.$configuration->getRepositoryPath(),
+        'backup',
+    ];
+
+    if ($configuration->isJsonOutput()) {
+        $command[] = '--json';
+    }
+
+    $command[] = '--';
+    $command[] = (string) $configuration->getBackupPath();
+
+    return $command;
+}
+```
+
+Option values must be a single element (`'--host='.$host`, not `'--host', $host`), and
+positional arguments belong after `'--'`. Configuration setters reject values starting
+with a dash and throw `InvalidConfigurationException`.
+
+`ResultEntity::getCommandLine()` also changes: it now returns the shell-escaped string
+Symfony's `Process::getCommandLine()` produces for an array commandline, with every
+token single-quoted (e.g. `'/usr/bin/restic' '--repo=/srv/repo' 'backup'` instead of
+`/usr/bin/restic --repo=/srv/repo backup`). If you log, display or re-parse this value,
+update accordingly.
+
+The setter guards only validate the *shape* of a value, not whether it is trustworthy —
+a value like `rest:http://attacker/` or `s3:https://attacker/` passes the guard but
+redirects the backup to an attacker-controlled server. If you accept a repository path
+or similar value from untrusted input (e.g. an HTTP request), you must whitelist the
+allowed scheme or prefix yourself; this library does not do it for you.
 # Usage
 How to use the library. This php client interacts with the restic binary to create, manage and restore backups in and of a repository. The first step is always to create a backup repository as storage for the backup data. After that, you can create backups in this repository and check the backup data. And at least if its necessary, you can restore the backup data.
 

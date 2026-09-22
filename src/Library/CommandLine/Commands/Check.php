@@ -16,12 +16,12 @@ use MuckiRestic\Library\Configuration;
 
 abstract class Check implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        return sprintf(
-            '%s check --read-data',
-            $configuration->getBinaryPath()
-        );
+        return [$configuration->getBinaryPath(), 'check', '--read-data'];
     }
 
     /**

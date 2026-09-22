@@ -16,31 +16,32 @@ use MuckiRestic\Library\Configuration;
 
 abstract class BackupAmazonS3 implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        $command = sprintf('%s -r %s backup %s',
+        $command = [
             $configuration->getBinaryPath(),
-            $configuration->getAwsS3Endpoint(),
-            $configuration->getBackupPath()
-        );
+            '--repo='.$configuration->getAwsS3Endpoint(),
+            'backup',
+        ];
 
-        if($configuration->isJsonOutput()) {
-            $command .= ' --json';
+        if ($configuration->isJsonOutput()) {
+            $command[] = '--json';
         }
-        if($configuration->isCompress()) {
-            $command .= ' --compression auto';
+        if ($configuration->isCompress()) {
+            $command[] = '--compression=auto';
+        }
+        if ($configuration->getHostName()) {
+            $command[] = '--host='.$configuration->getHostName();
+        }
+        foreach ($configuration->getTags() as $tag) {
+            $command[] = '--tag='.$tag;
         }
 
-        if($configuration->getHostName()) {
-            $command .= ' --host '.$configuration->getHostName();
-        }
-
-        if($configuration->getTags()) {
-
-            foreach($configuration->getTags() as $tag) {
-                $command .= ' --tag '.$tag;
-            }
-        }
+        $command[] = '--';
+        $command[] = (string) $configuration->getBackupPath();
 
         return $command;
     }

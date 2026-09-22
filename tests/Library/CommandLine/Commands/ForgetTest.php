@@ -34,8 +34,14 @@ class ForgetTest extends TestCase
         $manage->setBinaryPath(TestData::RESTIC_TEST_PATH_0_18);
         $manage->setRepositoryPassword(TestData::REPOSITORY_TEST_PASSWORD);
         $manage->setRepositoryPath(TestData::REPOSITORY_TEST_PATH);
-        $forgetCommand = $manage->getCommandStringByCommand(Commands::FORGET);
+        $forgetCommand = $manage->getCommandArgumentsByCommand(Commands::FORGET);
 
-        $this::assertEquals(TestData::RESTIC_TEST_PATH_0_18.' forget -r ./var/testRep --prune --json', $forgetCommand);
+        $this::assertSame([
+            TestData::RESTIC_TEST_PATH_0_18,
+            'forget',
+            '--repo=./var/testRep',
+            '--prune',
+            '--json',
+        ], $forgetCommand);
     }
 }

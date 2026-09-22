@@ -16,16 +16,19 @@ use MuckiRestic\Library\Configuration;
 
 abstract class StatsAmazonS3 implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        $command = sprintf(
-            '%s -r %s stats',
+        $command = [
             $configuration->getBinaryPath(),
-            $configuration->getRepositoryPath(),
-        );
+            '--repo='.$configuration->getAwsS3Endpoint(),
+            'stats',
+        ];
 
-        if($configuration->isJsonOutput()) {
-            $command .= ' --json';
+        if ($configuration->isJsonOutput()) {
+            $command[] = '--json';
         }
 
         return $command;

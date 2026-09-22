@@ -15,7 +15,11 @@ use MuckiRestic\Library\Configuration;
 
 interface CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string;
+    /**
+     * @param Configuration $configuration
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array;
 
     /**
      * @param Configuration $configuration

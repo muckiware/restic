@@ -16,20 +16,26 @@ use MuckiRestic\Library\Configuration;
 
 abstract class RestoreAmazonS3 implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        $command = '%s restore %s -r %s --target %s';
-        if($configuration->isJsonOutput()) {
-            $command .= ' --json';
+        $command = [
+            $configuration->getBinaryPath(),
+            'restore',
+            '--repo='.$configuration->getAwsS3Endpoint(),
+            '--target='.$configuration->getRestoreTarget(),
+        ];
+
+        if ($configuration->isJsonOutput()) {
+            $command[] = '--json';
         }
 
-        return sprintf(
-            $command,
-            $configuration->getBinaryPath(),
-            $configuration->getRestoreItem(),
-            $configuration->getAwsS3Endpoint(),
-            $configuration->getRestoreTarget()
-        );
+        $command[] = '--';
+        $command[] = $configuration->getRestoreItem();
+
+        return $command;
     }
 
     /**

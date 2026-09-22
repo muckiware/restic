@@ -16,13 +16,16 @@ use MuckiRestic\Library\Configuration;
 
 abstract class UnlockAmazonS3 implements CommandLineInterface
 {
-    public static function getCommandLine(Configuration $configuration): string
+    /**
+     * @return list<string>
+     */
+    public static function getCommandLine(Configuration $configuration): array
     {
-        return sprintf(
-            '%s unlock --repo %s',
+        return [
             $configuration->getBinaryPath(),
-            $configuration->getAwsS3Endpoint()
-        );
+            'unlock',
+            '--repo='.$configuration->getAwsS3Endpoint(),
+        ];
     }
 
     /**

@@ -4,7 +4,7 @@
  *
  * @category   Library
  * @package    MuckiRestic
- * @copyright  Copyright (c) 2024-2025 by Muckiware
+ * @copyright  Copyright (c) 2024-2026 by Muckiware
  * @license    MIT
  * @author     Muckiware
  *
@@ -81,6 +81,7 @@ abstract class Configuration extends Client
 
     public function setBinaryPath(string $path): void
     {
+        $this->assertNotOptionLike('binaryPath', $path);
         $this->resticBinaryPath = $path;
     }
 
@@ -91,6 +92,7 @@ abstract class Configuration extends Client
 
     public function setRepositoryPath(string $path): void
     {
+        $this->assertNotOptionLike('repositoryPath', $path);
         $this->repositoryPath = $path;
     }
 
@@ -116,6 +118,7 @@ abstract class Configuration extends Client
 
     public function setBackupPath(string $backupPath): void
     {
+        $this->assertNotOptionLike('backupPath', $backupPath);
         $this->backupPath = $backupPath;
     }
 
@@ -196,6 +199,7 @@ abstract class Configuration extends Client
 
     public function setRestoreItem(string $restoreItem): void
     {
+        $this->assertNotOptionLike('restoreItem', $restoreItem);
         $this->restoreItem = $restoreItem;
     }
 
@@ -206,6 +210,7 @@ abstract class Configuration extends Client
 
     public function setRestoreTarget(string $restoreTarget): void
     {
+        $this->assertNotOptionLike('restoreTarget', $restoreTarget);
         $this->restoreTarget = $restoreTarget;
     }
 
@@ -226,6 +231,7 @@ abstract class Configuration extends Client
 
     public function setSnapshotId(?string $snapshotId): void
     {
+        $this->assertNotOptionLike('snapshotId', $snapshotId);
         $this->snapshotId = $snapshotId;
     }
 
@@ -243,6 +249,9 @@ abstract class Configuration extends Client
      */
     public function setSnapshotIds(array $snapshotIds): void
     {
+        foreach ($snapshotIds as $snapshotId) {
+            $this->assertNotOptionLike('snapshotIds', $snapshotId);
+        }
         $this->snapshotIds = $snapshotIds;
     }
 
@@ -252,6 +261,7 @@ abstract class Configuration extends Client
      */
     public function addSnapshotId(string $snapshotId): void
     {
+        $this->assertNotOptionLike('snapshotIds', $snapshotId);
         $this->snapshotIds[] = $snapshotId;
     }
     public function getHostName(): ?string
@@ -261,6 +271,7 @@ abstract class Configuration extends Client
 
     public function setHostName(string $hostName): void
     {
+        $this->assertNotOptionLike('hostName', $hostName);
         $this->hostName = substr($hostName, 0, Defaults::MAXIMUM_RESTIC_PARAMETER_LENGTH);
     }
 
@@ -271,6 +282,7 @@ abstract class Configuration extends Client
 
     public function setGroupBy(string $groupBy): void
     {
+        $this->assertNotOptionLike('groupBy', $groupBy);
         $this->groupBy = substr($groupBy, 0, Defaults::MAXIMUM_RESTIC_PARAMETER_LENGTH);
     }
 
@@ -281,6 +293,7 @@ abstract class Configuration extends Client
 
     public function setTag(string $tag): void
     {
+        $this->assertNotOptionLike('tags', $tag);
         $this->tags[] = $tag;
     }
 
@@ -297,6 +310,9 @@ abstract class Configuration extends Client
      */
     public function setTags(array $tags): void
     {
+        foreach ($tags as $tag) {
+            $this->assertNotOptionLike('tags', $tag);
+        }
         $this->tags = $tags;
     }
 
@@ -329,9 +345,10 @@ abstract class Configuration extends Client
     }
 
     /**
+     * @return list<string>
      * @throws InvalidConfigurationException
      */
-    public function getCommandStringByCommand(Commands $command): string
+    public function getCommandArgumentsByCommand(Commands $command): array
     {
         $commandLineFactory = new CommandLineFactory();
         return $commandLineFactory->createCommandLine($this, $command);
@@ -353,7 +370,7 @@ abstract class Configuration extends Client
     public function createProcess(Commands $commands): Process
     {
         return $this->getProcess(
-            $this->getCommandStringByCommand($commands),
+            $this->getCommandArgumentsByCommand($commands),
             $this->getEnvParametersByCommand($commands)
         );
     }
@@ -395,6 +412,7 @@ abstract class Configuration extends Client
 
     public function setAwsS3Endpoint(?string $awsS3Endpoint): void
     {
+        $this->assertNotOptionLike('awsS3Endpoint', $awsS3Endpoint);
         $this->awsS3Endpoint = $awsS3Endpoint;
     }
 
@@ -426,5 +444,17 @@ abstract class Configuration extends Client
     public function setAwsS3BucketName(?string $awsS3BucketName): void
     {
         $this->awsS3BucketName = $awsS3BucketName;
+    }
+
+    /**
+     * Rejects values that restic would read as an option instead of a value.
+     *
+     * @throws InvalidConfigurationException
+     */
+    private function assertNotOptionLike(string $parameter, ?string $value): void
+    {
+        if ($value !== null && str_starts_with($value, '-')) {
+            throw InvalidConfigurationException::optionLikeValue($parameter, $value);
+        }
     }
 }
