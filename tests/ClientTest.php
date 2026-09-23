@@ -12,10 +12,13 @@
 namespace MuckiRestic\Test;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 
 use MuckiRestic\Core\Commands;
 use MuckiRestic\Exception\InvalidConfigurationException;
 use MuckiRestic\Library\Backup as BackupClient;
+use MuckiRestic\Library\Backup\Local;
+use MuckiRestic\Library\BackupFactory;
 
 /**
  * Regression guard for F-01: Client::getProcess() must build the Symfony
@@ -119,13 +122,7 @@ class ClientTest extends TestCase
         BackupClient::create()->setProcessIdleTimeout(-0.5);
     }
 
-    /**
-     * The facades hand their state to the factory and on to the implementation class
-     * through ReflectionObject::getProperties(). A configuration value that is not a
-     * plain protected property silently fails to make that hop, so pin the whole path
-     * rather than just the setter.
-     */
-    public function testTimeoutsSurviveThePropagationToTheBuiltProcess(): void
+    public function testTimeoutsReachTheProcessBuiltFromTheConfiguration(): void
     {
         $client = BackupClient::create();
         $client->setBinaryPath('/usr/bin/restic');
@@ -139,5 +136,40 @@ class ClientTest extends TestCase
 
         $this::assertSame(7200.0, $process->getTimeout());
         $this::assertSame(600.0, $process->getIdleTimeout());
+    }
+
+    /**
+     * The facade hands its state to the factory, and the factory on to the
+     * implementation class, with ReflectionObject::getProperties() in both hops. A
+     * configuration value that is not a plain non-static protected property is dropped
+     * there without a word, and every restic process would silently fall back to the
+     * defaults.
+     *
+     * Calling createProcess() on the facade does NOT cover this: createProcess() is
+     * inherited from Configuration, so it runs on the very object the setters were
+     * called on and no copy ever happens. Both private createFactoryInstance() methods
+     * are therefore invoked directly here, mirroring the ReflectionMethod style already
+     * used in BackupTest.
+     *
+     * @throws \ReflectionException
+     */
+    public function testTimeoutsSurviveBothReflectionCopyHops(): void
+    {
+        $client = BackupClient::create();
+        $client->setProcessTimeout(7200);
+        $client->setProcessIdleTimeout(600);
+
+        $factory = (new ReflectionMethod(BackupClient::class, 'createFactoryInstance'))->invoke($client);
+
+        $this::assertInstanceOf(BackupFactory::class, $factory);
+        $this::assertSame(7200.0, $factory->getProcessTimeout(), 'facade to factory');
+        $this::assertSame(600.0, $factory->getProcessIdleTimeout(), 'facade to factory');
+
+        $implementation = (new ReflectionMethod(BackupFactory::class, 'createFactoryInstance'))
+            ->invoke($factory, Local::class);
+
+        $this::assertInstanceOf(Local::class, $implementation);
+        $this::assertSame(7200.0, $implementation->getProcessTimeout(), 'factory to implementation');
+        $this::assertSame(600.0, $implementation->getProcessIdleTimeout(), 'factory to implementation');
     }
 }

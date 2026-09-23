@@ -181,7 +181,7 @@ class AmazonS3 extends Configuration implements BackupInterface
             'Bucket' => $bucketName,
         ]);
 
-        foreach ($bucketObjects['Contents'] as $content) {
+        foreach ($bucketObjects['Contents'] ?? [] as $content) {
             $bucketObjectsContent[] = [
                 'Key' => $content['Key'],
             ];
