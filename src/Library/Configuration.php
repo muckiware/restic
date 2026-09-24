@@ -413,6 +413,8 @@ abstract class Configuration extends Client
      */
     public function createProcess(Commands $commands): Process
     {
+        $this->assertBinaryIsExecutable();
+
         return $this->getProcess(
             $this->getCommandArgumentsByCommand($commands),
             $this->getEnvParametersByCommand($commands)

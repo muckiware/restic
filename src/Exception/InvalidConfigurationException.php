@@ -24,6 +24,25 @@ class InvalidConfigurationException extends Exception
         parent::__construct($message, $code, $previous);
     }
 
+    public static function binaryNotFound(string $binaryPath): self
+    {
+        return new self(sprintf(
+            'The restic binary "%s" was not found or is not executable. '
+            .'Set an existing path with setBinaryPath(), or install restic so the name resolves through PATH.',
+            $binaryPath
+        ));
+    }
+
+    public static function unreadableVersion(string $binaryPath, string $processOutput): self
+    {
+        return new self(sprintf(
+            'Could not read a restic version from "%s". It ran, so the path is correct, but its output '
+            .'does not look like restic. Output was: %s',
+            $binaryPath,
+            trim($processOutput)
+        ));
+    }
+
     public static function nonPositiveTimeout(string $parameter, float $seconds): self
     {
         return new self(sprintf(

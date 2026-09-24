@@ -13,7 +13,6 @@ namespace MuckiRestic\Test\Library;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 
 use MuckiRestic\Library\Backup;
 use MuckiRestic\Library\BackupFactory;
@@ -98,21 +97,29 @@ class BackupTest extends TestCase
     }
 
     /**
-     * With no binary path set, the configuration default 'restic' is used and the
-     * process cannot be started.
+     * With no binary path set, the configuration default 'restic' is used. The library
+     * now resolves that name through PATH before starting anything and reports a
+     * missing binary as the configuration error it is, naming the path.
      *
-     * This reads the Process rather than the exception text on purpose. Until 1.5.0
-     * every command went through /bin/sh -c, so stderr always carried
-     * "restic: not found" and the test could match on it. Without a shell that message
-     * only appears when PHP's proc_open rejects the argument-list form and Symfony
-     * falls back to a shell command line — which happens on PHP 8.4 but not on 8.2,
-     * so the old assertion passed locally and failed in CI. Exit code 127 and the
-     * rendered command line are identical on both paths.
+     * Two earlier shapes of this test were environment-dependent: matching stderr for
+     * "restic: not found" only worked while a shell was involved (PHP 8.4 falls back to
+     * one, PHP 8.2 does not, which is why it passed locally and failed in CI), and
+     * asserting exit code 127 tested the operating system rather than this library.
      *
      * @throws \ReflectionException
      */
     public function testCheckCreateBackupMissingBinaryPathProperty(): void
     {
+        if (self::resticIsOnThePath()) {
+            $this::markTestSkipped(
+                'A restic binary is present in PATH, so the default binary name resolves '
+                .'and the premise of this test does not hold.'
+            );
+        }
+
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessageMatches('/restic/');
+
         $backupFactory = new BackupFactory();
 //        $backupFactory->setBinaryPath(TestData::RESTIC_TEST_PATH_0_15);
         $backupFactory->setRepositoryPassword(TestData::REPOSITORY_TEST_PASSWORD);
@@ -121,20 +128,17 @@ class BackupTest extends TestCase
 
         $method = new ReflectionMethod(BackupFactory::class, 'createBackup');
 
-        try {
-            $method->invoke($backupFactory);
-            $this::fail('Expected a ProcessFailedException because no restic binary is available');
-        } catch (ProcessFailedException $exception) {
-            $this::assertSame(
-                127,
-                $exception->getProcess()->getExitCode(),
-                'A missing binary must fail the process with exit code 127 (command not found)'
-            );
-            $this::assertStringContainsString(
-                'restic',
-                $exception->getProcess()->getCommandLine(),
-                'The default binary name from the configuration must appear in the command line'
-            );
+        $method->invoke($backupFactory);
+    }
+
+    private static function resticIsOnThePath(): bool
+    {
+        foreach (explode(PATH_SEPARATOR, (string) getenv('PATH')) as $directory) {
+            if ($directory !== '' && is_executable($directory.DIRECTORY_SEPARATOR.'restic')) {
+                return true;
+            }
         }
+
+        return false;
     }
 }

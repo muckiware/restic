@@ -15,6 +15,7 @@ use Symfony\Component\Process\Process;
 use JsonMapper;
 
 use MuckiRestic\Entity\Result\ResultEntity;
+use MuckiRestic\Exception\InvalidConfigurationException;
 use MuckiRestic\Entity\Result\ResticResponse\Version;
 use MuckiRestic\ResultParser\VersionResultParser;
 use MuckiRestic\ResultParser\OutputParser;
@@ -62,10 +63,54 @@ abstract class Client
      */
     public function requestVersion(array $arguments): Process
     {
+        $this->assertBinaryIsExecutable();
+
         $process = $this->getProcess(array_merge([$this->resticBinaryPath], $arguments));
         $process->run();
 
         return $process;
+    }
+
+    /**
+     * Fail before a process is started, so that a wrong path is reported as the
+     * configuration error it is instead of surfacing as exit code 127 with no output.
+     *
+     * @throws InvalidConfigurationException
+     */
+    protected function assertBinaryIsExecutable(): void
+    {
+        if ($this->resolveBinaryPath($this->resticBinaryPath) === null) {
+            throw InvalidConfigurationException::binaryNotFound($this->resticBinaryPath);
+        }
+    }
+
+    /**
+     * A value carrying a separator is taken as given, relative to the working
+     * directory; a bare name is looked up through PATH, which is how the default
+     * 'restic' is meant to resolve.
+     */
+    private function resolveBinaryPath(string $binary): ?string
+    {
+        if ($binary === '') {
+            return null;
+        }
+
+        if (str_contains($binary, '/') || str_contains($binary, DIRECTORY_SEPARATOR)) {
+            return is_file($binary) && is_executable($binary) ? $binary : null;
+        }
+
+        foreach (explode(PATH_SEPARATOR, (string) getenv('PATH')) as $directory) {
+            if ($directory === '') {
+                continue;
+            }
+
+            $candidate = $directory.DIRECTORY_SEPARATOR.$binary;
+            if (is_file($candidate) && is_executable($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return null;
     }
     public function getResticVersion(): ResultEntity
     {
@@ -92,7 +137,7 @@ abstract class Client
     {
         $versionResult = VersionResultParser::getVersionResultFromTextOutput($processOutput);
         if(!$versionResult) {
-            throw new \RuntimeException('Not supported restic version' . $processOutput);
+            throw InvalidConfigurationException::unreadableVersion($this->resticBinaryPath, $processOutput);
         }
         $version = new Version();
         $version->setVersion($versionResult);

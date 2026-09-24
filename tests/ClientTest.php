@@ -125,7 +125,8 @@ class ClientTest extends TestCase
     public function testTimeoutsReachTheProcessBuiltFromTheConfiguration(): void
     {
         $client = BackupClient::create();
-        $client->setBinaryPath('/usr/bin/restic');
+        // createProcess() now refuses a binary it cannot resolve, so use the committed fixture.
+        $client->setBinaryPath(TestData::RESTIC_TEST_PATH_0_18);
         $client->setRepositoryPassword('secret');
         $client->setRepositoryPath('/srv/repo');
         $client->setBackupPath('/srv/data');

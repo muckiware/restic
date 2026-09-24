@@ -2,30 +2,6 @@
 
 All notable changes to this project are documented in this file.
 
-## [Unreleased]
-
-### Added
-
-- **Configurable process timeouts.** `setProcessTimeout()` / `getProcessTimeout()` set the
-  wall clock limit for a single restic process, `setProcessIdleTimeout()` /
-  `getProcessIdleTimeout()` abort a process that produces no output for that long. Both
-  accept an integer or a float, and `null` removes the limit. The idle timeout is off by
-  default. The setting lives on the shared configuration base, so it applies to `Backup`,
-  `Manage` and `Restore` alike.
-- Both setters reject `0` and negative values with an `InvalidConfigurationException`.
-  Symfony reads a timeout of `0` as "no limit", and an integer field left empty in a
-  configuration UI yields exactly `0` — without the check, a forgotten setting would
-  silently produce a backup process that can never time out. Use `null` when that is what
-  you mean.
-
-### Changed
-
-- **The default process timeout is now 3600 seconds, up from a hard-coded 1000.** A first
-  backup, or a `prune` on a repository that has grown over time, regularly exceeds 16
-  minutes; those runs were aborted with a `ProcessTimedOutException` and counted as
-  failures. Anything that completed within the old limit is unaffected. Raise it further
-  with `setProcessTimeout()` for large repositories.
-
 ## [1.5.0] - 2026-09-17
 
 ### Security
@@ -46,6 +22,20 @@ All notable changes to this project are documented in this file.
   their targets are never touched. A `realpath()` check refuses any path outside the
   base directory.
 
+### Added
+
+- **Configurable process timeouts.** `setProcessTimeout()` / `getProcessTimeout()` set the
+  wall clock limit for a single restic process, `setProcessIdleTimeout()` /
+  `getProcessIdleTimeout()` abort a process that produces no output for that long. Both
+  accept an integer or a float, and `null` removes the limit. The idle timeout is off by
+  default. The setting lives on the shared configuration base, so it applies to `Backup`,
+  `Manage` and `Restore` alike.
+- Both timeout setters reject `0` and negative values with an
+  `InvalidConfigurationException`. Symfony reads a timeout of `0` as "no limit", and an
+  integer field left empty in a configuration UI yields exactly `0` — without the check, a
+  forgotten setting would silently produce a backup process that can never time out. Use
+  `null` when that is what you mean.
+
 ### Changed
 
 - **BREAKING** `CommandLineInterface::getCommandLine()` returns `list<string>` instead
@@ -54,11 +44,6 @@ All notable changes to this project are documented in this file.
 - **BREAKING** `Client::requestVersion()` takes `list<string>` instead of `string`.
 - **BREAKING** `Configuration::getCommandStringByCommand()` is renamed to
   `getCommandArgumentsByCommand()` and returns `list<string>`.
-- `StatsAmazonS3` now uses `getAwsS3Endpoint()` instead of `getRepositoryPath()`,
-  consistent with every other AmazonS3 command.
-- `Helper::deleteDirectory()` returns `false` when the given path is itself a symlink,
-  instead of deleting the target. A tree containing symlinks can now be deleted
-  completely; previously the final `rmdir()` failed.
 - **BREAKING** Configuration setters (`repositoryPath`, `backupPath`, `binaryPath`,
   `tags` and others, 13 in total) now reject values starting with a dash and throw
   `InvalidConfigurationException`. A value a setter previously accepted silently can
@@ -68,9 +53,38 @@ All notable changes to this project are documented in this file.
   token single-quoted), e.g. `'/usr/bin/restic' '--repo=/srv/repo' 'backup'` instead of
   `/usr/bin/restic --repo=/srv/repo backup`. Any consumer logging, displaying or
   re-parsing this string is affected.
+- **BREAKING** `Client::createVersion()` throws `InvalidConfigurationException` instead of
+  `\RuntimeException` when the output carries no version, and the message now names the
+  binary and the output it could not read. A missing binary and a binary that is not
+  restic used to produce the same `Not supported restic version` text; they are now
+  distinct, and both are part of the library's own exception hierarchy.
+- **A missing or unusable restic binary is now reported before anything is executed.**
+  `Configuration::createProcess()` and `Client::requestVersion()` resolve the configured
+  binary first — a value carrying a separator against the working directory, a bare name
+  through `PATH` — and throw an `InvalidConfigurationException` naming the path when it
+  cannot be found or is not executable. Previously the process was started regardless and
+  failed as a `ProcessFailedException` with exit code 127, whose message carried no
+  explanation on PHP versions where no shell is involved.
+- **The default process timeout is now 3600 seconds, up from a hard-coded 1000.** A first
+  backup, or a `prune` on a repository that has grown over time, regularly exceeds 16
+  minutes; those runs were aborted with a `ProcessTimedOutException` and counted as
+  failures. Anything that completed within the old limit is unaffected. Raise it further
+  with `setProcessTimeout()` for large repositories.
+- `StatsAmazonS3` now uses `getAwsS3Endpoint()` instead of `getRepositoryPath()`,
+  consistent with every other AmazonS3 command.
+- `Helper::deleteDirectory()` returns `false` when the given path is itself a symlink,
+  instead of deleting the target. A tree containing symlinks can now be deleted
+  completely; previously the final `rmdir()` failed.
 
 ### Fixed
 
+- **`Backup\AmazonS3::removeOldRepository()` failed against an empty bucket.**
+  `listObjectsV2` omits the `Contents` key entirely when a bucket holds no objects, and
+  iterating the resulting null raised a PHP warning. On its own that is harmless, but an
+  application whose error handler promotes warnings to exceptions — Symfony and Shopware
+  both do — aborted the whole repository initialisation. Reached through
+  `createRepository(true, RepositoryLocationTypes::AWSS3)` whenever the bucket was
+  already empty: a first init with overwrite, or a re-init after the bucket was emptied.
 - Two PHPStan level 8 errors in `Backup\AmazonS3::removeOldRepository()`; the bucket
   name is now checked before it reaches the AWS SDK.
 
@@ -79,7 +93,7 @@ All notable changes to this project are documented in this file.
 The public facades `Backup`, `Manage` and `Restore` are unchanged — code that only uses
 them needs no changes.
 
-Two things to check:
+Four things to check:
 
 1. Custom classes implementing `CommandLineInterface` must return an array. Build
    option values as `'--flag='.$value` (one element) and place `'--'` before positional
@@ -88,6 +102,8 @@ Two things to check:
    only during execution. Widen `try` blocks to cover the configuration phase.
 3. If you log, display or re-parse `ResultEntity::getCommandLine()`, note that it is now
    a shell-escaped, single-quoted string rather than the plain command line.
+4. If you catch `\RuntimeException` around version detection, catch
+   `MuckiRestic\Exception\InvalidConfigurationException` instead.
 
 The setter guards validate the *shape* of a value (it must not start with a dash), not
 whether it is trustworthy. A value like `rest:http://attacker/` or `s3:https://attacker/`
