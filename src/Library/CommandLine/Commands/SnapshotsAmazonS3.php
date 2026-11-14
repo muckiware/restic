@@ -27,6 +27,10 @@ abstract class SnapshotsAmazonS3 implements CommandLineInterface
             'snapshots',
         ];
 
+        if ($configuration->isNoLock()) {
+            $command[] = '--no-lock';
+        }
+
         if ($configuration->isJsonOutput()) {
             $command[] = '--json';
         }

@@ -128,6 +128,28 @@ class CommandBuilderTest extends TestCase
         );
     }
 
+    public function testCheckReadsDataByDefault(): void
+    {
+        $this::assertContains('--read-data', Check::getCommandLine($this->config()));
+    }
+
+    public function testCheckWithoutReadData(): void
+    {
+        $configuration = $this->config();
+        $configuration->setCheckReadData(false);
+        $this::assertNotContains('--read-data', Check::getCommandLine($configuration));
+        $this::assertNotContains('--read-data', CheckAmazonS3::getCommandLine($configuration));
+    }
+
+    public function testSnapshotsWithoutLockIsOptIn(): void
+    {
+        $configuration = $this->config();
+        $this::assertNotContains('--no-lock', Snapshots::getCommandLine($configuration));
+        $configuration->setNoLock(true);
+        $this::assertContains('--no-lock', Snapshots::getCommandLine($configuration));
+        $this::assertContains('--no-lock', SnapshotsAmazonS3::getCommandLine($configuration));
+    }
+
     public function testSnapshots(): void
     {
         $this::assertSame(

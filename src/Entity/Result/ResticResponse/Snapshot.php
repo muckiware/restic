@@ -7,18 +7,18 @@ class Snapshot
     protected string $id;
     protected string $short_id;
     protected string $time;
-    protected string $tree;
-    protected string $parent;
+    protected string $tree = '';
+    protected string $parent = '';
     /**
      * @var array <string>
      */
-    protected array $paths;
-    protected string $hostname;
-    protected string $username;
-    protected string $uid;
-    protected string $gid;
-    protected string $program_version;
-    protected Summary $summary;
+    protected array $paths = [];
+    protected string $hostname = '';
+    protected string $username = '';
+    protected string $uid = '';
+    protected string $gid = '';
+    protected string $program_version = '';
+    protected ?Summary $summary = null;
 
     public function getId(): string
     {
@@ -136,9 +136,14 @@ class Snapshot
         $this->program_version = $program_version;
     }
 
-    public function getSummary(): Summary
+    public function getSummary(): ?Summary
     {
         return $this->summary;
+    }
+
+    public function hasSummary(): bool
+    {
+        return $this->summary !== null;
     }
 
     public function setSummary(Summary $summary): void

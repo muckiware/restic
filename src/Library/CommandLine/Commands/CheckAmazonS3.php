@@ -21,12 +21,17 @@ abstract class CheckAmazonS3 implements CommandLineInterface
      */
     public static function getCommandLine(Configuration $configuration): array
     {
-        return [
+        $command = [
             $configuration->getBinaryPath(),
             '--repo='.$configuration->getAwsS3Endpoint(),
             'check',
-            '--read-data',
         ];
+
+        if ($configuration->isCheckReadData()) {
+            $command[] = '--read-data';
+        }
+
+        return $command;
     }
 
     /**

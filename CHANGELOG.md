@@ -2,6 +2,30 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.6.0] - 2026-11-14
+
+### Added
+
+- **`setCheckReadData()` / `isCheckReadData()`.** Defaults to `true`, which keeps the
+  existing behaviour: `check` runs with `--read-data`. With `false` the flag is omitted,
+  so a repository can be verified structurally without reading all pack data, which is
+  much faster on large repositories. Applies to the local and the Amazon S3 variant.
+- **`setNoLock()` / `isNoLock()`.** Defaults to `false`. With `true`, `snapshots` is run
+  with `--no-lock`, so snapshots of a repository can be listed without creating a lock
+  file in it. Useful for repositories that are read-only or held by another process.
+  Applies to the local and the Amazon S3 variant.
+
+### Changed
+
+- `Snapshot::getSummary()` returns `?Summary`, and the new `Snapshot::hasSummary()` tells
+  whether the snapshot carries one. restic only writes a `summary` since 0.17, so
+  snapshots of older repositories have none. Callers that relied on a non-null `Summary`
+  must handle `null`.
+- Fields that older restic versions leave out of the snapshot JSON (`hostname`, `parent`,
+  `tree`, `username`, `uid`, `gid`, `program_version`, `paths`) no longer cause an
+  `\Error` ("must not be accessed before initialization") when read. They default to an
+  empty string, `paths` to an empty array. `id`, `short_id` and `time` remain required.
+
 ## [1.5.0] - 2026-09-17
 
 ### Security

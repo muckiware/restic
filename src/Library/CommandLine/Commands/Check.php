@@ -21,7 +21,13 @@ abstract class Check implements CommandLineInterface
      */
     public static function getCommandLine(Configuration $configuration): array
     {
-        return [$configuration->getBinaryPath(), 'check', '--read-data'];
+        $command = [$configuration->getBinaryPath(), 'check'];
+
+        if ($configuration->isCheckReadData()) {
+            $command[] = '--read-data';
+        }
+
+        return $command;
     }
 
     /**

@@ -27,6 +27,10 @@ abstract class Snapshots implements CommandLineInterface
             'snapshots',
         ];
 
+        if ($configuration->isNoLock()) {
+            $command[] = '--no-lock';
+        }
+
         if ($configuration->isJsonOutput()) {
             $command[] = '--json';
         }

@@ -51,6 +51,8 @@ abstract class Configuration extends Client
     protected string $restoreTarget;
 
     protected bool $jsonOutput = true;
+    protected bool $checkReadData = true;
+    protected bool $noLock = false;
     protected ?string $snapshotId;
 
     /**
@@ -266,6 +268,26 @@ abstract class Configuration extends Client
     public function setJsonOutput(bool $jsonOutput): void
     {
         $this->jsonOutput = $jsonOutput;
+    }
+
+    public function isCheckReadData(): bool
+    {
+        return $this->checkReadData;
+    }
+
+    public function setCheckReadData(bool $checkReadData): void
+    {
+        $this->checkReadData = $checkReadData;
+    }
+
+    public function isNoLock(): bool
+    {
+        return $this->noLock;
+    }
+
+    public function setNoLock(bool $noLock): void
+    {
+        $this->noLock = $noLock;
     }
 
     public function getSnapshotId(): ?string
