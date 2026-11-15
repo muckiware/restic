@@ -1,0 +1,156 @@
+# Creates a version tag and a GitHub release whenever main is merged into
+# the release branch. The version is taken from the "version" field in
+# composer.json (tag name: "v" + version, a leading "v" in composer.json is
+# stripped first, matching the existing v1.x.y tags).
+#
+# Detected merge styles:
+#   - merge commit (git merge main / merged PR) -> main's tip is a parent
+#   - fast-forward of main into release         -> release tip == main tip
+#   - initial creation of the release branch from main
+# Squash or rebase merges are NOT detected (they produce single-parent
+# commits) - use a regular merge.
+
+name: "Create tag & release (merge main -> release)"
+
+on:
+  push:
+    branches:
+      - Release
+      - release
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Tag & GitHub release from composer.json version
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      release: ${{ steps.detect.outputs.release }}
+      tag: ${{ steps.tagcheck.outputs.tag }}
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Detect merge from main
+        id: detect
+        env:
+          EVENT_BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+
+          git fetch --quiet origin main
+          MAIN="$(git rev-parse origin/main)"
+          HEAD_SHA="$(git rev-parse HEAD)"
+          BEFORE="${EVENT_BEFORE:-}"
+
+          echo "head   : ${HEAD_SHA}"
+          echo "main   : ${MAIN}"
+          echo "before : ${BEFORE:-<empty>}"
+
+          release=false
+
+          # Manual runs: only on the release branch.
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            if [ "${GITHUB_REF_NAME}" = "release" ] || [ "${GITHUB_REF_NAME}" = "Release" ]; then
+              echo "Manual run on the release branch -> attempting release."
+              release=true
+            else
+              echo "Manual run on '${GITHUB_REF_NAME}' is not the release branch -> nothing to do."
+            fi
+
+          # Fast-forward of main into release (covers the initial branch creation too).
+          elif [ "${HEAD_SHA}" = "${MAIN}" ] && [ "${BEFORE}" != "${MAIN}" ]; then
+            echo "release branch now points to main's tip (fast-forward / branch creation)."
+            release=true
+
+          # Merge commit (two or more parents) with main's tip as one of its parents.
+          elif [ "$(git rev-list --parents -n 1 "${HEAD_SHA}" | awk '{print NF}')" -ge 3 ] \
+            && git rev-list --parents -n 1 "${HEAD_SHA}" | tr ' ' '\n' | grep -qx "${MAIN}"; then
+            echo "Merge commit with main as parent detected."
+            release=true
+          fi
+
+          if [ "${release}" != "true" ]; then
+            echo "Push to release is not a merge from main -> nothing to do."
+          fi
+
+          echo "release=${release}" >> "${GITHUB_OUTPUT}"
+
+      - name: Read version from composer.json
+        id: version
+        if: steps.detect.outputs.release == 'true'
+        run: |
+          set -euo pipefail
+
+          VERSION="$(jq -r '.version // empty' composer.json)"
+          VERSION="${VERSION#v}"
+          if [ -z "${VERSION}" ]; then
+            echo "::error::No version field in composer.json -- cannot create a release."
+            exit 1
+          fi
+          echo "Version from composer.json: ${VERSION}"
+          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+
+      - name: Check existing tag
+        id: tagcheck
+        if: steps.detect.outputs.release == 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          TAG="v${VERSION}"
+          HEAD_SHA="$(git rev-parse HEAD)"
+          echo "tag=${TAG}" >> "${GITHUB_OUTPUT}"
+
+          # Peel annotated tags down to the commit they point at.
+          TAGGED_COMMIT="$(git ls-remote origin "refs/tags/${TAG}^{}" | awk '{print $1}')"
+
+          if [ -n "${TAGGED_COMMIT}" ] && [ "${TAGGED_COMMIT}" != "${HEAD_SHA}" ]; then
+            echo "::error::Tag ${TAG} already exists on ${TAGGED_COMMIT}, but this merge points to ${HEAD_SHA}. Bump the version in composer.json before merging main into release."
+            exit 1
+          fi
+
+          if [ -n "${TAGGED_COMMIT}" ]; then
+            echo "Tag ${TAG} already exists on this commit -> skipping tag creation."
+            echo "tagged=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "tagged=false" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Create and push tag
+        if: steps.tagcheck.outputs.tagged == 'false'
+        env:
+          TAG: ${{ steps.tagcheck.outputs.tag }}
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git tag -a "${TAG}" -m "Release ${TAG}"
+          git push origin "refs/tags/${TAG}"
+
+      - name: Create GitHub release
+        if: steps.detect.outputs.release == 'true'
+        env:
+          TAG: ${{ steps.tagcheck.outputs.tag }}
+        run: |
+          set -euo pipefail
+
+          if gh release view "${TAG}" > /dev/null 2>&1; then
+            echo "GitHub release ${TAG} already exists -> nothing to do."
+          else
+            gh release create "${TAG}" --title "${TAG}" --generate-notes
+            echo "GitHub release ${TAG} created."
+          fi
