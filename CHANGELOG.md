@@ -2,6 +2,9 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.6.1] - 2026-11-15
+  - just an update trigger
+
 ## [1.6.0] - 2026-11-14
 
 ### Added
